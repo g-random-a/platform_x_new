@@ -1,0 +1,12 @@
+appTheme.whiteA70001,
+BorderRadiusStyle.roundedBorder5
+theme.colorScheme.primaryContainer
+theme.textTheme.titleSmall!.copyWith(
+                          height: 1.34,
+                        ),
+
+CustomImageView(
+                  imagePath: ImageConstant.imgPHeartLight,
+                  height: 16.h,
+                  width: 20.h,
+                ),

@@ -1,0 +1,27 @@
+// ignore_for_file: constant_identifier_names
+
+enum InputTypesEnum {
+  Text,
+  Email,
+  Password,
+  Number,
+  Date,
+  DatetimeLocal,
+  Month,
+  Week,
+  Time,
+  Tel,
+  Checkbox,
+  Radio,
+  Dropdown,
+  Range,
+  Signature,
+  Media,
+  ColorPicker,
+  Matrix,
+  Slider,
+  Canvas,
+  RichText,
+  Location,
+  Rating,
+}
