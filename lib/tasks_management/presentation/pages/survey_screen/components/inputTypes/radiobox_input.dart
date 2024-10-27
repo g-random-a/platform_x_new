@@ -152,7 +152,7 @@ class _RadioboxInputFieldState extends State<RadioboxInputField> {
                       selectedValue = null;
                     });
 
-                    Form.of(context).validate();
+                    // Form.of(context).validate();
                   },
                   child: const Text('Clear selection'),
                 ),

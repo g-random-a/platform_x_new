@@ -55,12 +55,6 @@ List<Widget> buildInputs(BuildContext context, List<QuestionInput> inputs) {
         default:
           return Placeholder();
       }
-
-
-
-
-
-      return Placeholder();
     },
     );
 }

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 class Task {
   String id;
   String title;
@@ -8,7 +10,10 @@ class Task {
   double rating;
   int totalQuestions;
   int? completedQuestions;
+  DateTime? createdAt;
+  DateTime? dueDate;
   bool isFavorite;
+
 
   static final List<String> TaskFields = [
     'id',
@@ -34,20 +39,46 @@ class Task {
     required this.totalQuestions,
     this.completedQuestions,
     this.isFavorite = false,
+    this.createdAt,
+    this.dueDate,
   });
 
   factory Task.fromJson(Map<String, dynamic> json) {
-    return Task(
-      id: json['id'],
+
+    Task task =  Task(
+      id: json['_id'],
       title: json['title'],
       description: json['description'],
-      budget: json['budget'],
-      location: json['location'],
-      tags: List<String>.from(json['tags']),
-      rating: json['rating'],
-      totalQuestions: json['numberOfQuestions'],
-      completedQuestions: json['completedQuestions'],
+      budget: json['budget'] ?? Random().nextInt(1500),
+      location: json['location'] ?? "Addis Ababa",
+      tags: json['tags'] != null ? List<String>.from(json['tags']) : 
+      [
+        "18-34+",
+        "Marketing",
+        "Sales",
+        "Business",
+        "Finance",
+        "Accounting",
+        "Management",
+        "Human Resource",
+        "Customer Service",
+        "Information Technology",
+        "Engineering",
+        "Healthcare",
+        "Education",
+      ].sublist(Random().nextInt(5)),
+      rating: json['rating'] ?? Random().nextDouble() * 5,
+      totalQuestions: json['numberOfQuestions'] ?? Random().nextInt(15),
+      completedQuestions: json['completedQuestions'] ?? Random().nextInt(15),
+      createdAt: DateTime.tryParse(json['createdAt']) ?? DateTime.now(),
+      dueDate: DateTime.tryParse(json['dueDate']) ?? DateTime.now()
     );
+
+    task.totalQuestions = task.completedQuestions! + task.completedQuestions!;
+
+    return task;
+
+
   }
 
   Map<String, dynamic> toJson() {

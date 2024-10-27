@@ -266,7 +266,9 @@ class _DocumentlistItemWidgetState extends State<DocumentlistItemWidget> {
               CustomElevatedButton(
                 text: "Start Task",
                 onclick: () {
-                  context.go('/task_instruction');
+                  context.go('/task_instruction', extra: {
+                    "task": widget.task
+                  });
                 },
               )
 

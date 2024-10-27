@@ -22,7 +22,7 @@ class TasksDataProvider extends DataProvider {
       dio.options.headers['content-Type'] = 'application/json';
       dio.options.headers['cookie'] = 'session=$token';
 
-      Response response = await dio.post("$baseUrl/submit_task/", data: formData);
+      Response response = await dio.post("/submit_task/", data: formData);
 
       if (response.statusCode == 200) {
         return true;
@@ -36,31 +36,29 @@ class TasksDataProvider extends DataProvider {
 
   Future<List<Task>> loadTasks() async {
     try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? token = prefs.getString('token');
-      if (token == null) {
-        throw Exception("notLogged In");
-      }
+      // SharedPreferences prefs = await SharedPreferences.getInstance();
+      // String? token = prefs.getString('token');
+      // if (token == null) {
+      //   throw Exception("notLogged In");
+      // }
+
       dio.options.headers['content-Type'] = 'application/json';
-      dio.options.headers['cookie'] = 'session=$token';
-      dio.options.headers['Authorization'] = 'Bearer $token';
+      // dio.options.headers['cookie'] = 'session=$token';
+      // dio.options.headers['Authorization'] = 'Bearer $token';
 
-      Response response = await dio.get("$baseUrl/agent/get-forms");
-
-      print("-----------------");
-      print("@response == ${response}");
+      Response response = await dio.get("/v1/task");
 
       if (response.statusCode != 200) {
         throw Exception("Error while loading tasks.");
       }
 
-
       List<Task> tasks = [];
 
-      List forms = response.data['forms'];
-      
+      List forms = response.data['tasks'];
+
       for (var form in forms) {
-        Task task = Task.fromJson(jsonDecode(form));
+        // print(form.runtimeType);
+        Task task = Task.fromJson(form);
         
         tasks.add(task);
       }
@@ -68,6 +66,7 @@ class TasksDataProvider extends DataProvider {
       return tasks;
 
     } catch (e) {
+      print("@Error: ${e}",);
       rethrow;
     }
 

@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:platform_x/core/application/theme/bloc/theme_bloc.dart';
+import 'package:platform_x/tasks_management/application/task/bloc/task_bloc.dart';
+import 'package:platform_x/tasks_management/application/task/event/task_event.dart';
+import 'package:platform_x/tasks_management/application/task/state/task_state.dart';
 import 'package:platform_x/tasks_management/presentation/pages/task_instruction/task_instruction.dart';
 
 import '../../domain/task/task.dart';
@@ -6,12 +11,25 @@ import '../components/custom_bottom_bar.dart';
 import '../components/homepage_header.dart';
 import '../components/task_card.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   HomePage({super.key});
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey();
+
   final PageController _scrollController = PageController();
+
   final PageController _pageController = PageController();
+
+  @override
+  void initState() {
+    super.initState();
+    BlocProvider.of<TasksBloc>(context).add(LoadTasksEvent());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +43,7 @@ class HomePage extends StatelessWidget {
               return Home(scrollController: _scrollController);
             }
             if (index == 1){
-              return TaskInstructionScreen();
+              // return TaskInstructionScreen();
             }
             else {
               return Container(child: Center(child: Text(index.toString())),);
@@ -91,43 +109,32 @@ class Home extends StatelessWidget {
         ];
       },
       body: PageView.builder(
-        itemCount: 3, // Number of pages in PageView
+        itemCount: 3,
         onPageChanged: (pageIndex) {},
         controller: _scrollController,
         itemBuilder: (context, pageIndex) {
-          return ListView.builder(
-            itemCount: 50,
-            itemBuilder: (context, index) {
-              return  DocumentlistItemWidget(
-                key: Key(index.toString()),
-                task: Task(
-                        id: "1",
-                        title: "For document digitization: Capture images of documents and upload. $index",
-                        description: index %2 == 0 ? "This is a description of task $index" : description, // long description
-                        // longest desc
-                        budget: 250,
-                        location: "Addis Ababa",
-                        rating: 5,
-                        tags: [
-                          "18-34+",
-                          "Marketing",
-                          "Sales",
-                          "Business",
-                          "Finance",
-                          "Accounting",
-                          "Management",
-                          "Human Resource",
-                          "Customer Service",
-                          "Information Technology",
-                          "Engineering",
-                          "Healthcare",
-                          "Education",
-                        ],
-                        totalQuestions: 25,
-                        completedQuestions: 5,
-            ),
-              );
-            },
+          return BlocBuilder<TasksBloc, TasksState>(
+            builder: (context, state) {
+              if (state is TasksLoadingState || state is TasksInitialState){
+                return const Center(child: CircularProgressIndicator(),);
+              }
+              else if (state is TasksLoadingSuccessState){
+                return ListView.builder(
+                      itemCount: state.tasks.length,
+                      itemBuilder: (context, index) {
+                        Task task = state.tasks[index];
+                        return  DocumentlistItemWidget(
+                          key: Key(index.toString()),
+                          task: task
+                        );
+                      },
+                    );
+              }
+
+              else {
+                return const Center(child: Text("Couldn't load please try again later."));
+              }
+            }
           );
         },
       ),

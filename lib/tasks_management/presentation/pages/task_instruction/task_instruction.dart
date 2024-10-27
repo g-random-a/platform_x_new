@@ -4,12 +4,18 @@ import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:platform_x/core/utils/responsive/size.dart';
 import 'package:platform_x/core/utils/theme/custom_text_styles.dart';
+import 'package:platform_x/tasks_management/domain/task/task.dart';
 import 'package:platform_x/tasks_management/presentation/components/custom_elevated_button.dart';
 import 'package:platform_x/tasks_management/presentation/components/custom_image.dart';
 
 import '../../../../core/application/theme/bloc/theme_bloc.dart';
 
 class TaskInstructionScreen extends StatelessWidget {
+  final Task task;
+
+
+  TaskInstructionScreen({super.key, required this.task});
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -38,13 +44,15 @@ class TaskInstructionScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 // Title section
                 Text(
-                  "Financial Access Survey",
+                  // "Financial Access Survey",
+                  task.title,
                   style: CustomTextStyles.titleLargePlusJakartaSansBlack900(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme),
                   
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  "As part of the survey, we are collecting inputs from various stakeholders, and we are seeking your",
+                  // "As part of the survey, we are collecting inputs from various stakeholders, and we are seeking your",
+                  task.description,
                   style: CustomTextStyles.bodySmallOnErrorContainer(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme).copyWith(
                     fontFamily: 'Plus Jakarta Sans',
                   ),
@@ -56,7 +64,8 @@ class TaskInstructionScreen extends StatelessWidget {
                     Icon(Iconsax.calendar_1, size: 14.fSize, color: context.watch<ThemeBloc>().state.appColorTheme.black90001,),
                     const SizedBox(width: 8),
                     Text(
-                      "Due: Oct 29, 2023",
+                      // "Due: Oct 29, 2023",
+                      task.dueDate.toString(),
                       style: CustomTextStyles.bodyMediumInterBlack500(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme).copyWith(
                         fontSize: 12.25.fSize,
                         fontWeight: FontWeight.w500,

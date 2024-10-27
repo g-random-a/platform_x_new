@@ -192,13 +192,13 @@ class LocationInputValidationSchema extends InputValidation {
 }
 
 class RatingInputValidationSchema extends InputValidation {
-  int minRating;
-  int maxRating;
+  int? minRating;
+  int? maxRating;
 
   RatingInputValidationSchema({
     required bool required,
-    required this.minRating,
-    required this.maxRating,
+    this.minRating,
+    this.maxRating,
     String? customErrorMessage,
   }) : super(required: required, customErrorMessage: customErrorMessage);
 }

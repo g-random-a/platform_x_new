@@ -216,16 +216,16 @@ class LocationPropertySchema extends InputProperties {
 
 class RatingPropertySchema extends InputProperties {
   double? defaultValue;
-  double? minimumRating;
-  double? maximumRating;
+  double minimumRating;
+  double maximumRating;
   double? defaultRating;
   String? icon;
 
   RatingPropertySchema({
     this.defaultRating,
     this.defaultValue,
-    this.maximumRating,
-    this.minimumRating, super.label,
+    required this.maximumRating,
+    required this.minimumRating, super.label,
     this.icon
   });
 }

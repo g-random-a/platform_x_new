@@ -13,7 +13,7 @@ Future<void> _requestPermissions() async {
   if (!microphonePermission) await Permission.microphone.request();
   
   bool storagePermission = await Permission.storage.isGranted;
-  if (!storagePermission) await Permission.storage.request(); // if you need storage access
+  if (!storagePermission) await Permission.storage.request();
 }
 
 void main() async {

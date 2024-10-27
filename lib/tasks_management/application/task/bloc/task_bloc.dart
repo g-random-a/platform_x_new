@@ -19,12 +19,12 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
   }
 
   LoadTasks(LoadTasksEvent event, Emitter emit) async {
-    if (state is ! TasksLoadingSuccessState){
+    // if (state is  !TasksLoadingSuccessState){
       emit(TasksLoadingState());
-    }
-    else{
-      emit(TasksLoadingSuccessState(tasks: (state as TasksLoadingSuccessState).tasks, isLoadingMore: true));
-    }
+    // }
+    // else{
+    //   emit(TasksLoadingSuccessState(tasks: (state as TasksLoadingSuccessState).tasks, isLoadingMore: true));
+    // }
     try {
       List<Task> tasks = await tasksRepository.loadTasks();
       emit(TasksLoadingSuccessState(tasks: tasks));
