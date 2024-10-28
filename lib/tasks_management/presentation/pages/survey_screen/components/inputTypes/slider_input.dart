@@ -29,7 +29,7 @@ class _SliderInputFieldState extends State<SliderInputField> {
   }
 
   String? validateSlider(double? value) {
-    if (widget.validations.required && value == null) {
+    if (widget.validations.required && sliderValue == null) {
       return widget.validations.customErrorMessage ?? 'This field is required';
     }
     return null;

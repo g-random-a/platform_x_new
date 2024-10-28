@@ -56,8 +56,8 @@ class _RadioboxInputFieldState extends State<RadioboxInputField> {
               (index) => GestureDetector(
                     onTap: () {
                       setState(() {
-                        widget.properties.options[index]['selected'] = !(widget
-                            .properties.options[index]['selected'] as bool);
+                        widget.properties.options[index].selected = !(widget
+                            .properties.options[index].selected as bool);
                       });
                     },
                     child: Container(
@@ -68,7 +68,7 @@ class _RadioboxInputFieldState extends State<RadioboxInputField> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5.h),
                         border: Border.all(
-                          color: widget.properties.options[index]['selected'] ==
+                          color: widget.properties.options[index].selected ==
                                   true
                               ? context
                                   .watch<ThemeBloc>()
@@ -83,22 +83,22 @@ class _RadioboxInputFieldState extends State<RadioboxInputField> {
                           width: 0.54.h,
                         ),
                         color:
-                            widget.properties.options[index]['selected'] == true
+                            widget.properties.options[index].selected == true
                                 ? Colors.green[100]
                                 : Colors.transparent,
                       ),
                       child: Center(
                         child: RadioListTile<bool>(
-                          value: widget.properties.options[index]['selected'] ==
+                          value: widget.properties.options[index].selected ==
                               true,
                           onChanged: (bool? value) {
                             setState(() {
                               if (selectedValue != null) {
                                 widget.properties.options[selectedValue!]
-                                    ['selected'] = false;
+                                    .selected = false;
                               }
-                              widget.properties.options[index]['selected'] =
-                                  !(widget.properties.options[index]['selected']
+                              widget.properties.options[index].selected =
+                                  !(widget.properties.options[index].selected
                                       as bool);
 
                               selectedValue = index;
@@ -109,7 +109,7 @@ class _RadioboxInputFieldState extends State<RadioboxInputField> {
                           activeColor: Colors.green,
                           groupValue: true,
                           title: Text(
-                            widget.properties.options[index]['value'] as String,
+                            widget.properties.options[index].value as String,
                             style:
                                 CustomTextStyles.titleRedHatDisplayOnGray90001(
                                         context
@@ -122,7 +122,7 @@ class _RadioboxInputFieldState extends State<RadioboxInputField> {
                                             .appColorTheme)
                                     .copyWith(
                               color: widget.properties.options[index]
-                                          ['selected'] ==
+                                          .selected ==
                                       true
                                   ? context
                                       .watch<ThemeBloc>()
@@ -147,7 +147,7 @@ class _RadioboxInputFieldState extends State<RadioboxInputField> {
                 TextButton(
                   onPressed: () {
                     setState(() {
-                      widget.properties.options[selectedValue!]['selected'] =
+                      widget.properties.options[selectedValue!].selected =
                           false;
                       selectedValue = null;
                     });

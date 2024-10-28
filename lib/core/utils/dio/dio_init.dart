@@ -16,9 +16,12 @@ class DioService {
         },
       ),
     );
+
   }
 
   Dio get dio => _dio;
+
+  
 
 
   setAuthHeader (String token) {

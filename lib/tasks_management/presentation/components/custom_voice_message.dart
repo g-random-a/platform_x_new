@@ -18,14 +18,14 @@ class VoiceMessageWidget extends StatefulWidget {
   final Function()? onClose;
 
   const VoiceMessageWidget({
-    Key? key,
+    super.key,
     required this.audioUrl,
     required this.isFile,
     required this.onPause,
     required this.onPlaying,
     required this.isRecorded,
     this.onClose
-  }) : super(key: key);
+  });
 
   @override
   _VoiceMessageWidgetState createState() => _VoiceMessageWidgetState();

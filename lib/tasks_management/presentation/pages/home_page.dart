@@ -12,7 +12,7 @@ import '../components/homepage_header.dart';
 import '../components/task_card.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({super.key});
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -48,6 +48,7 @@ class _HomePageState extends State<HomePage> {
             else {
               return Container(child: Center(child: Text(index.toString())),);
             }
+            return null;
           }
         ),
         bottomNavigationBar: SizedBox(

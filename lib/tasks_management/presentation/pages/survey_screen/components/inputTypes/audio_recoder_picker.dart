@@ -124,14 +124,13 @@ class _AudioRecorderWidgetState extends State<AudioRecorderWidget> {
             ),
           ),
           GestureDetector(
+            onLongPress: toggleRecording,
+            onLongPressEnd: (details) => toggleRecording(),
             child: Icon(
               isRecording ? Iconsax.stop : Iconsax.microphone_2,
               color: context.watch<ThemeBloc>().state.appColorTheme.gray600,
               size: 24,
             ),
-            // onPressed: toggleRecording,
-            onLongPress: toggleRecording,
-            onLongPressEnd: (details) => toggleRecording(),
           ),
         ],
       ),

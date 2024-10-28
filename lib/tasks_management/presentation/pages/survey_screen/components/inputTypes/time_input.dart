@@ -8,12 +8,12 @@ class TimeInputField extends StatefulWidget {
   final String? customErrorMessage;
 
   const TimeInputField({
-    Key? key,
+    super.key,
     this.placeholder,
     this.defaultValue,
     required this.isRequired,
     this.customErrorMessage,
-  }) : super(key: key);
+  });
 
   @override
   State<TimeInputField> createState() => _TimeInputFieldState();
@@ -22,7 +22,7 @@ class TimeInputField extends StatefulWidget {
 class _TimeInputFieldState extends State<TimeInputField> {
 
   String time = "";
-  TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
 
   String? validateTime(String? value) {
     if (widget.isRequired && (value == null || value.isEmpty)) {

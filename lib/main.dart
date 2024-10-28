@@ -1,11 +1,13 @@
 import 'package:flutter/services.dart';
 import 'package:platform_x/core/utils/responsive/size.dart';
+import 'package:platform_x/tasks_management/application/question/bloc/question_bloc.dart';
+import 'package:platform_x/tasks_management/infrustructure/data_provider/question/question_data_provider.dart';
+import 'package:platform_x/tasks_management/infrustructure/repository/question/question_repo.dart';
 import 'package:platform_x/tasks_management/infrustructure/repository/task/task_repo.dart';
 
 import 'lib.dart';
 import 'tasks_management/application/task/bloc/task_bloc.dart';
 import 'tasks_management/infrustructure/data_provider/task/task_data_provider.dart';
-import 'tasks_management/presentation/components/task_card.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 Future<void> _requestPermissions() async {
@@ -32,6 +34,9 @@ void main() async {
         RepositoryProvider<TasksRepository>(
           create: (context) => TasksRepository(tasksDataProvider: TasksDataProvider(dio: dioService.dio)),
         ),
+        RepositoryProvider<QuestionsRepository>(
+          create: (context) => QuestionsRepository(tasksDataProvider: QuestionsDataProvider(dio: dioService.dio)),
+          )
             ], 
       child: MultiBlocProvider(
       providers: [
@@ -43,7 +48,10 @@ void main() async {
         ),
         BlocProvider(
           create: (context) => TasksBloc(tasksRepository: context.read<TasksRepository>()),
-        )
+        ),
+        BlocProvider(
+          create: (context) => QuestionsBloc(questionsRepository: context.read<QuestionsRepository>()),
+        ),
       ],
      child: const MyApp(),
         )

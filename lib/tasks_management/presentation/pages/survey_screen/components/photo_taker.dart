@@ -75,7 +75,7 @@ class _TakePhotoComponentState extends State<TakePhotoComponent> {
                       if(_image != null ) Align(
                         alignment: Alignment.topRight,
                         child: IconButton(
-                          icon: Icon(Iconsax.profile_delete),
+                          icon: const Icon(Iconsax.profile_delete),
                           onPressed: (){
                             setState(() {
                               _image = null;
@@ -89,7 +89,7 @@ class _TakePhotoComponentState extends State<TakePhotoComponent> {
                           padding: _image == null ? EdgeInsets.zero : EdgeInsets.symmetric(vertical: 8.h),
                           child: ElevatedButton.icon(
                             onPressed: _takePhoto,
-                            icon: Icon(Iconsax.camera, color: Colors.purple),
+                            icon: const Icon(Iconsax.camera, color: Colors.purple),
                             label: _image  != null ? 
                             Text('Retake photo', 
                                 style:
@@ -106,8 +106,8 @@ class _TakePhotoComponentState extends State<TakePhotoComponent> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(24.0),
                               ),
-                              textStyle: TextStyle(color: Colors.black),
-                              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                              textStyle: const TextStyle(color: Colors.black),
+                              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
                               elevation: 2,
                             ),
                           ),

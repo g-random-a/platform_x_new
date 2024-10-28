@@ -6,7 +6,7 @@ import '../event/locale_event.dart';
 import '../state/locale_state.dart';
 
 class LocaleBloc extends Bloc<LocaleEvent, LocaleState> {
-  LocaleBloc() : super(LocaleInitialState()) {
+  LocaleBloc() : super(const LocaleInitialState()) {
     on<ChangeLocaleEvent>(_onChangeLocale);
     _loadSavedLocale(); // Load the saved locale on startup
   }

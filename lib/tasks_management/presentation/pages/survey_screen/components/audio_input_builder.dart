@@ -39,6 +39,7 @@ class _AudioInputBuilderState extends State<AudioInputBuilder> {
     if (widget.validation.required && audioFilePath == null){
       return "This field is required";
     }
+    return null;
   }
 
   @override

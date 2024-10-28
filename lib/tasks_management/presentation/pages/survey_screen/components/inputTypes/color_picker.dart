@@ -19,8 +19,7 @@ class ColorPickerInputField extends StatefulWidget {
 
 
   const ColorPickerInputField(
-    {
-      Key? key,
+    {super.key, 
       required this.properties,
       required this.validations,
       this.initialValue,
@@ -42,17 +41,14 @@ class _ColorPickerInputFieldState extends State<ColorPickerInputField> {
 
 class ColorPickerInputFieldExtention extends FormField<Color> {
   ColorPickerInputFieldExtention({
-    Key? key,
+    super.key,
     required ColorPickerPropertySchema properties,
     required ColorPickerInputValidationSchema validations,
-    Color? initialValue,
-    FormFieldSetter<Color>? onSaved,
+    super.initialValue,
+    super.onSaved,
     FormFieldValidator<Color>? validator,
     required BuildContext context,
   }) : super(
-          key: key,
-          onSaved: onSaved,
-          initialValue: initialValue,
           validator: (value) {
             if (validations.required && value == null) {
               return validations.customErrorMessage ?? 'This field is required';
@@ -127,7 +123,7 @@ class ColorPickerInputFieldExtention extends FormField<Color> {
                               ),
                               actions: <Widget>[
                                 ElevatedButton(
-                                  child: Text("Done"),
+                                  child: const Text("Done"),
                                   onPressed: () {
                                     Navigator.of(context).pop(field.value);
                                   },
@@ -178,6 +174,4 @@ class ColorPickerInputFieldExtention extends FormField<Color> {
 }
 
 class _ColorPickerInputFieldExtentionState extends FormFieldState<Color> {
-  @override
-  Color? get value => super.value; 
 }

@@ -1,3 +1,5 @@
+import 'package:platform_x/tasks_management/utils/enums/input_types.dart';
+
 abstract class InputValidation {
   bool required;
   String? customErrorMessage;
@@ -7,6 +9,140 @@ abstract class InputValidation {
     required this.required,
     this.customErrorMessage,
   });
+
+  factory InputValidation.fromJson(Map<String, dynamic> json, InputTypesEnum type) {
+    switch (type) {
+      case InputTypesEnum.Text:
+        return TextInputValidationSchema(
+          required: json['isRequired'],
+          maxLength: json['maxLength'],
+          minLength: json['minLength'],
+          regexPattern: json['regexPattern'],
+          customErrorMessage: json['customErrorMessage'],
+        );
+      case InputTypesEnum.Email:
+        return EmailInputValidationSchema(
+          required: json['isRequired'],
+          customErrorMessage: json['customErrorMessage'],
+        );
+      case InputTypesEnum.Password:
+        return PasswordInputValidationSchema(
+          required: json['isRequired'],
+          minLength: json['minLength'],
+          maxLength: json['maxLength'],
+          customErrorMessage: json['customErrorMessage'],
+        );
+      case InputTypesEnum.Number:
+        return NumberInputValidationSchema(
+          required: json['isRequired'],
+          min: json['min'],
+          max: json['max'],
+          allowDecimal: json['allowDecimal'],
+          customErrorMessage: json['customErrorMessage'],
+        );
+      case InputTypesEnum.Date:
+        return DateInputValidationSchema(
+          required: json['isRequired'],
+          minDate: json['minDate'],
+          maxDate: json['maxDate'],
+          customErrorMessage: json['customErrorMessage'],
+        );
+      case InputTypesEnum.Time:
+        return TimeInputValidationSchema(
+          required: json['isRequired'],
+          minTime: json['minTime'],
+          maxTime: json['maxTime'],
+          customErrorMessage: json['customErrorMessage'],
+        );
+      case InputTypesEnum.Tel:
+        return TelInputValidationSchema(
+          required: json['isRequired'],
+          minLength: json['minLength'],
+          maxLength: json['maxLength'],
+          customErrorMessage: json['customErrorMessage'],
+        );
+      case InputTypesEnum.Checkbox:
+        return CheckboxInputValidationSchema(
+          required: json['isRequired'],
+          customErrorMessage: json['customErrorMessage'],
+          maxSelection: json['maxSelection'],
+          minSelection: json['minSelection'],
+        );
+      case InputTypesEnum.Radio:
+        return RadioInputValidationSchema(
+          required: json['isRequired'],
+          customErrorMessage: json['customErrorMessage'],
+        );
+      case InputTypesEnum.Dropdown:
+        return DropdownInputValidationSchema(
+          required: json['isRequired'],
+          customErrorMessage: json['customErrorMessage'],
+        );
+      case InputTypesEnum.Range:
+        return RangeInputValidationSchema(
+          required: json['isRequired'],
+          minValue: json['minValue'],
+          maxValue: json['maxValue'],
+          customErrorMessage: json['customErrorMessage'],
+        );
+      case InputTypesEnum.Signature:
+        return SignatureInputValidationSchema(
+          required: json['isRequired'],
+          customErrorMessage: json['customErrorMessage'],
+        );
+      case InputTypesEnum.Media:
+        return MediaInputValidationSchema(
+          required: json['isRequired'],
+          acceptedFormats: json['acceptedFormats'].map<String>((format) => format.toString()).toList(),
+          maxFileSize: json['maxFileSize'],
+          customErrorMessage: json['customErrorMessage'],
+          multiple: json['multiple'],
+          mediaType: json['mediaType'],
+          numberOfFiles: json['numberOfFiles'],
+        );
+      case InputTypesEnum.ColorPicker:
+        return ColorPickerInputValidationSchema(
+          required: json['isRequired'],
+          customErrorMessage: json['customErrorMessage'],
+        );
+      case InputTypesEnum.Matrix:
+        return MatrixInputValidationSchema(
+          required: json['isRequired'],
+          customErrorMessage: json['customErrorMessage'],
+        );
+      case InputTypesEnum.Slider:
+        return SliderInputValidationSchema(
+          required: json['isRequired'],
+          minValue: json['minValue'],
+          maxValue: json['maxValue'],
+          customErrorMessage: json['customErrorMessage'],
+        );
+      case InputTypesEnum.Canvas:
+        return CanvasInputValidationSchema(
+          required: json['isRequired'],
+          customErrorMessage: json['customErrorMessage'],
+        );
+      case InputTypesEnum.RichText:
+        return RichTextInputValidationSchema(
+          required: json['isRequired'],
+          customErrorMessage: json['customErrorMessage'],
+        );
+      case InputTypesEnum.Location:
+        return LocationInputValidationSchema(
+          required: json['isRequired'],
+          customErrorMessage: json['customErrorMessage'],
+        );
+      case InputTypesEnum.Rating:
+        return RatingInputValidationSchema(
+          required: json['isRequired'],
+          minRating: json['minRating'],
+          maxRating: json['maxRating'],
+          customErrorMessage: json['customErrorMessage'],
+        );
+      default:
+        throw Exception('Invalid input type');      
+    }
+  }
 }
 
 class TextInputValidationSchema extends InputValidation {
@@ -15,19 +151,19 @@ class TextInputValidationSchema extends InputValidation {
   String? regexPattern;
 
   TextInputValidationSchema({
-    required bool required,
+    required super.required,
     this.maxLength,
     this.minLength,
     this.regexPattern,
-    String? customErrorMessage,
-  }) : super(required: required, customErrorMessage: customErrorMessage);
+    super.customErrorMessage,
+  });
 }
 
 class EmailInputValidationSchema extends InputValidation {
   EmailInputValidationSchema({
-    required bool required,
-    String? customErrorMessage,
-  }) : super(required: required, customErrorMessage: customErrorMessage);
+    required super.required,
+    super.customErrorMessage,
+  });
 }
 
 class PasswordInputValidationSchema extends InputValidation {
@@ -35,11 +171,11 @@ class PasswordInputValidationSchema extends InputValidation {
   int? maxLength;
 
   PasswordInputValidationSchema({
-    required bool required,
+    required super.required,
     this.minLength,
     this.maxLength,
-    String? customErrorMessage,
-  }) : super(required: required, customErrorMessage: customErrorMessage);
+    super.customErrorMessage,
+  });
 }
 
 class NumberInputValidationSchema extends InputValidation {
@@ -48,12 +184,12 @@ class NumberInputValidationSchema extends InputValidation {
   bool? allowDecimal;
 
   NumberInputValidationSchema({
-    required bool required,
+    required super.required,
     this.min,
     this.max,
     this.allowDecimal,
-    String? customErrorMessage,
-  }) : super(required: required, customErrorMessage: customErrorMessage);
+    super.customErrorMessage,
+  });
 }
 
 class DateInputValidationSchema extends InputValidation {
@@ -61,11 +197,11 @@ class DateInputValidationSchema extends InputValidation {
   String? maxDate;
 
   DateInputValidationSchema({
-    required bool required,
+    required super.required,
     this.minDate,
     this.maxDate,
-    String? customErrorMessage,
-  }) : super(required: required, customErrorMessage: customErrorMessage);
+    super.customErrorMessage,
+  });
 }
 
 class TimeInputValidationSchema extends InputValidation {
@@ -73,11 +209,11 @@ class TimeInputValidationSchema extends InputValidation {
   String? maxTime;
 
   TimeInputValidationSchema({
-    required bool required,
+    required super.required,
     this.minTime,
     this.maxTime,
-    String? customErrorMessage,
-  }) : super(required: required, customErrorMessage: customErrorMessage);
+    super.customErrorMessage,
+  });
 }
 
 class TelInputValidationSchema extends InputValidation {
@@ -85,32 +221,37 @@ class TelInputValidationSchema extends InputValidation {
   int? maxLength;
 
   TelInputValidationSchema({
-    required bool required,
+    required super.required,
     this.minLength,
     this.maxLength,
-    String? customErrorMessage,
-  }) : super(required: required, customErrorMessage: customErrorMessage);
+    super.customErrorMessage,
+  });
 }
 
 class CheckboxInputValidationSchema extends InputValidation {
+  int? minSelection;
+  int? maxSelection;
+
   CheckboxInputValidationSchema({
-    required bool required,
-    String? customErrorMessage,
-  }) : super(required: required, customErrorMessage: customErrorMessage);
+    required super.required,
+    super.customErrorMessage,
+    this.maxSelection,
+    this.minSelection,
+  });
 }
 
 class RadioInputValidationSchema extends InputValidation {
   RadioInputValidationSchema({
-    required bool required,
-    String? customErrorMessage,
-  }) : super(required: required, customErrorMessage: customErrorMessage);
+    required super.required,
+    super.customErrorMessage,
+  });
 }
 
 class DropdownInputValidationSchema extends InputValidation {
   DropdownInputValidationSchema({
-    required bool required,
-    String? customErrorMessage,
-  }) : super(required: required, customErrorMessage: customErrorMessage);
+    required super.required,
+    super.customErrorMessage,
+  });
 }
 
 class RangeInputValidationSchema extends InputValidation {
@@ -118,44 +259,50 @@ class RangeInputValidationSchema extends InputValidation {
   int? maxValue;
 
   RangeInputValidationSchema({
-    required bool required,
+    required super.required,
     this.minValue,
     this.maxValue,
-    String? customErrorMessage,
-  }) : super(required: required, customErrorMessage: customErrorMessage);
+    super.customErrorMessage,
+  });
 }
 
 class SignatureInputValidationSchema extends InputValidation {
   SignatureInputValidationSchema({
-    required bool required,
-    String? customErrorMessage,
-  }) : super(required: required, customErrorMessage: customErrorMessage);
+    required super.required,
+    super.customErrorMessage,
+  });
 }
 
 class MediaInputValidationSchema extends InputValidation {
   List<String>? acceptedFormats;
   int? maxFileSize;
+  bool? multiple;
+  int? numberOfFiles;
+  String? mediaType;
 
   MediaInputValidationSchema({
-    required bool required,
+    required super.required,
     this.acceptedFormats,
     this.maxFileSize,
-    String? customErrorMessage,
-  }) : super(required: required, customErrorMessage: customErrorMessage);
+    super.customErrorMessage,
+    this.multiple,
+    this.numberOfFiles,
+    this.mediaType,
+  });
 }
 
 class ColorPickerInputValidationSchema extends InputValidation {
   ColorPickerInputValidationSchema({
-    required bool required,
-    String? customErrorMessage,
-  }) : super(required: required, customErrorMessage: customErrorMessage);
+    required super.required,
+    super.customErrorMessage,
+  });
 }
 
 class MatrixInputValidationSchema extends InputValidation {
   MatrixInputValidationSchema({
-    required bool required,
-    String? customErrorMessage,
-  }) : super(required: required, customErrorMessage: customErrorMessage);
+    required super.required,
+    super.customErrorMessage,
+  });
 }
 
 class SliderInputValidationSchema extends InputValidation {
@@ -163,32 +310,32 @@ class SliderInputValidationSchema extends InputValidation {
   int? maxValue;
 
   SliderInputValidationSchema({
-    required bool required,
+    required super.required,
     this.minValue,
     this.maxValue,
-    String? customErrorMessage,
-  }) : super(required: required, customErrorMessage: customErrorMessage);
+    super.customErrorMessage,
+  });
 }
 
 class CanvasInputValidationSchema extends InputValidation {
   CanvasInputValidationSchema({
-    required bool required,
-    String? customErrorMessage,
-  }) : super(required: required, customErrorMessage: customErrorMessage);
+    required super.required,
+    super.customErrorMessage,
+  });
 }
 
 class RichTextInputValidationSchema extends InputValidation {
   RichTextInputValidationSchema({
-    required bool required,
-    String? customErrorMessage,
-  }) : super(required: required, customErrorMessage: customErrorMessage);
+    required super.required,
+    super.customErrorMessage,
+  });
 }
 
 class LocationInputValidationSchema extends InputValidation {
   LocationInputValidationSchema({
-    required bool required,
-    String? customErrorMessage,
-  }) : super(required: required, customErrorMessage: customErrorMessage);
+    required super.required,
+    super.customErrorMessage,
+  });
 }
 
 class RatingInputValidationSchema extends InputValidation {
@@ -196,11 +343,11 @@ class RatingInputValidationSchema extends InputValidation {
   int? maxRating;
 
   RatingInputValidationSchema({
-    required bool required,
+    required super.required,
     this.minRating,
     this.maxRating,
-    String? customErrorMessage,
-  }) : super(required: required, customErrorMessage: customErrorMessage);
+    super.customErrorMessage,
+  });
 }
 
 // Union type for all validation rules

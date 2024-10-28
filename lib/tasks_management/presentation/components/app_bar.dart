@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:platform_x/core/application/locale/bloc/locale_bloc.dart';
 import 'package:platform_x/core/application/theme/bloc/theme_bloc.dart';
 import 'package:platform_x/core/utils/responsive/size.dart';  
 

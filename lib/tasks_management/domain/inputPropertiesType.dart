@@ -1,3 +1,5 @@
+import 'package:platform_x/tasks_management/utils/enums/input_types.dart';
+
 abstract class InputProperties {
   String? label;
   String? suffix;
@@ -6,12 +8,144 @@ abstract class InputProperties {
      this.label,
      this.suffix
   });
+
+  factory InputProperties.fromJson(Map<String, dynamic> json, InputTypesEnum type){
+
+    switch(type) {
+      case InputTypesEnum.Text:
+        return TextPropertySchema(
+          placeholder: json['placeholder'],
+          defaultValue: json['defaultValue'],
+          label: json['label'],
+          suffix: json['suffix'],
+          multiLine: json['multiLine'],
+          lines: json['lines'],
+        );
+      case InputTypesEnum.Email:
+        return EmailPropertySchema(
+          placeholder: json['placeholder'],
+          defaultValue: json['defaultValue'],
+          label: json['label'],
+          suffix: json['suffix'],
+        );
+      case InputTypesEnum.Password:
+        return PasswordPropertySchema(
+          placeholder: json['placeholder'],
+          defaultValue: json['defaultValue'],
+          label: json['label'],
+        );
+      case InputTypesEnum.Number:
+        return NumberPropertySchema(
+          placeholder: json['placeholder'],
+          defaultValue: json['defaultValue'],
+          label: json['label'],
+          suffix: json['suffix'],
+          step: json['step'],
+        );
+      case InputTypesEnum.Date:
+        return DatePropertySchema(
+          placeholder: json['placeholder'],
+          defaultValue: json['defaultValue'],
+          label: json['label'],
+          minDate: json['minDate'],
+          maxDate: json['maxDate'],
+        );
+      case InputTypesEnum.Time:
+        return TimePropertySchema(
+          placeholder: json['placeholder'],
+          defaultValue: json['defaultValue'],
+          label: json['label'],
+        );
+      case InputTypesEnum.Tel:
+        return TelPropertySchema(
+          placeholder: json['placeholder'],
+          defaultValue: json['defaultValue'],
+          label: json['label'],
+        );
+      case InputTypesEnum.Checkbox: 
+        return CheckboxPropertySchema(
+          type: json['type'],
+          options: (json['options'] as List).map((option) => InputOptions.fromJson(option)).toList() ?? [],
+          label: json['label'],
+        );
+      case InputTypesEnum.Radio:  
+        return RadioPropertySchema(
+          options: (json['options'] as List).map((option) => InputOptions.fromJson(option)).toList() ?? [],
+          defaultValue: json['defaultValue'],
+          label: json['label'],
+        );
+      case InputTypesEnum.Dropdown: 
+        return DropdownPropertySchema(
+          options: (json['options'] as List).map((option) => InputOptions.fromJson(option)).toList() ?? [],
+          defaultValue: json['defaultValue'],
+          placeholder: json['placeholder'],
+          label: json['label'],
+        );
+      case InputTypesEnum.Range:
+        return RangePropertySchema(
+          min: json['min'],
+          max: json['max'],
+          step: json['step'],
+          defaultMin: json['defaultMin'],
+          defaultMax: json['defaultMax'],
+          label: json['label'],
+        );
+      case InputTypesEnum.Signature:
+        return SignaturePropertySchema(
+          label: json['label'],
+        );
+      case InputTypesEnum.Media:
+        return MediaPropertySchema(
+          mediaType: json['mediaType'],
+          multiple: json['multiple'],
+          label: json['label'],
+        );
+      case InputTypesEnum.ColorPicker:
+        return ColorPickerPropertySchema(
+          label: json['label'],
+        );
+      case InputTypesEnum.Matrix:
+        return MatrixPropertySchema(
+          rows: json['rows'],
+          columns: json['columns'],
+          label: json['label'],
+        );
+      case InputTypesEnum.Slider:
+        return SliderPropertySchema(
+          min: json['startValue'],
+          max: json['endValue'],
+          step: json['step'],
+          defaultValue: json['defaultValue'],
+          label: json['label'],
+        );
+      case InputTypesEnum.RichText:
+        return RichTextPropertySchema(
+          label: json['label'],
+        );
+      case InputTypesEnum.Location: 
+        return LocationPropertySchema(
+          placeholder: json['placeholder'],
+          defaultValue: json['defaultValue'],
+          label: json['label'],
+        );
+      case InputTypesEnum.Rating:
+        return RatingPropertySchema(
+          defaultValue: json['defaultValue']?.toDouble(),
+          minimumRating: json['minimumRating']?.toDouble(),
+          maximumRating: json['maximumRating']?.toDouble(),
+          defaultRating: json['defaultRating']?.toDouble(),
+          icon: json['icon'],
+          label: json['label'],
+        );
+      default:
+        throw Exception('Invalid Input Type');
+    }
+  }
 }
 
 class TextPropertySchema extends InputProperties {
   String? placeholder;
   String? defaultValue;
-  String? suffix;
   bool? multiLine;
   int? lines;
 
@@ -19,7 +153,7 @@ class TextPropertySchema extends InputProperties {
     this.placeholder,
     this.defaultValue, 
     super.label,
-    this.suffix,
+    super.suffix,
     this.multiLine,
     this.lines,
   });
@@ -28,6 +162,7 @@ class TextPropertySchema extends InputProperties {
 class EmailPropertySchema extends InputProperties {
   String? placeholder;
   String? defaultValue;
+  @override
   String? suffix;
 
 
@@ -54,6 +189,7 @@ class NumberPropertySchema extends InputProperties {
   String? placeholder;
   int? defaultValue;
   int? step;
+  @override
   String? suffix;
 
   NumberPropertySchema({
@@ -102,19 +238,38 @@ class TelPropertySchema extends InputProperties {
   });
 }
 
+class InputOptions {
+  int id;
+  String valueType;
+  String value;
+  bool selected = false;
+
+  InputOptions({required this.id, required this.value, required this.valueType});
+
+
+  factory InputOptions.fromJson(Map<String, dynamic> json) {
+    return InputOptions(
+      id: json['id'],
+      value: json['value'], 
+      valueType: json['valueType'],
+      );
+  }
+}
+
+
 class CheckboxPropertySchema extends InputProperties {
-  String type;
-  List<Map<String, Object>> values;
+  String? type;
+  List<InputOptions> options;
 
   CheckboxPropertySchema({
     required this.type,
-    required this.values,
+    required this.options,
     super.label
   });
 }
 
 class RadioPropertySchema extends InputProperties {
-  List<Map<String, Object>> options;
+  List<InputOptions> options;
   String? defaultValue;
 
   RadioPropertySchema({
@@ -125,7 +280,7 @@ class RadioPropertySchema extends InputProperties {
 }
 
 class DropdownPropertySchema extends InputProperties {
-  List<String> options;
+  List<InputOptions> options;
   String? defaultValue;
   String? placeholder;
 

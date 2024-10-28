@@ -20,7 +20,7 @@ class SavedTasksLoadingSuccessState extends SavedTasksState {
   final int limit;
   final String error;
 
-  SavedTasksLoadingSuccessState({required this.SavedTasks, this.isLoadingMore = false, this.nextPage = 1, this.limit = 10, this.error = ''});
+  const SavedTasksLoadingSuccessState({required this.SavedTasks, this.isLoadingMore = false, this.nextPage = 1, this.limit = 10, this.error = ''});
 
   @override
   List<Object?> get props => [SavedTasks, isLoadingMore, error, nextPage, limit];

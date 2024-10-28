@@ -28,6 +28,7 @@ enum InputTypesEnum {
 
 
 InputTypesEnum parseInputType(String type) {
+  print(type);
   switch (type.toLowerCase()) {
     case 'text':
       return InputTypesEnum.Text;
@@ -76,6 +77,7 @@ InputTypesEnum parseInputType(String type) {
     case 'rating':
       return InputTypesEnum.Rating;
     default:
-      throw Exception('Unknown input type: $type');
+      // throw Exception('Unknown input type: $type');
+      return InputTypesEnum.Text;
   }
 }

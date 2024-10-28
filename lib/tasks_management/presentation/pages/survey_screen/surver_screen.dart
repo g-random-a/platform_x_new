@@ -1,36 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:platform_x/core/utils/responsive/size.dart';
 import 'package:platform_x/core/utils/theme/custom_text_styles.dart';
-import 'package:platform_x/tasks_management/domain/inputValidation.dart';
 import 'package:platform_x/tasks_management/domain/questionTypes.dart';
 import 'package:platform_x/tasks_management/presentation/components/custom_elevated_button.dart';
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/build_inputs.dart';
 import 'package:platform_x/tasks_management/presentation/pages/task_instruction/task_instruction.dart';
-import 'package:platform_x/tasks_management/utils/enums/input_types.dart';
 
 import '../../../../core/application/theme/bloc/theme_bloc.dart';
-import '../../../domain/inputPropertiesType.dart';
 
 class SurveyScreen extends StatefulWidget {
+
+  final IQuestion question;
+  final int currentIndex;
+  final int totalQuestions;
+  final Function nextPage;
+
+
+  const SurveyScreen({super.key, required this.question, required this.currentIndex, required this.totalQuestions, required this.nextPage});
+
   @override
   _SurveyScreenState createState() => _SurveyScreenState();
 }
 
 class _SurveyScreenState extends State<SurveyScreen> {
   final _formKey = GlobalKey<FormState>();
-
-  String? selectedOption;
-  final selectBoxOptions = [
-    {"value": "Extra Neutral", "selected": false},
-    {
-      "value": "Strongly Agree",
-      "selected": false,
-    },
-    {"value": "Agree", "selected": false},
-    {"value": "Neutral", "selected": false}
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +67,8 @@ class _SurveyScreenState extends State<SurveyScreen> {
                                   borderRadius: BorderRadius.circular(23.61.h),
                                 ),
                                 child: Text(
-                                  "80% (8/10)",
+                                  // "80% (8/10)",
+                                  " ${((widget.currentIndex*100)/widget.totalQuestions).toDoubleValue(fractionDigits: 2)}% (${widget.currentIndex}/${widget.totalQuestions})",
                                   style:
                                       CustomTextStyles.bodyMediumInterBlack500(
                                     context.watch<ThemeBloc>().state.themeData,
@@ -88,14 +84,35 @@ class _SurveyScreenState extends State<SurveyScreen> {
                                               .whiteA70001),
                                 ),
                               ),
-                              Container(
-                                child: Text("Back to Dash"),
+                              TextButton(
+                                child: const Text("Back to Dash"),
+                                onPressed: (){
+                                  AlertDialog(
+                                    title: const Text("Are you sure you want to go back to dashboard?"),
+                                    content: const Text("All progress will be lost"),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          // use go routing
+                                          context.pop();
+                                        },
+                                        child: const Text("Cancel"),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          context.pushReplacementNamed('/');
+                                        },
+                                        child: const Text("Yes"),
+                                      ),
+                                    ],
+                                  );
+                                }
                               ),
                             ],
                           ),
                           SizedBox(height: 10.h),
                           LinearProgressIndicator(
-                            value: 0.8, // 80% progress
+                            value: widget.currentIndex/widget.totalQuestions, // 80% progress
                             backgroundColor: context
                                 .watch<ThemeBloc>()
                                 .state
@@ -110,15 +127,16 @@ class _SurveyScreenState extends State<SurveyScreen> {
                             borderRadius: BorderRadius.circular(30.h),
                           ),
                           const SizedBox(height: 10),
-                          const Text(
-                            "O1",
-                            style: TextStyle(
+                          Text(
+                            widget.currentIndex.toString(),
+                            style: const TextStyle(
                                 fontSize: 32, fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 10),
                           Text(
-                            "How much do you agree with the following statement: "
-                            "\"I find it easy to use mobile apps for work-related tasks.\"",
+                            // "How much do you agree with the following statement: "
+                            // "\"I find it easy to use mobile apps for work-related tasks.\"",
+                            widget.question.text,
                             style: CustomTextStyles.bodyMediumInterBlack500(
                               context.watch<ThemeBloc>().state.themeData,
                               context.watch<ThemeBloc>().state.appColorTheme,
@@ -140,64 +158,9 @@ class _SurveyScreenState extends State<SurveyScreen> {
                                 children: [
                                   Column(
                                     children: [
-                                      ...buildInputs(context, [
-                                        QuestionInput(
-                                            id: 0,
-                                            inputType: parseInputType("text"),
-                                            validationRules:
-                                                TextInputValidationSchema(
-                                                    required: true),
-                                            properties: TextPropertySchema()),
-                                        QuestionInput(
-                                            id: 0,
-                                            inputType: parseInputType("text"),
-                                            validationRules:
-                                                TextInputValidationSchema(
-                                                    required: true),
-                                            properties: TextPropertySchema()),
-                                        QuestionInput(
-                                            id: 0,
-                                            inputType: parseInputType("text"),
-                                            validationRules:
-                                                TextInputValidationSchema(
-                                                    required: true),
-                                            properties: TextPropertySchema()),
-                                        QuestionInput(
-                                            id: 0,
-                                            inputType: parseInputType("text"),
-                                            validationRules:
-                                                TextInputValidationSchema(
-                                                    required: true),
-                                            properties: TextPropertySchema()),
-                                        QuestionInput(
-                                            id: 0,
-                                            inputType: parseInputType("text"),
-                                            validationRules:
-                                                TextInputValidationSchema(
-                                                    required: true),
-                                            properties: TextPropertySchema()),
-                                        QuestionInput(
-                                            id: 0,
-                                            inputType: parseInputType("text"),
-                                            validationRules:
-                                                TextInputValidationSchema(
-                                                    required: true),
-                                            properties: TextPropertySchema()),
-                                        QuestionInput(
-                                            id: 0,
-                                            inputType: parseInputType("text"),
-                                            validationRules:
-                                                TextInputValidationSchema(
-                                                    required: true),
-                                            properties: TextPropertySchema()),
-                                        QuestionInput(
-                                            id: 0,
-                                            inputType: parseInputType("text"),
-                                            validationRules:
-                                                TextInputValidationSchema(
-                                                    required: true),
-                                            properties: TextPropertySchema()),
-                                      ])
+                                      ...buildInputs(context, 
+                                      widget.question.inputs
+                                      )
                                     ],
                                   ),
                                   const SizedBox(
@@ -214,17 +177,17 @@ class _SurveyScreenState extends State<SurveyScreen> {
                   const CustomDivider(
                     padding: 0,
                   ),
-                  // AudioPlayerWidget(),
                   SizedBox(height: 20.h),
                   CustomElevatedButton(
                     onclick: () {
-                      // submit the form
-                      // if (_formKey.currentState!.validate())
-                      if (_formKey.currentState != null)
-                        _formKey.currentState!.validate();
-                      print(
-                          "---------------------------------------------------------------------");
-                      print(_formKey.currentState!.validate());
+                      FocusScope.of(context).unfocus();
+                      
+                      if (_formKey.currentState != null) {
+                        bool valid = _formKey.currentState!.validate();
+                        if (valid){
+                          widget.nextPage();
+                        }
+                      }
                     },
                     text: "Next",
                     backgroundColor: context
@@ -240,7 +203,9 @@ class _SurveyScreenState extends State<SurveyScreen> {
                   ),
                   const SizedBox(height: 10), // Add spacing between buttons
                   CustomElevatedButton(
-                    onclick: () {},
+                    onclick: () {
+                      FocusScope.of(context).unfocus();
+                    },
                     text: "Previous",
                     backgroundColor: context
                         .watch<ThemeBloc>()
@@ -262,74 +227,4 @@ class _SurveyScreenState extends State<SurveyScreen> {
     );
   }
 
-  Widget _buildOption(String option) {
-    bool isSelected = selectedOption == option;
-
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          selectedOption = isSelected ? null : option;
-        });
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8.h, vertical: 3.6.h),
-        margin: const EdgeInsets.symmetric(vertical: 8.0),
-        height: 47.vh,
-        width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5.h),
-          border: Border.all(
-            color: isSelected
-                ? context.watch<ThemeBloc>().state.appColorTheme.green200
-                : context.watch<ThemeBloc>().state.appColorTheme.gray90001,
-            width: 0.54.h,
-          ), // Border color changes based on selection
-          color: isSelected
-              ? Colors.green[100]
-              : Colors.transparent, // Background color for selected
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Checkbox(
-              value: isSelected,
-              onChanged: (bool? value) {
-                setState(() {
-                  selectedOption = value == true ? option : null;
-                });
-              },
-              shape: RoundedRectangleBorder(
-                side: BorderSide(
-                    color: isSelected
-                        ? context
-                            .watch<ThemeBloc>()
-                            .state
-                            .appColorTheme
-                            .green200
-                        : context
-                            .watch<ThemeBloc>()
-                            .state
-                            .appColorTheme
-                            .gray90001,
-                    style: BorderStyle.solid),
-              ),
-              activeColor: Colors.green,
-              checkColor: Colors.white,
-            ),
-            Text(
-              option,
-              style: CustomTextStyles.titleRedHatDisplayOnGray90001(
-                      context.watch<ThemeBloc>().state.themeData,
-                      context.watch<ThemeBloc>().state.appColorTheme)
-                  .copyWith(
-                color: selectedOption == option
-                    ? context.watch<ThemeBloc>().state.appColorTheme.green700
-                    : context.watch<ThemeBloc>().state.appColorTheme.gray90001,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }

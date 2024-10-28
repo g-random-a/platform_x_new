@@ -11,11 +11,11 @@ class TextInputField extends StatefulWidget {
   final TextPropertySchema properties;
   final TextInputValidationSchema validations;
 
-  TextInputField({
-    Key? key,
+  const TextInputField({
+    super.key,
     required this.properties,
     required this.validations
-  }) : super(key: key);
+  });
 
   @override
   State<TextInputField> createState() => _TextInputFieldState();
@@ -27,25 +27,26 @@ class _TextInputFieldState extends State<TextInputField> {
   @override
   void initState() {
     super.initState();
-    if(widget.properties.defaultValue != null) _controller.text = widget.properties.defaultValue!;
+    if(widget.properties.defaultValue != null || widget.properties.placeholder != null) _controller.text = widget.properties.defaultValue ?? widget.properties.placeholder!;
   }
 
   String? validateText(String? value) {
-    if (widget.validations.required && (value == null || value.isEmpty)) {
+    if (widget.validations.required && (_controller.text.isEmpty)) {
       return widget.validations.customErrorMessage ?? 'This field is required';
     }
-    if (widget.validations.maxLength != null && value != null && value.length > widget.validations.maxLength!) {
-      return 'Max length is ${widget.validations}.maxLength characters';
+    if (widget.validations.maxLength != null && _controller.text.length > widget.validations.maxLength!) {
+      return 'Max length is ${widget.validations.maxLength} characters';
     }
-    if (widget.validations.minLength != null && value != null && value.length < widget.validations.minLength!) {
-      return 'Min length is ${widget.validations}.minLength characters';
+    if (widget.validations.minLength != null && _controller.text.length < widget.validations.minLength!) {
+      return 'Min length is ${widget.validations.minLength} characters';
     }
     if (widget.validations.regexPattern != null) {
       final regExp = RegExp(widget.validations.regexPattern!);
-      if (value != null && !regExp.hasMatch(value)) {
+      if (!regExp.hasMatch(_controller.text)) {
         return 'Invalid format';
       }
     }
+    
     return null;
   }
 
@@ -66,6 +67,9 @@ class _TextInputFieldState extends State<TextInputField> {
           if(widget.properties.label != null && widget.properties.label!.isNotEmpty) SizedBox(height: 4.h,),
           TextFormField(
             controller: _controller,
+            onChanged: (value) {
+              Form.of(context).validate();
+            },
             maxLines: widget.properties.multiLine != null ? widget.properties.lines! : 1,
             decoration: InputDecoration(
               // hintText: properties.placeholder,
@@ -88,11 +92,11 @@ class _TextInputFieldState extends State<TextInputField> {
               // contentPadding: EdgeInsets.symmetric(horizontal: 8.h, vertical: 5.h),
               // suffixText: suffix,
               // suffixStyle: TextStyle(color: context.watch<ThemeBloc>().state.appColorTheme.black90002),
-              suffixIcon:  widget.properties.multiLine != null ? null : const Padding(
-                  padding: EdgeInsets.all(8.0),
+              suffixIcon:  widget.properties.multiLine != null && widget.properties.suffix == null ? null :  Padding(
+                  padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    '\$',
-                    style: TextStyle(fontSize: 20),
+                    widget.properties.suffix ?? '',
+                    style: const TextStyle(fontSize: 20),
                   ),
                 ),
              

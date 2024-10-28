@@ -12,10 +12,10 @@ class RangeInputField extends StatefulWidget {
   final RangePropertySchema properties;
 
   const RangeInputField({
-    Key? key,
+    super.key,
     required this.properties,
     required this.validations
-  }) : super(key: key);
+  });
 
   @override
   _RangeInputFieldState createState() => _RangeInputFieldState();

@@ -20,7 +20,7 @@ class OngoingTasksLoadingSuccessState extends OngoingTasksState {
   final int limit;
   final String error;
 
-  OngoingTasksLoadingSuccessState({required this.ongoingTasks, this.isLoadingMore = false, this.nextPage = 1, this.limit = 10, this.error = ''});
+  const OngoingTasksLoadingSuccessState({required this.ongoingTasks, this.isLoadingMore = false, this.nextPage = 1, this.limit = 10, this.error = ''});
 
   @override
   List<Object?> get props => [ongoingTasks, isLoadingMore, error, nextPage, limit];

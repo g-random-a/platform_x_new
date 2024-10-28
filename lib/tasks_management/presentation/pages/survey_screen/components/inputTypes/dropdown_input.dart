@@ -12,10 +12,10 @@ class DropdownInputField extends StatefulWidget {
   final DropdownPropertySchema properties;
 
   const DropdownInputField({
-    Key? key,
+    super.key,
     required this.validations,
     required this.properties,
-  }) : super(key: key);
+  });
 
   @override
   State<DropdownInputField> createState() => _DropdownInputFieldState();
@@ -44,11 +44,11 @@ class _DropdownInputFieldState extends State<DropdownInputField> {
     return DropdownButtonFormField<String>(
       value: selectedValue,
       hint: Text(widget.properties.placeholder ?? 'Select an option'),
-      items: widget.properties.options.map((String value) {
+      items: widget.properties.options.map((value) {
         return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
+          value: value.value as String,
           enabled: true,
+          child: Text(value.value as String),
         );
       }).toList(),
       onChanged: (String? newValue) {

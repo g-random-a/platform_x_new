@@ -11,10 +11,10 @@ class NumberInputField extends StatefulWidget {
   final NumberPropertySchema properties;
 
   const NumberInputField({
-    Key? key,
+    super.key,
     required this.properties,
     required this.validations
-  }) : super(key: key);
+  });
 
   @override
   State<NumberInputField> createState() => _NumberInputFieldState();

@@ -7,6 +7,7 @@ import 'package:platform_x/tasks_management/presentation/pages/survey_screen/com
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/date_input.dart';
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/dropdown_input.dart';
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/email_input.dart';
+import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/file_media_input.dart';
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/radiobox_input.dart';
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/range_input.dart';
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/slider_input.dart';
@@ -14,6 +15,7 @@ import 'package:platform_x/tasks_management/presentation/pages/survey_screen/com
 import '../../../../domain/inputPropertiesType.dart';
 import '../../../../utils/enums/input_types.dart';
 import 'inputTypes/color_picker.dart';
+import 'inputTypes/later_media_input.dart';
 import 'inputTypes/number_input.dart';
 import 'inputTypes/text_input.dart';
 
@@ -26,7 +28,14 @@ List<Widget> buildInputs(BuildContext context, List<QuestionInput> inputs) {
 
       switch (input.inputType) {
         case InputTypesEnum.Media:
-          return AudioInputBuilder(validation: input.properties as MediaInputValidationSchema, property: input.validationRules as MediaPropertySchema);
+          if ((input.properties as MediaPropertySchema).mediaType.toLowerCase() == "image") {
+            return MediaInputField(properties: input.properties as MediaPropertySchema, validation: input.validationRules as MediaInputValidationSchema);
+          }
+          if((input.properties as MediaPropertySchema).mediaType.toLowerCase() == "audio") {
+            return AudioInputBuilder(property: input.properties as MediaPropertySchema, validation: input.validationRules as MediaInputValidationSchema);
+          }
+          
+          return MediaFileInputField(properties: input.properties as MediaPropertySchema, validation: input.validationRules as MediaInputValidationSchema);
         case InputTypesEnum.Checkbox:
           return CheckboxInputField(properties: input.properties as CheckboxPropertySchema, validations: input.validationRules as CheckboxInputValidationSchema);
         case InputTypesEnum.ColorPicker:
@@ -53,7 +62,7 @@ List<Widget> buildInputs(BuildContext context, List<QuestionInput> inputs) {
           return RangeInputField(properties: input.properties as RangePropertySchema, validations: input.validationRules as RangeInputValidationSchema);
         
         default:
-          return Placeholder();
+          return const Placeholder();
       }
     },
     );

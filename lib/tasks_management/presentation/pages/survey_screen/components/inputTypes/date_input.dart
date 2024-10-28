@@ -11,11 +11,11 @@ class DateInputField extends StatefulWidget {
   final DateInputValidationSchema validations;
   final DatePropertySchema properties;
 
-  DateInputField({
-    Key? key,
+  const DateInputField({
+    super.key,
     required this.properties,
     required this.validations,
-  }) : super(key: key);
+  });
 
   @override
   State<DateInputField> createState() => _DateInputFieldState();
@@ -55,8 +55,9 @@ class _DateInputFieldState extends State<DateInputField> {
               lastDate: DateTime.parse(widget.properties.maxDate ?? '2100-12-31'),
             );
         
-            if (pickedDate != null)
+            if (pickedDate != null) {
               _controller.text = pickedDate.toLocal().toString().split(' ')[0];
+            }
             // Update field with selected date
           },
         ),

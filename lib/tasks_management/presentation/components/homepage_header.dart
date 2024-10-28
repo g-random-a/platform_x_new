@@ -11,7 +11,7 @@ import 'app_bar.dart';
 class ContentSection extends StatefulWidget {
   final PageController controller;
 
-  const ContentSection({Key? key, required this.controller}) : super(key: key);
+  const ContentSection({super.key, required this.controller});
 
   @override
   _ContentSectionState createState() => _ContentSectionState();

@@ -20,7 +20,7 @@ class TasksLoadingSuccessState extends TasksState {
   final int limit;
   final String error;
 
-  TasksLoadingSuccessState({required this.tasks, this.isLoadingMore = false, this.nextPage = 1, this.limit = 10, this.error = ''});
+  const TasksLoadingSuccessState({required this.tasks, this.isLoadingMore = false, this.nextPage = 1, this.limit = 10, this.error = ''});
 
   @override
   List<Object?> get props => [tasks, isLoadingMore, error, nextPage, limit];

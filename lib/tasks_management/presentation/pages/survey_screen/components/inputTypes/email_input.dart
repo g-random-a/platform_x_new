@@ -14,10 +14,10 @@ class EmailInputField extends StatefulWidget {
   final EmailPropertySchema properties;
 
   const EmailInputField({
-    Key? key,
+    super.key,
     required this.validation,
     required this.properties
-  }) : super(key: key);
+  });
 
   @override
   State<EmailInputField> createState() => _EmailInputFieldState();

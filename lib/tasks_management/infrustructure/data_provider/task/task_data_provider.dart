@@ -59,6 +59,8 @@ class TasksDataProvider extends DataProvider {
       for (var form in forms) {
         // print(form.runtimeType);
         Task task = Task.fromJson(form);
+
+        print(task);
         
         tasks.add(task);
       }

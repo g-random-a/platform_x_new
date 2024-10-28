@@ -1,21 +1,24 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:platform_x/tasks_management/domain/inputPropertiesType.dart';
+import 'package:platform_x/tasks_management/domain/inputValidation.dart';
 
 class MediaInputField extends StatefulWidget {
-  final List<String>? acceptedFormats;
-  final int? maxFileSize;
-  final bool isRequired;
-  final bool multiple;
-  final String? customErrorMessage;
+
+  final MediaInputValidationSchema validation;
+  final MediaPropertySchema properties;
 
   const MediaInputField({
-    Key? key,
-    this.acceptedFormats,
-    this.maxFileSize,
-    required this.isRequired,
-    required this.multiple,
-    this.customErrorMessage,
-  }) : super(key: key);
+    super.key,
+    // this.acceptedFormats,
+    // this.maxFileSize,
+    // required this.isRequired,
+    // required this.multiple,
+    // this.customErrorMessage,
+    required this.validation,
+    required this.properties,
+  });
 
   @override
   _MediaInputFieldState createState() => _MediaInputFieldState();
@@ -26,36 +29,35 @@ class _MediaInputFieldState extends State<MediaInputField> {
   final ImagePicker _picker = ImagePicker();
 
   Future<String?> validateMedia(List<XFile>? mediaFiles) async {
-    if (widget.isRequired && (mediaFiles == null || mediaFiles.isEmpty)) {
-      return widget.customErrorMessage ?? 'Media file is required';
+    if (widget.validation.required && (selectedMedia == null || selectedMedia!.isEmpty)) {
+      return widget.validation.customErrorMessage ?? 'Media file is required';
     }
-    if (widget.maxFileSize != null) {
-      for (var file in mediaFiles!) {
+    if (widget.validation.maxFileSize != null) {
+      for (var file in selectedMedia!) {
         var size = await file.length();
-        if (size > widget.maxFileSize!) {
-          return 'File size exceeds maximum limit of ${widget.maxFileSize} bytes';
+        if (size > widget.validation.maxFileSize!) {
+          return 'File size exceeds maximum limit of ${widget.validation.maxFileSize} bytes';
         }
       }
     }
-    if (widget.acceptedFormats != null) {
+    if (widget.validation.acceptedFormats != null) {
       for (var file in mediaFiles!) {
-        if (!widget.acceptedFormats!.contains(file.path.split('.').last)) {
+        if (!widget.validation.acceptedFormats!.contains(file.path.split('.').last)) {
           return 'Unsupported file format';
         }
       }
     }
+
     return null;
   }
 
   Future<void> pickMedia() async {
     try {
-      if (widget.multiple) {
+      if (widget.validation.multiple != null && widget.validation.multiple!) {
         final mediaFiles = await _picker.pickMultiImage();
-        if (mediaFiles != null) {
-          setState(() {
-            selectedMedia = mediaFiles;
-          });
-        }
+        setState(() {
+          selectedMedia = mediaFiles;
+        });
       } else {
         final mediaFile = await _picker.pickImage(source: ImageSource.gallery);
         if (mediaFile != null) {
@@ -73,12 +75,12 @@ class _MediaInputFieldState extends State<MediaInputField> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        if (selectedMedia != null && selectedMedia!.isNotEmpty)
+          ...selectedMedia!.map((file) => Text(file.path)),
         ElevatedButton(
           onPressed: pickMedia,
-          child: Text('Pick Media'),
+          child: const Text('Pick Media'),
         ),
-        if (selectedMedia != null && selectedMedia!.isNotEmpty)
-          ...selectedMedia!.map((file) => Text(file.path)).toList(),
       ],
     );
   }

@@ -32,12 +32,12 @@ InputDecoration textInputDecoration(BuildContext context, String? suffix, {bool 
       // contentPadding: EdgeInsets.symmetric(horizontal: 8.h, vertical: 5.h),
       // suffixText: suffix,
       // suffixStyle: TextStyle(color: context.watch<ThemeBloc>().state.appColorTheme.black90002),
-      suffixIcon: isDate ? Icon(Iconsax.calendar) : 
+      suffixIcon: isDate ? const Icon(Iconsax.calendar) : 
       suffix != null ? Padding(
-        padding: EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
         child: Text(
           suffix,
-          style: TextStyle(fontSize: 20),
+          style: const TextStyle(fontSize: 20),
         ),
       ) : null,
     );

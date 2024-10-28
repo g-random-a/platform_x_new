@@ -68,8 +68,8 @@ class Task {
         "Education",
       ].sublist(Random().nextInt(5)),
       rating: json['rating'] ?? Random().nextDouble() * 5,
-      totalQuestions: json['numberOfQuestions'] ?? Random().nextInt(15),
-      completedQuestions: json['completedQuestions'] ?? Random().nextInt(15),
+      totalQuestions: json['numberOfQuestions'] ?? Random().nextInt(15) + 1,
+      completedQuestions: json['completedQuestions'] ?? Random().nextInt(15) + 1,
       createdAt: DateTime.tryParse(json['createdAt']) ?? DateTime.now(),
       dueDate: DateTime.tryParse(json['dueDate']) ?? DateTime.now()
     );

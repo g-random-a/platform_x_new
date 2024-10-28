@@ -54,7 +54,7 @@ class CustomBottomBarState extends State<CustomBottomBar> {
     return Container(
       height: 68.h,
       decoration: BoxDecoration(
-        color: const Color(0XFFFFFFFF),
+        color: context.watch<ThemeBloc>().state.appColorTheme.whiteA70001,
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(5.h),
         ),
@@ -71,7 +71,7 @@ class CustomBottomBarState extends State<CustomBottomBar> {
         ],
       ),
       child: BottomNavigationBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: context.watch<ThemeBloc>().state.appColorTheme.whiteA70001,
         showSelectedLabels: false,
         showUnselectedLabels: false,
         selectedFontSize: 0,
