@@ -3,8 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:platform_x/core/utils/responsive/size.dart';
 import 'package:platform_x/core/utils/theme/custom_text_styles.dart';
+import 'package:platform_x/generated/l10n.dart';
 import 'package:platform_x/tasks_management/domain/questionTypes.dart';
 import 'package:platform_x/tasks_management/presentation/components/custom_elevated_button.dart';
+import 'package:platform_x/tasks_management/presentation/components/loader_overlay.dart';
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/build_inputs.dart';
 import 'package:platform_x/tasks_management/presentation/pages/task_instruction/task_instruction.dart';
 
@@ -16,9 +18,9 @@ class SurveyScreen extends StatefulWidget {
   final int currentIndex;
   final int totalQuestions;
   final Function nextPage;
+  final Function prevPage;
 
-
-  const SurveyScreen({super.key, required this.question, required this.currentIndex, required this.totalQuestions, required this.nextPage});
+  const SurveyScreen({super.key, required this.question, required this.currentIndex, required this.totalQuestions, required this.nextPage, required this.prevPage});
 
   @override
   _SurveyScreenState createState() => _SurveyScreenState();
@@ -26,6 +28,16 @@ class SurveyScreen extends StatefulWidget {
 
 class _SurveyScreenState extends State<SurveyScreen> {
   final _formKey = GlobalKey<FormState>();
+
+  Future<void> performTask(BuildContext context) async {
+    OverlayLoader.show(context); 
+    
+    await Future.delayed(Duration(seconds: (widget.totalQuestions * 0.5.round())));
+
+    OverlayLoader.hide(); 
+
+    context.pushReplacement('/tasks/CompeletedSuccessfully');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,26 +97,39 @@ class _SurveyScreenState extends State<SurveyScreen> {
                                 ),
                               ),
                               TextButton(
-                                child: const Text("Back to Dash"),
+                                child:  Text(
+                                  S.of(context).t_task_compleleted_successfully,
+                                  style: CustomTextStyles.labelMediumPoppinsOnErrorContainer(
+                                    context.watch<ThemeBloc>().state.themeData, 
+                                    context.watch<ThemeBloc>().state.appColorTheme, 
+                                    ),
+                                  ),
                                 onPressed: (){
-                                  AlertDialog(
-                                    title: const Text("Are you sure you want to go back to dashboard?"),
-                                    content: const Text("All progress will be lost"),
+                                  AlertDialog alertdialog = AlertDialog(
+                                    title: Text(S.of(context).t_are_you_sure_dashboard),
+                                    content: Text(S.of(context).t_dashboard_progress_lost),
                                     actions: [
                                       TextButton(
                                         onPressed: () {
                                           // use go routing
                                           context.pop();
                                         },
-                                        child: const Text("Cancel"),
+                                        child:  Text(S.of(context).t_cancel),
                                       ),
                                       TextButton(
                                         onPressed: () {
-                                          context.pushReplacementNamed('/');
+                                          context.pushReplacement('/');
                                         },
-                                        child: const Text("Yes"),
+                                        child:  Text(S.of(context).t_yes),
                                       ),
                                     ],
+                                  );
+
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return alertdialog;
+                                    }
                                   );
                                 }
                               ),
@@ -185,11 +210,17 @@ class _SurveyScreenState extends State<SurveyScreen> {
                       if (_formKey.currentState != null) {
                         bool valid = _formKey.currentState!.validate();
                         if (valid){
-                          widget.nextPage();
+                          if (widget.currentIndex == widget.totalQuestions){
+                            performTask(context);
+
+                          }
+                          else {
+                            widget.nextPage();
+                          }
                         }
                       }
                     },
-                    text: "Next",
+                    text: widget.currentIndex == widget.totalQuestions ? S.of(context).t_submit : S.of(context).t_next,
                     backgroundColor: context
                         .watch<ThemeBloc>()
                         .state
@@ -205,8 +236,10 @@ class _SurveyScreenState extends State<SurveyScreen> {
                   CustomElevatedButton(
                     onclick: () {
                       FocusScope.of(context).unfocus();
+
+                      widget.prevPage();
                     },
-                    text: "Previous",
+                    text: S.of(context).t_previous,
                     backgroundColor: context
                         .watch<ThemeBloc>()
                         .state

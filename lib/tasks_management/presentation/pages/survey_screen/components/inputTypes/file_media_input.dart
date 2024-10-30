@@ -34,9 +34,13 @@ class _MediaFileInputFieldState extends State<MediaFileInputField> {
             return 'File size exceeds maximum limit of ${widget.validation.maxFileSize} bytes';
           }
         });
-        // if (size > widget.validation.maxFileSize!) {
-        //   return 'File size exceeds maximum limit of ${widget.validation.maxFileSize} bytes';
-        // }
+        file.length().then(
+          (size) {
+            if (size > widget.validation.maxFileSize!) {
+              return 'File size exceeds maximum limit of ${widget.validation.maxFileSize} bytes';
+            }
+          }
+        );
       }
     }
     else if (widget.validation.acceptedFormats != null  && (selectedFiles != null && selectedFiles!.isNotEmpty)) {
@@ -76,7 +80,7 @@ class _MediaFileInputFieldState extends State<MediaFileInputField> {
                   border: Border.all(color: context.watch<ThemeBloc>().state.appColorTheme.gray10001),
                   borderRadius: BorderRadius.circular(5),
                 ),
-                child: Center(child: Text(file.path.split("/").last, style: TextStyle(fontSize: 20,), textAlign: TextAlign.center,)),
+                child: Center(child: Text(file.path.split("/").last, style: const TextStyle(fontSize: 20,), textAlign: TextAlign.center,)),
               )
               ),
             ElevatedButton(

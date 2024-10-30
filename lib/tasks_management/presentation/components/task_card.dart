@@ -11,7 +11,9 @@ import 'custom_elevated_button.dart';
 
 class DocumentlistItemWidget extends StatefulWidget {
   final Task task;
-   const DocumentlistItemWidget({super.key, required this.task});
+  final bool inprogress;
+
+   const DocumentlistItemWidget({super.key, required this.task, required this.inprogress});
 
   @override
   State<DocumentlistItemWidget> createState() => _DocumentlistItemWidgetState();
@@ -88,7 +90,6 @@ class _DocumentlistItemWidgetState extends State<DocumentlistItemWidget> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 6.h),
               // SizedBox(
               SizedBox(
                 width: double.maxFinite,
@@ -113,7 +114,6 @@ class _DocumentlistItemWidgetState extends State<DocumentlistItemWidget> {
                     //   height: 16.h,
                     //   width: 20.h,
                     // ),
-                    SizedBox(width: 15.h),
                     IconButton(
                       onPressed: (){
                         setState(() {
@@ -130,14 +130,13 @@ class _DocumentlistItemWidgetState extends State<DocumentlistItemWidget> {
                 ),
               ),
         
-              SizedBox(height: 6.h),
               SizedBox(
                 width: double.maxFinite,
                 child: Row(
                   children: [
                     Text(
                       // "Est. Budget 200Br.",
-                      "Est. Budget ${widget.task.budget}Br.",
+                      "${S.of(context).t_est_budget} ${widget.task.budget} ${S.of(context).t_points}",
                       style: CustomTextStyles.bodySmallEpilogueBluegray700(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme),
                     ),
                     Container(
@@ -157,6 +156,7 @@ class _DocumentlistItemWidgetState extends State<DocumentlistItemWidget> {
                     //   width: 12.h,
                     //   margin: EdgeInsets.only(left: 4.h),
                     // ),
+                    SizedBox(width: 4.h),
                     Icon(
                       Iconsax.location,
                       color: context.watch<ThemeBloc>().state.appColorTheme.black90001,
@@ -173,25 +173,22 @@ class _DocumentlistItemWidgetState extends State<DocumentlistItemWidget> {
                   ],
                 ),
               ),
+              
               SizedBox(height: 12.h),
               _buildCustomText(context),
               // SizedBox(height: 4.h),
               if (isOverflowing)
               TextButton(
                 onPressed: () {
-                },
-                child: InkWell(
-                  onTap: (){
-                    setState(() {
+                  setState(() {
                       showAllDesc = !showAllDesc;
                     });
-                  },
-                  child: Text( showAllDesc ?  "Show less" : "More",
-                      style: CustomTextStyles.labelMediumInterGreen700(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme).copyWith(
-                        textBaseline: TextBaseline.ideographic,
-                        decoration: TextDecoration.underline,
-                      )),
-                ),
+                },
+                child: Text( showAllDesc ?  S.of(context).t_showless : S.of(context).t_More,
+                    style: CustomTextStyles.labelMediumInterGreen700(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme).copyWith(
+                      textBaseline: TextBaseline.ideographic,
+                      decoration: TextDecoration.underline,
+                    )),
               ),
               if (!isOverflowing) SizedBox(height: 12.h),
               SingleChildScrollView(
@@ -215,6 +212,7 @@ class _DocumentlistItemWidgetState extends State<DocumentlistItemWidget> {
               ),
               SizedBox(height: 12.h),
               if(widget.task.completedQuestions != null)
+              if(!widget.inprogress)
               Container(
                 height: 4.h,
                 width: 360.h,
@@ -231,7 +229,9 @@ class _DocumentlistItemWidgetState extends State<DocumentlistItemWidget> {
                   ),
                 ),
               ),
+              if(!widget.inprogress)
               SizedBox(height: 8.h),
+              if(!widget.inprogress)
               RichText(
                 text: TextSpan(
                   children: [
@@ -240,11 +240,11 @@ class _DocumentlistItemWidgetState extends State<DocumentlistItemWidget> {
                       style: context.watch<ThemeBloc>().state.themeData.textTheme.labelSmall,
                     ),
                     TextSpan(
-                      text: " out",
+                      text: " ${S.of(context).t_out}",
                       style: context.watch<ThemeBloc>().state.themeData.textTheme.bodySmall,
                     ),
                     TextSpan(
-                      text: " of ",
+                      text: " ${S.of(context).t_of} ",
                       style: context.watch<ThemeBloc>().state.themeData.textTheme.bodySmall,
                     ),
                     TextSpan(
@@ -252,21 +252,22 @@ class _DocumentlistItemWidgetState extends State<DocumentlistItemWidget> {
                       style: context.watch<ThemeBloc>().state.themeData.textTheme.labelSmall,
                     ),
                     TextSpan(
-                      text: " completed",
+                      text: " ${S.of(context).t_completed}",
                       style: context.watch<ThemeBloc>().state.themeData.textTheme.bodySmall,
                     )
                   ],
                 ),
                 textAlign: TextAlign.left,
               ),
+              if(!widget.inprogress)
               SizedBox(height: 14.h),
               // CustomElevatedButton(
               //   text: "Start Task",
               // ),
               CustomElevatedButton(
-                text: "Start Task",
+                text: S.of(context).t_start_task,
                 onclick: () {
-                  context.go('/task_instruction', extra: {
+                  context.go('/tasks/task_instruction', extra: {
                     "task": widget.task
                   });
                 },

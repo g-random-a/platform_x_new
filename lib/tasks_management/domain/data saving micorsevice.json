@@ -1,0 +1,58 @@
+// answer format for TEXT, EMAIL, NUMBER, DATE, TIME, COLORPICKER, SLIDER, LOCATION and RATING input types
+
+{
+    "userId" : "objectId",
+    "questionId": "objectId",
+    "answers": [
+        {
+            "id": "int",
+            "value": "string"
+        }
+    ]
+
+}
+
+
+// answer format for MULTIPLE_CHOICE/CHECKBOX, DROPDOWN, RADIOBUTTON  input types
+
+{
+    "userId" : "objectId",
+    "questionId": "objectId",
+    "answers": [
+        {
+            "id": "int",
+            "selected": [
+                "int"
+            ]
+        }
+    ]
+
+}
+
+
+// answer format for Range input type
+
+{
+    "userId" : "objectId",
+    "questionId": "objectId",
+    "answers": [
+        {
+            "id": "int",
+            "startValue": "number",
+            "endValue": "number"
+        }
+    ]
+}
+
+// answer format for FILE/Media Input input type
+
+{
+    "userId" : "objectId",
+    "questionId": "objectId",
+    "answers": [
+        {
+            "id": "int",
+            "file": ["files"]
+        }
+    ]
+}

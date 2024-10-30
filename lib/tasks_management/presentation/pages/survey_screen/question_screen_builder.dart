@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:platform_x/core/utils/responsive/size.dart';
 import 'package:platform_x/lib.dart';
 import 'package:platform_x/tasks_management/application/question/bloc/question_bloc.dart';
-import 'package:platform_x/tasks_management/application/question/event/question_event.dart';
 import 'package:platform_x/tasks_management/application/question/state/question_state.dart';
 import 'package:platform_x/tasks_management/presentation/components/custom_elevated_button.dart';
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/surver_screen.dart';
@@ -16,31 +16,57 @@ class QuestionScreeenBuilder extends StatefulWidget {
 
 class _QuestionScreeenBuilderState extends State<QuestionScreeenBuilder> {
 
-  PageController _pageController = PageController();
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _setStatusBarColor();
+    });
+  }
+
+  void _setStatusBarColor() {
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: context.watch<ThemeBloc>().state.appColorTheme.whiteA700, // Use context to get color
+        statusBarIconBrightness: context.watch<ThemeBloc>().isDarkMode ? Brightness.dark : Brightness.light, // Adjust brightness based on color
+      ),
+    );
+  }
+
+  PageController _pageController = PageController(keepPage: true);
 
   void nextPage () {
     _pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeIn);
   }
 
+  void prevPage(){
+    _pageController.previousPage(duration: const Duration(milliseconds: 300), curve: Curves.easeIn);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: BlocBuilder<QuestionsBloc, QuestionsState>(
+    return Scaffold(
+      body: SafeArea(
+        child: BlocBuilder<QuestionsBloc, QuestionsState>(
           builder: (context, state) {
           if (state is QuestionsLoadingSuccessState) {
             int totalQuestions = state.questions.length;
             if(totalQuestions == 0){
               return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('No questions found'),
-                  CustomElevatedButton(
-                    onclick: (){
-                      context.pop();
-                    },
-                    text: "Back",
-                    backgroundColor: context.watch<ThemeBloc>().state.appColorTheme.whiteA700,
-                    )
+                  Text(S.of(context).t_no_questions_found),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 20.h),
+                    child: CustomElevatedButton(
+                      onclick: (){
+                        context.pop();
+                      },
+                      text: S.of(context).t_back,
+                      textColor: context.watch<ThemeBloc>().state.appColorTheme.whiteA700,
+                      backgroundColor: context.watch<ThemeBloc>().state.appColorTheme.black90001,
+                      ),
+                  )
                 ],
               );
             }
@@ -49,15 +75,15 @@ class _QuestionScreeenBuilderState extends State<QuestionScreeenBuilder> {
               physics: const NeverScrollableScrollPhysics(),
               itemCount: totalQuestions,
               itemBuilder: (context, index) {
-                  return SurveyScreen(question: state.questions[index], currentIndex: index + 1, totalQuestions: totalQuestions, nextPage: nextPage);
+                  return SurveyScreen(question: state.questions[index], currentIndex: index + 1, totalQuestions: totalQuestions, nextPage: nextPage, prevPage: prevPage,);
               },
               
               );
           }
           return const Center(child: CircularProgressIndicator());
           }
-        )
-      ),
+        ),
+      )
     );
   }
 }

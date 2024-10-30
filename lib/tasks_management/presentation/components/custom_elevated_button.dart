@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:platform_x/core/utils/responsive/size.dart';
+import 'package:platform_x/generated/l10n.dart';
 
 import '../../../core/application/theme/bloc/theme_bloc.dart';
 
@@ -31,7 +32,7 @@ class CustomElevatedButton extends StatelessWidget {
         ),
         padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
           EdgeInsets.symmetric(
-            vertical: 8.h,
+            vertical: 10.h,
           ),
         ),
         backgroundColor: WidgetStateProperty.all<Color>(
@@ -54,7 +55,7 @@ class CustomElevatedButton extends StatelessWidget {
         onclick();
       }, 
       child: Text(
-        text ?? "Start Task" ,
+        text ?? S.of(context).t_start_task ,
         style: TextStyle(
           color:  textColor ?? context.watch<ThemeBloc>().state.appColorTheme.whiteA70001,
           fontSize: 16.fSize,

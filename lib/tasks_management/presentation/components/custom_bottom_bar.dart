@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:platform_x/core/utils/responsive/size.dart';
+import 'package:platform_x/generated/l10n.dart';
 import '../../../core/application/theme/bloc/theme_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 
@@ -16,41 +17,43 @@ class CustomBottomBar extends StatefulWidget {
 
 class CustomBottomBarState extends State<CustomBottomBar> {
   int selectedIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+
   List<BottomMenuModel> bottomMenuList = [
     BottomMenuModel(
       icon: Iconsax.home_2,
       activeIcon: Iconsax.home_25,
-      title: "Home",
+      title: S.of(context).tab_home,
       type: BottomBarEnum.Home,
     ),
     BottomMenuModel(
       icon: Iconsax.document_text,
       activeIcon: Iconsax.document_text5,
-      title: "Tasks",
+      title: S.of(context).tab_tasks,
       type: BottomBarEnum.Tasks,
     ),
     BottomMenuModel(
       icon: Iconsax.wallet_3,
       activeIcon: Iconsax.empty_wallet_time4,
-      title: "Wallet",
+      title: S.of(context).tab_wallet,
       type: BottomBarEnum.Wallet,
     ),
     BottomMenuModel(
       icon: Iconsax.clock,
       activeIcon: Iconsax.clock5,
-      title: "History",
+      title: S.of(context).tab_history,
       type: BottomBarEnum.History,
     ),
     BottomMenuModel(
       icon: Iconsax.user,
       activeIcon: Iconsax.user,
-      title: "Profile",
+      title: S.of(context).tab_profile,
       type: BottomBarEnum.Profile,
     ),
   ];
 
-  @override
-  Widget build(BuildContext context) {
     return Container(
       height: 68.h,
       decoration: BoxDecoration(

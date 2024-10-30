@@ -75,7 +75,7 @@ class _TakePhotoComponentState extends State<TakePhotoComponent> {
                       if(_image != null ) Align(
                         alignment: Alignment.topRight,
                         child: IconButton(
-                          icon: const Icon(Iconsax.profile_delete),
+                          icon: Icon(Iconsax.close_circle, color: context.watch<ThemeBloc>().state.appColorTheme.redA700),
                           onPressed: (){
                             setState(() {
                               _image = null;

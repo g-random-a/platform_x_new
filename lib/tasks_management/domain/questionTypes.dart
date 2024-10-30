@@ -24,8 +24,6 @@ class IQuestion {
 
   factory IQuestion.fromJson(Map<String, dynamic> json) {
 
-    print("decoding question");
-
   IQuestion question =  IQuestion(
     id: json['_id'],
     taskId: json['taskId'],

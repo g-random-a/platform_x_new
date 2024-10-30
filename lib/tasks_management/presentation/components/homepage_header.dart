@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:platform_x/core/utils/responsive/size.dart';
-import 'package:platform_x/tasks_management/domain/task/task.dart';
-import 'package:platform_x/tasks_management/presentation/components/task_card.dart';
+import 'package:platform_x/generated/l10n.dart';
+import 'package:platform_x/tasks_management/infrustructure/repository/profile/user_profile.dart';
 import '../../../core/application/theme/bloc/theme_bloc.dart';
 import '../../../core/utils/theme/custom_text_styles.dart';
 import 'app_bar.dart';
@@ -19,6 +19,8 @@ class ContentSection extends StatefulWidget {
 
 class _ContentSectionState extends State<ContentSection> {
   int page = 0;
+
+  bool showIncentive = false;
 
   // listner function for pageview
   void _listener() {
@@ -51,29 +53,46 @@ class _ContentSectionState extends State<ContentSection> {
         ),
         child: Column(
           children: [
-            Padding(
-              padding:  EdgeInsets.symmetric(horizontal: 10.0.h),
-              child: CustomAppBar(
-                leading: CircleAvatar(
-                      radius: 21.h,
-                      backgroundImage: const AssetImage("assets/images/profile/profile.png"),
+            FutureBuilder<Map<String, dynamic>>(
+              future: context.read<UserProfileRepository>().loadUserProfile(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData){
+                  return Padding(
+                    padding:  EdgeInsets.symmetric(horizontal: 10.0.h),
+                    child: CustomAppBar(
+                      leading: CircleAvatar(
+                            radius: 21.h,
+                            backgroundImage: NetworkImage(snapshot.data!['profileImage']),
+                          ),
+                      leadingWidth: 42.h,
+                      title: Padding(
+                        padding: EdgeInsets.only(left: 8.h),
+                        child: Text(
+                            // "Yonas Y.", 
+                            "${snapshot.data!['firstName']} ${snapshot.data!['lastName'][0]}.",
+                            overflow: TextOverflow.ellipsis,
+                            style: CustomTextStyles.titleSmallPlusJakartaSansOnPrimary(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme),
+                          ),
+                      ),
+                      actions:  [
+                        const Icon(Iconsax.notification),
+                        SizedBox(width: 5.h,),
+                        const Icon(Iconsax.setting_2),
+                      ],
+                      height: 48.h,
                     ),
-                leadingWidth: 42.h,
-                title: Padding(
-                  padding: EdgeInsets.only(left: 8.h),
-                  child: Text(
-                      "Yonas Y.",
-                      overflow: TextOverflow.ellipsis,
-                      style: CustomTextStyles.titleSmallPlusJakartaSansOnPrimary(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme),
-                    ),
-                ),
-                actions:  [
-                  const Icon(Iconsax.notification),
-                  SizedBox(width: 5.h,),
-                  const Icon(Iconsax.setting_2),
-                ],
-                height: 48.h,
-              ),
+                  );
+                  
+                }
+
+                return CustomAppBar(
+                  actions:  [
+                        const Icon(Iconsax.notification),
+                        SizedBox(width: 5.h,),
+                        const Icon(Iconsax.setting_2),
+                      ],
+                );
+              }
             ),
             SizedBox(
               width: double.maxFinite,
@@ -98,16 +117,27 @@ class _ContentSectionState extends State<ContentSection> {
                       Padding(
                         padding: EdgeInsets.only(left: 4.h),
                         child: Text(
-                          "Total Earning",
+                          S.of(context).t_total_earning,
                           style: CustomTextStyles.titleSmallPlusJakartaSansOnPrimaryMedium(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme),
                         ),
                       ),
                       const Spacer(),
                       Text(
-                        "Br. 1,00.05",
+                        showIncentive ?  "Br. 1,00.05" : "***********",
                         style:
                             CustomTextStyles.titleMediumPlusJakartaSansBlack900(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme),
                       ),
+                      SizedBox(width: 5.h,),
+                      InkWell(
+                        onTap: (){
+                          setState(() {
+                            showIncentive = !showIncentive;
+                          });
+                        },
+                        child: Icon(
+                          showIncentive ? Iconsax.eye_slash : Iconsax.eye
+                        ),
+                      )
                     ],
                   ),
                 ],
@@ -126,17 +156,18 @@ class _ContentSectionState extends State<ContentSection> {
                     width: double.maxFinite,
                     child: Row(
                       children: [
-                        InkWell(
-                          onTap: () {
-                            widget.controller.animateTo(0, duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
-                          },
-                          child: Text(
-                            "Ongoing",
-                            style: page == 0
-                                ? CustomTextStyles.labelMediumInterPrimary(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme)
-                                : CustomTextStyles.labelMediumInterBlack(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme),
-                          ),
-                        ),
+                        // InkWell(
+                        //   onTap: () {
+                        //     widget.controller.animateTo(0, duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
+                        //   },
+                        //   child: Text(
+                        //     "Ongoing",
+                        //     style: page == 0
+                        //         ? CustomTextStyles.labelMediumInterPrimary(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme)
+                        //         : CustomTextStyles.labelMediumInterBlack(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme),
+                        //   ),
+                        // ),
+                        
                         InkWell(
                           onTap: () {
                             widget.controller.animateTo(MediaQuery.of(context).size.width, duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
@@ -144,28 +175,29 @@ class _ContentSectionState extends State<ContentSection> {
                           child: Padding(
                             padding: EdgeInsets.only(left: 22.h),
                             child: Text(
-                              "Most Recent",
-                              style: page == 1
+                              S.of(context).t_most_recent,
+                              style: page == 0
                                   ? CustomTextStyles.labelMediumInterPrimary(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme)
                                   : CustomTextStyles.labelMediumInterBlack(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme),
                             ),
                           ),
                         ),
-                        InkWell(
-                          onTap: () {
-                            widget.controller.animateTo(MediaQuery.of(context).size.width*2, duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
-                          },
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 22.h),
-                            child: Text(
-                              "Saved",
-                              style:
-                                  page == 2
-                                      ? CustomTextStyles.labelMediumInterPrimary(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme)
-                                      : CustomTextStyles.labelMediumInterBlack(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme),
-                            ),
-                          ),
-                        ),
+                        // InkWell(
+                        //   onTap: () {
+                        //     widget.controller.animateTo(MediaQuery.of(context).size.width*2, duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
+                        //   },
+                        //   child: Padding(
+                        //     padding: EdgeInsets.only(left: 22.h),
+                        //     child: Text(
+                        //       "Saved",
+                        //       style:
+                        //           page == 2
+                        //               ? CustomTextStyles.labelMediumInterPrimary(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme)
+                        //               : CustomTextStyles.labelMediumInterBlack(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme),
+                        //     ),
+                        //   ),
+                        // ),
+                      
                       ],
                     ),
                   ),
@@ -185,47 +217,47 @@ Widget buildSeparatorLine(BuildContext context) {
 }  
   
 /// Section Widget  
-Widget buildDocumentList(BuildContext context, ScrollController controller) {  
-  return PageView.builder(
-  itemBuilder: (context, index) {
-    return ListView.builder(
-        itemCount: 52,
-        controller: controller,
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemBuilder: (context, index) {
-          return DocumentlistItemWidget(
-            task: Task(
-              id: "1",
-              title: "Task $index",
-              // description: "This is a description of task $index", long description
-              // longest desc
-              description:  "This is very long description for the task at $index location. For document digitization: Capture images of documents and upload. For document digitization: Capture images of documents and upload.",
-              budget: 250,
-              location: "Addis Ababa",
-              rating: 5,
-              tags: [
-                "18-34+",
-                "Marketing",
-                "Sales",
-                "Business",
-                "Finance",
-                "Accounting",
-                "Management",
-                "Human Resource",
-                "Customer Service",
-                "Information Technology",
-                "Engineering",
-                "Healthcare",
-                "Education",
-              ],
-              totalQuestions: 25,
-              completedQuestions: 5,
+// Widget buildDocumentList(BuildContext context, ScrollController controller) {  
+//   return PageView.builder(
+//   itemBuilder: (context, index) {
+//     return ListView.builder(
+//         itemCount: 52,
+//         controller: controller,
+//         physics: const NeverScrollableScrollPhysics(),
+//         shrinkWrap: true,
+//         itemBuilder: (context, index) {
+          // return DocumentlistItemWidget(
+//             task: Task(
+//               id: "1",
+//               title: "Task $index",
+//               // description: "This is a description of task $index", long description
+//               // longest desc
+//               description:  "This is very long description for the task at $index location. For document digitization: Capture images of documents and upload. For document digitization: Capture images of documents and upload.",
+//               budget: 250,
+//               location: "Addis Ababa",
+//               rating: 5,
+//               tags: [
+//                 "18-34+",
+//                 "Marketing",
+//                 "Sales",
+//                 "Business",
+//                 "Finance",
+//                 "Accounting",
+//                 "Management",
+//                 "Human Resource",
+//                 "Customer Service",
+//                 "Information Technology",
+//                 "Engineering",
+//                 "Healthcare",
+//                 "Education",
+//               ],
+//               totalQuestions: 25,
+//               completedQuestions: 5,
 
-            ),
-          );
-        },
-    );
-  }
-            );
-}
+//             ),
+//           );
+//         },
+//     );
+//   }
+//             );
+// }

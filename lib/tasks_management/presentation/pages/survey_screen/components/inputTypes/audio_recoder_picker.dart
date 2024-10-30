@@ -65,7 +65,6 @@ class _AudioRecorderWidgetState extends State<AudioRecorderWidget> {
         _positionUpdateTimer?.cancel();
       });
       widget.onRecorded(path);
-      print("Recording saved at: $path");
     } else {
       try {
         Directory tempDir = await getTemporaryDirectory();

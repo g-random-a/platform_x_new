@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:platform_x/core/application/theme/bloc/theme_bloc.dart';
+import 'package:platform_x/generated/l10n.dart';
 import 'package:platform_x/tasks_management/application/task/bloc/task_bloc.dart';
 import 'package:platform_x/tasks_management/application/task/event/task_event.dart';
 import 'package:platform_x/tasks_management/application/task/state/task_state.dart';
-import 'package:platform_x/tasks_management/presentation/pages/task_instruction/task_instruction.dart';
 
+import '../../../core/application/theme/bloc/theme_bloc.dart';
 import '../../domain/task/task.dart';
 import '../components/custom_bottom_bar.dart';
 import '../components/homepage_header.dart';
@@ -33,28 +33,33 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: PageView.builder(
-          controller: _pageController,
-          itemCount: 5,
-          itemBuilder: (context, index) {
-            if (index == 0){
-              return Home(scrollController: _scrollController);
+    return Scaffold(
+      backgroundColor: context.watch<ThemeBloc>().state.appColorTheme.blue50,
+      body: SafeArea(
+        child: Container(
+          color: context.watch<ThemeBloc>().state.appColorTheme.gray100,
+          child: PageView.builder( 
+            controller: _pageController,
+            itemCount: 5,
+            physics: const NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              if (index == 0){
+                return Home(scrollController: _scrollController);
+              }
+              if (index == 1){
+                // return TaskInstructionScreen();
+              }
+              else {
+                return Container(child: Center(child: Text(index.toString())),);
+              }
+              return null;
             }
-            if (index == 1){
-              // return TaskInstructionScreen();
-            }
-            else {
-              return Container(child: Center(child: Text(index.toString())),);
-            }
-            return null;
-          }
+          ),
         ),
-        bottomNavigationBar: SizedBox(
-          width: double.maxFinite,
-          child: _buildBottomNavigation(context),
-        ),
+      ),
+      bottomNavigationBar: SizedBox(
+        width: double.maxFinite,
+        child: _buildBottomNavigation(context),
       ),
     );
   }
@@ -111,6 +116,7 @@ class Home extends StatelessWidget {
       },
       body: PageView.builder(
         itemCount: 3,
+        physics: const NeverScrollableScrollPhysics(),
         onPageChanged: (pageIndex) {},
         controller: _scrollController,
         itemBuilder: (context, pageIndex) {
@@ -126,14 +132,15 @@ class Home extends StatelessWidget {
                         Task task = state.tasks[index];
                         return  DocumentlistItemWidget(
                           key: Key(index.toString()),
-                          task: task
+                          task: task,
+                          inprogress: pageIndex == 0,
                         );
                       },
                     );
               }
 
               else {
-                return const Center(child: Text("Couldn't load please try again later."));
+                return Center(child: Text(S.of(context).t_couldnt_load_try_again));
               }
             }
           );

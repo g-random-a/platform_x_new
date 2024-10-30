@@ -8,11 +8,10 @@ import '../state/locale_state.dart';
 class LocaleBloc extends Bloc<LocaleEvent, LocaleState> {
   LocaleBloc() : super(const LocaleInitialState()) {
     on<ChangeLocaleEvent>(_onChangeLocale);
-    _loadSavedLocale(); // Load the saved locale on startup
+    on<LoadLocaleEvent>(_loadSavedLocale);
   }
 
-  // Load saved locale from shared preferences
-  Future<void> _loadSavedLocale() async {
+  Future<void> _loadSavedLocale(LoadLocaleEvent event, Emitter<LocaleState> emit) async {
     final prefs = await SharedPreferences.getInstance();
     final languageCode = prefs.getString('languageCode');
     if (languageCode != null) {
@@ -20,10 +19,9 @@ class LocaleBloc extends Bloc<LocaleEvent, LocaleState> {
     }
   }
 
-  // Change locale and persist the selected locale in shared preferences
   Future<void> _onChangeLocale(ChangeLocaleEvent event, Emitter<LocaleState> emit) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('languageCode', event.locale.languageCode); // Save language preference
-    emit(LocaleChangedState(event.locale)); // Emit new state with the selected locale
+    await prefs.setString('languageCode', event.locale.languageCode); 
+    emit(LocaleChangedState(event.locale)); 
   }
 }

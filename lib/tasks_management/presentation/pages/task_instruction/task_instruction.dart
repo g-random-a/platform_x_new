@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:platform_x/core/utils/responsive/size.dart';
 import 'package:platform_x/core/utils/theme/custom_text_styles.dart';
+import 'package:platform_x/generated/l10n.dart';
 import 'package:platform_x/tasks_management/application/question/bloc/question_bloc.dart';
 import 'package:platform_x/tasks_management/application/question/event/question_event.dart';
 import 'package:platform_x/tasks_management/application/question/state/question_state.dart';
@@ -36,17 +37,17 @@ class _TaskInstructionScreenState extends State<TaskInstructionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: context.watch<ThemeBloc>().state.appColorTheme.whiteA70001,
-        body: BlocListener<QuestionsBloc, QuestionsState>(
+    return Scaffold(
+      backgroundColor: context.watch<ThemeBloc>().state.appColorTheme.whiteA70001,
+      body: SafeArea(
+        child: BlocListener<QuestionsBloc, QuestionsState>(
           listener: (context, state) {
-
+            
             if (state is QuestionsLoadingSuccessState) {
               OverlayLoader.hide();
-              context.go('/Survey');
+              context.go('/tasks/Survey');
             }
-
+            
             else if (state is QuestionsLoadingFailedState) {
               OverlayLoader.hide();
               ScaffoldMessenger.of(context).showSnackBar(
@@ -56,11 +57,11 @@ class _TaskInstructionScreenState extends State<TaskInstructionScreen> {
                 ),
               );
             }
-
+            
             else if (state is QuestionsLoadingState) {
               OverlayLoader.show(context);
             }
-
+            
           },
           child: SingleChildScrollView(
             child: Container(
@@ -69,7 +70,7 @@ class _TaskInstructionScreenState extends State<TaskInstructionScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CustomImageView(
-                    imagePath: 'https://s3-alpha-sig.figma.com/img/9548/c73f/6e6685c25540446a516920842e05f72f?Expires=1730073600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=AZdeYmuEmYVXC152R-lejy~QKzfGNiM7dzHMNq~zvPzC6X0dZ1klRjjgBmzTV6mGD-JBtuhLYc8NGRVom5q6R-D8OjZooqXYscRWeSUmOGqi0J8zMHtRNZ~DOdKC9hbxt8gYZuuwbZHB3YQuN9Ikr4ZzxE2P8w5oR9Rv-TubLXRGIV-hLwEbKuLqmwIpH9auuTLxRKAEjc7XPEDMfBecjOfuBThTqAuYVOPxJ6cWrGqRd1I4nEcuzM27chvnrxPm5JNRSIonH6I~0VkxMPbQm3O0hRcIvTqwidDOja3e89jQwCCUsAHK1Ow91R~FDSXG9El80MkAvUHbmaeve7st9Q__',
+                    imagePath: 'assets/task_instruction.png',
                     border: Border.all(
                       color: context.watch<ThemeBloc>().state.appColorTheme.gray300
                       ),
@@ -78,8 +79,9 @@ class _TaskInstructionScreenState extends State<TaskInstructionScreen> {
                       topRight: Radius.circular(50.h),
                       bottomRight: Radius.circular(50.h)
                     ),
-                    height: 294.vh,
+                    height: 320.vh,
                     // width: 314.h,
+                    width: MediaQuery.of(context).size.width,
                     fit: BoxFit.fill,
                   ),
                   const SizedBox(height: 16),
@@ -135,7 +137,7 @@ class _TaskInstructionScreenState extends State<TaskInstructionScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Total Earning",
+                                S.of(context).t_total_earning,
                                 style: CustomTextStyles.titleLargePlusJakartaSansBlack900(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme).copyWith(
                                   fontSize: 14.fSize,
                                   fontWeight: FontWeight.w500,
@@ -158,7 +160,7 @@ class _TaskInstructionScreenState extends State<TaskInstructionScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Total Tasks", 
+                                S.of(context).t_total_tasks, 
                                 style: CustomTextStyles.titleLargePlusJakartaSansBlack900(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme).copyWith(
                                   fontSize: 14.fSize,
                                   fontWeight: FontWeight.w500,

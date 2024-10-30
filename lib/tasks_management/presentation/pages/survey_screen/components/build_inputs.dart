@@ -11,6 +11,7 @@ import 'package:platform_x/tasks_management/presentation/pages/survey_screen/com
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/radiobox_input.dart';
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/range_input.dart';
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/slider_input.dart';
+import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/photo_taker.dart';
 
 import '../../../../domain/inputPropertiesType.dart';
 import '../../../../utils/enums/input_types.dart';
@@ -29,7 +30,8 @@ List<Widget> buildInputs(BuildContext context, List<QuestionInput> inputs) {
       switch (input.inputType) {
         case InputTypesEnum.Media:
           if ((input.properties as MediaPropertySchema).mediaType.toLowerCase() == "image") {
-            return MediaInputField(properties: input.properties as MediaPropertySchema, validation: input.validationRules as MediaInputValidationSchema);
+            // return MediaInputField(properties: input.properties as MediaPropertySchema, validation: input.validationRules as MediaInputValidationSchema);
+            return TakePhotoComponent(properties: input.properties as MediaPropertySchema, validations: input.validationRules as MediaInputValidationSchema);
           }
           if((input.properties as MediaPropertySchema).mediaType.toLowerCase() == "audio") {
             return AudioInputBuilder(property: input.properties as MediaPropertySchema, validation: input.validationRules as MediaInputValidationSchema);

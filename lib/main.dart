@@ -1,7 +1,9 @@
 import 'package:flutter/services.dart';
 import 'package:platform_x/core/utils/responsive/size.dart';
 import 'package:platform_x/tasks_management/application/question/bloc/question_bloc.dart';
+import 'package:platform_x/tasks_management/infrustructure/data_provider/profile/user_profile.dart';
 import 'package:platform_x/tasks_management/infrustructure/data_provider/question/question_data_provider.dart';
+import 'package:platform_x/tasks_management/infrustructure/repository/profile/user_profile.dart';
 import 'package:platform_x/tasks_management/infrustructure/repository/question/question_repo.dart';
 import 'package:platform_x/tasks_management/infrustructure/repository/task/task_repo.dart';
 
@@ -36,6 +38,9 @@ void main() async {
         ),
         RepositoryProvider<QuestionsRepository>(
           create: (context) => QuestionsRepository(tasksDataProvider: QuestionsDataProvider(dio: dioService.dio)),
+          ),
+        RepositoryProvider<UserProfileRepository>(
+          create: (context) => UserProfileRepository(userDataProvider: UserProfileDataProvider(dio: dioService.dio))
           )
             ], 
       child: MultiBlocProvider(
@@ -44,7 +49,7 @@ void main() async {
           create: (context) => ThemeBloc()..add(LoadThemeEvent()),
         ),
         BlocProvider<LocaleBloc>(
-          create: (context) => LocaleBloc(),
+          create: (context) => LocaleBloc()..add(LoadLocaleEvent()),
         ),
         BlocProvider(
           create: (context) => TasksBloc(tasksRepository: context.read<TasksRepository>()),
