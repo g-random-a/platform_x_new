@@ -14,6 +14,13 @@ class LocaleBloc extends Bloc<LocaleEvent, LocaleState> {
   Future<void> _loadSavedLocale(LoadLocaleEvent event, Emitter<LocaleState> emit) async {
     final prefs = await SharedPreferences.getInstance();
     final languageCode = prefs.getString('languageCode');
+    print("------------------------------------------------------------------");
+    print("------------------------------------------------------------------");
+    print("------------------------------------------------------------------");
+    print(languageCode);
+    print("------------------------------------------------------------------");
+    print("------------------------------------------------------------------");
+    print("------------------------------------------------------------------");
     if (languageCode != null) {
       add(ChangeLocaleEvent(Locale(languageCode)));
     }
@@ -22,6 +29,15 @@ class LocaleBloc extends Bloc<LocaleEvent, LocaleState> {
   Future<void> _onChangeLocale(ChangeLocaleEvent event, Emitter<LocaleState> emit) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('languageCode', event.locale.languageCode); 
+    
+    print("------------------------------------------------------------------");
+    print("------------------------------------------------------------------");
+    print("------------------------------------------------------------------");
+    print("setting lang");
+    print(event.locale);
+    print("------------------------------------------------------------------");
+    print("------------------------------------------------------------------");
+    print("------------------------------------------------------------------");
     emit(LocaleChangedState(event.locale)); 
   }
 }

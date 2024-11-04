@@ -133,10 +133,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "t_no_questions_found":
             MessageLookupByLibrary.simpleMessage("ጥያቄዎች አልተገኙም"),
         "t_of": MessageLookupByLibrary.simpleMessage("ውስጥ"),
+        "t_ongoing": MessageLookupByLibrary.simpleMessage("በሂደት ያለ"),
         "t_out": MessageLookupByLibrary.simpleMessage("ከ"),
         "t_page_not_found": MessageLookupByLibrary.simpleMessage("ገፁ አልተገኘም"),
         "t_points": MessageLookupByLibrary.simpleMessage("ነጥቦች።"),
         "t_previous": MessageLookupByLibrary.simpleMessage("የቀደመው"),
+        "t_saved": MessageLookupByLibrary.simpleMessage("የተሠርየ"),
         "t_showless": MessageLookupByLibrary.simpleMessage("በታች አሳይ"),
         "t_start_task": MessageLookupByLibrary.simpleMessage("ስራውን ጀምር"),
         "t_submit": MessageLookupByLibrary.simpleMessage("አስገባ"),

@@ -152,10 +152,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "t_no_questions_found":
             MessageLookupByLibrary.simpleMessage("No se encontraron preguntas"),
         "t_of": MessageLookupByLibrary.simpleMessage("de"),
+        "t_ongoing": MessageLookupByLibrary.simpleMessage("En curso"),
         "t_page_not_found":
             MessageLookupByLibrary.simpleMessage("Página no encontrada"),
         "t_points": MessageLookupByLibrary.simpleMessage("puntos."),
         "t_previous": MessageLookupByLibrary.simpleMessage("Anterior"),
+        "t_saved": MessageLookupByLibrary.simpleMessage("Guardado"),
         "t_showless": MessageLookupByLibrary.simpleMessage("Mostrar menos"),
         "t_start_task": MessageLookupByLibrary.simpleMessage("Iniciar tarea"),
         "t_submit": MessageLookupByLibrary.simpleMessage("Enviar"),

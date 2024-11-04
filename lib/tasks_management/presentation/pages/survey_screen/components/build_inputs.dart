@@ -10,6 +10,7 @@ import 'package:platform_x/tasks_management/presentation/pages/survey_screen/com
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/file_media_input.dart';
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/radiobox_input.dart';
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/range_input.dart';
+import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/signiture_input.dart';
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/slider_input.dart';
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/photo_taker.dart';
 
@@ -62,7 +63,8 @@ List<Widget> buildInputs(BuildContext context, List<QuestionInput> inputs) {
           return TextInputField(properties: input.properties as TextPropertySchema, validations: input.validationRules as TextInputValidationSchema, );
         case InputTypesEnum.Time:
           return RangeInputField(properties: input.properties as RangePropertySchema, validations: input.validationRules as RangeInputValidationSchema);
-        
+        case InputTypesEnum.Signature:
+          return SketchFormField(properties: input.properties as SignaturePropertySchema, validations: input.validationRules as SignatureInputValidationSchema,);
         default:
           return const Placeholder();
       }

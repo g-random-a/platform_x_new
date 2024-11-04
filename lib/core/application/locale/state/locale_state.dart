@@ -11,7 +11,7 @@ abstract class LocaleState extends Equatable {
 }
 
 class LocaleInitialState extends LocaleState {
-  const LocaleInitialState() : super(const Locale('en'));
+  const LocaleInitialState() : super(const Locale('am'));
 }
 
 class LocaleChangedState extends LocaleState {

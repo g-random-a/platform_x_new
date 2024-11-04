@@ -150,11 +150,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "t_no_questions_found": MessageLookupByLibrary.simpleMessage(
             "Hakuna maswali yaliyopatikana"),
         "t_of": MessageLookupByLibrary.simpleMessage("ya"),
+        "t_ongoing": MessageLookupByLibrary.simpleMessage("Inaendelea"),
         "t_out": MessageLookupByLibrary.simpleMessage("katika"),
         "t_page_not_found":
             MessageLookupByLibrary.simpleMessage("Ukurasa Haukupatikana"),
         "t_points": MessageLookupByLibrary.simpleMessage("pointi."),
         "t_previous": MessageLookupByLibrary.simpleMessage("Iliyopita"),
+        "t_saved": MessageLookupByLibrary.simpleMessage("Imehifadhiwa"),
         "t_showless": MessageLookupByLibrary.simpleMessage("Onyesha kidogo"),
         "t_start_task": MessageLookupByLibrary.simpleMessage("Anza Kazi"),
         "t_submit": MessageLookupByLibrary.simpleMessage("Tuma"),

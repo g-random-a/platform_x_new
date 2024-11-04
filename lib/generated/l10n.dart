@@ -980,6 +980,26 @@ class S {
     );
   }
 
+  /// `Ongoing`
+  String get t_ongoing {
+    return Intl.message(
+      'Ongoing',
+      name: 't_ongoing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Saved`
+  String get t_saved {
+    return Intl.message(
+      'Saved',
+      name: 't_saved',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Est. Budget`
   String get t_est_budget {
     return Intl.message(

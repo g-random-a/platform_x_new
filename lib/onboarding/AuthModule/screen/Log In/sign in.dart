@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:platform_x/core/application/auth/bloc/check_auth_bloc.dart';
+import 'package:platform_x/core/application/auth/event/check_auth_event.dart';
 import 'package:platform_x/generated/l10n.dart';
 import 'package:platform_x/onboarding/AuthModule/bloc/login%20bloc/login_bloc.dart';
 import 'package:platform_x/onboarding/AuthModule/bloc/login%20bloc/login_event.dart';
@@ -36,6 +38,7 @@ class _LogInScreen extends State<LogInScreen> {
           BlocListener<LoginBloc, LoginState>(listener: (context, state) async {
         if (state is Logged) {
           // Navigate to the next page when submission is successful
+          BlocProvider.of<AuthBloc>(context).add(AuthLoginEvent());
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(S.of(context).log_in_successfuly)),
           );

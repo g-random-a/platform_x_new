@@ -14,11 +14,14 @@ class CustomElevatedButton extends StatelessWidget {
 
   final Function onclick;
 
+  final bool outlined;
+
   const CustomElevatedButton({
     super.key,
     this.backgroundColor,
     this.textColor,
     this.text,
+    this.outlined = false,
     required this.onclick,
   });
 
@@ -26,7 +29,6 @@ class CustomElevatedButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ButtonStyle(
-        // set the width to full 
         minimumSize: WidgetStateProperty.all<Size>(
           Size(double.maxFinite, 42.4.vh),
         ),
@@ -35,23 +37,20 @@ class CustomElevatedButton extends StatelessWidget {
             vertical: 10.h,
           ),
         ),
-        backgroundColor: WidgetStateProperty.all<Color>(
+        backgroundColor: !outlined ? WidgetStateProperty.all<Color>(
           backgroundColor ?? context.watch<ThemeBloc>().state.themeData.primaryColor,
-        ),
+        ) : WidgetStateProperty.all<Color>(Colors.transparent),
         shape: WidgetStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(5.h),
+            side: BorderSide(
+              color: outlined ? backgroundColor ?? context.watch<ThemeBloc>().state.themeData.primaryColor : Colors.transparent,
+              width: 2.h,
           ),
-        ),
+        ),),
         elevation: WidgetStateProperty.all<double>(0),
-        // visualDensity: WidgetStateProperty.all<VisualDensity>(
-        //   const VisualDensity(
-        //     vertical: -4,
-        //   ),
-        // ),
       ),
       onPressed: () {
-        // go route to /task_instruction - use go routing
         onclick();
       }, 
       child: Text(

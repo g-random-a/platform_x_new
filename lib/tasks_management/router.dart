@@ -1,3 +1,4 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:platform_x/tasks_management/presentation/pages/home_page.dart';
 import 'package:platform_x/tasks_management/presentation/pages/not_found/not_found.dart';
@@ -5,8 +6,26 @@ import 'package:platform_x/tasks_management/presentation/pages/question_completi
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/question_screen_builder.dart';
 import 'package:platform_x/tasks_management/presentation/pages/task_instruction/task_instruction.dart';
 
+import '../core/application/auth/bloc/check_auth_bloc.dart';
+
 List<GoRoute> taskManagementRoutes = [
   GoRoute(
+      redirect: (context, state) {
+        final authState = context.read<AuthBloc>().state;
+        final isLoggedIn = authState.isAuthenticated;
+
+
+        print("========================================================");
+        print("========================================================");
+        print(isLoggedIn);
+        print("========================================================");
+        print("========================================================");
+
+        if (!isLoggedIn) {
+          return '/';
+        }
+        return null;
+      },
       path: '/tasks',
       builder: (context, state) => const HomePage(),
       routes:  [

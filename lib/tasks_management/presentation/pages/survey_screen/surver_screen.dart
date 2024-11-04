@@ -4,10 +4,14 @@ import 'package:go_router/go_router.dart';
 import 'package:platform_x/core/utils/responsive/size.dart';
 import 'package:platform_x/core/utils/theme/custom_text_styles.dart';
 import 'package:platform_x/generated/l10n.dart';
+import 'package:platform_x/tasks_management/domain/inputPropertiesType.dart';
+import 'package:platform_x/tasks_management/domain/inputValidation.dart';
 import 'package:platform_x/tasks_management/domain/questionTypes.dart';
 import 'package:platform_x/tasks_management/presentation/components/custom_elevated_button.dart';
 import 'package:platform_x/tasks_management/presentation/components/loader_overlay.dart';
+import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/audio_input_builder.dart';
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/build_inputs.dart';
+import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/signiture_input.dart';
 import 'package:platform_x/tasks_management/presentation/pages/task_instruction/task_instruction.dart';
 
 import '../../../../core/application/theme/bloc/theme_bloc.dart';
@@ -185,7 +189,27 @@ class _SurveyScreenState extends State<SurveyScreen> {
                                     children: [
                                       ...buildInputs(context, 
                                       widget.question.inputs
-                                      )
+                                      ),
+                                      AudioInputBuilder(
+                                        property: MediaPropertySchema(mediaType: "Audio", label: "please record ants voice."),
+                                        validation: MediaInputValidationSchema(required: true),
+                                      ),
+                                      AudioInputBuilder(
+                                        property: MediaPropertySchema(mediaType: "Audio", label: "please record cats voice"),
+                                        validation: MediaInputValidationSchema(required: true),
+                                      ),
+                                      AudioInputBuilder(
+                                        property: MediaPropertySchema(mediaType: "Audio", label: "please record dogs voice"),
+                                        validation: MediaInputValidationSchema(required: true),
+                                      ),
+                                      AudioInputBuilder(
+                                        property: MediaPropertySchema(mediaType: "Audio"),
+                                        validation: MediaInputValidationSchema(required: true),
+                                      ),
+                                      // SketchFormField(
+                                      //   validations: SignatureInputValidationSchema(required: true),
+                                      //   properties: SignaturePropertySchema(),
+                                      // ),
                                     ],
                                   ),
                                   const SizedBox(
@@ -207,7 +231,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
                     onclick: () {
                       FocusScope.of(context).unfocus();
                       
-                      if (_formKey.currentState != null) {
+                      if (_formKey.currentContext != null) {
                         bool valid = _formKey.currentState!.validate();
                         if (valid){
                           if (widget.currentIndex == widget.totalQuestions){

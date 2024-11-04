@@ -60,13 +60,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   }
 
-  // Initialize SharedPreferences and load the saved language
   Future<void> _initSharedPreferences() async {
     _prefs = await SharedPreferences.getInstance();
-    _saveLanguage(_initiaLanguage);
   }
 
-  // Save the selected language to SharedPreferences
   Future<void> _saveLanguage(String language) async {
     BlocProvider.of<LocaleBloc>(context)
         .add(ChangeLocaleEvent(Locale(_languageMap[language]!)));

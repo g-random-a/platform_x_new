@@ -133,7 +133,7 @@ class Home extends StatelessWidget {
                         return  DocumentlistItemWidget(
                           key: Key(index.toString()),
                           task: task,
-                          inprogress: pageIndex == 0,
+                          inprogress: pageIndex == 1,
                         );
                       },
                     );

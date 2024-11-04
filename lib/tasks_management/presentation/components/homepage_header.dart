@@ -156,17 +156,17 @@ class _ContentSectionState extends State<ContentSection> {
                     width: double.maxFinite,
                     child: Row(
                       children: [
-                        // InkWell(
-                        //   onTap: () {
-                        //     widget.controller.animateTo(0, duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
-                        //   },
-                        //   child: Text(
-                        //     "Ongoing",
-                        //     style: page == 0
-                        //         ? CustomTextStyles.labelMediumInterPrimary(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme)
-                        //         : CustomTextStyles.labelMediumInterBlack(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme),
-                        //   ),
-                        // ),
+                        InkWell(
+                          onTap: () {
+                            widget.controller.animateTo(0, duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
+                          },
+                          child: Text(
+                            S.of(context).t_ongoing,
+                            style: page == 0
+                                ? CustomTextStyles.labelMediumInterPrimary(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme)
+                                : CustomTextStyles.labelMediumInterBlack(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme),
+                          ),
+                        ),
                         
                         InkWell(
                           onTap: () {
@@ -176,27 +176,28 @@ class _ContentSectionState extends State<ContentSection> {
                             padding: EdgeInsets.only(left: 22.h),
                             child: Text(
                               S.of(context).t_most_recent,
-                              style: page == 0
+                              style: page == 1
                                   ? CustomTextStyles.labelMediumInterPrimary(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme)
                                   : CustomTextStyles.labelMediumInterBlack(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme),
                             ),
                           ),
                         ),
-                        // InkWell(
-                        //   onTap: () {
-                        //     widget.controller.animateTo(MediaQuery.of(context).size.width*2, duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
-                        //   },
-                        //   child: Padding(
-                        //     padding: EdgeInsets.only(left: 22.h),
-                        //     child: Text(
-                        //       "Saved",
-                        //       style:
-                        //           page == 2
-                        //               ? CustomTextStyles.labelMediumInterPrimary(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme)
-                        //               : CustomTextStyles.labelMediumInterBlack(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme),
-                        //     ),
-                        //   ),
-                        // ),
+                        InkWell(
+                          onTap: () {
+                            widget.controller.animateTo(MediaQuery.of(context).size.width*2, duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 22.h),
+                            child: Text(
+                              // "Saved",
+                              S.of(context).t_saved,
+                              style:
+                                  page == 2
+                                      ? CustomTextStyles.labelMediumInterPrimary(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme)
+                                      : CustomTextStyles.labelMediumInterBlack(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme),
+                            ),
+                          ),
+                        ),
                       
                       ],
                     ),

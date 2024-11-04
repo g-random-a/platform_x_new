@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:platform_x/core/application/auth/bloc/check_auth_bloc.dart';
 import 'package:platform_x/core/utils/responsive/size.dart';
 import 'package:platform_x/tasks_management/application/question/bloc/question_bloc.dart';
 import 'package:platform_x/tasks_management/infrustructure/data_provider/profile/user_profile.dart';
@@ -6,7 +7,9 @@ import 'package:platform_x/tasks_management/infrustructure/data_provider/questio
 import 'package:platform_x/tasks_management/infrustructure/repository/profile/user_profile.dart';
 import 'package:platform_x/tasks_management/infrustructure/repository/question/question_repo.dart';
 import 'package:platform_x/tasks_management/infrustructure/repository/task/task_repo.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'core/application/auth/event/check_auth_event.dart';
 import 'lib.dart';
 import 'tasks_management/application/task/bloc/task_bloc.dart';
 import 'tasks_management/infrustructure/data_provider/task/task_data_provider.dart';
@@ -29,6 +32,14 @@ void main() async {
 
   await dotenv.load();
   final DioService dioService = DioService();
+
+  final prefs = await SharedPreferences.getInstance();
+  final isAuthenticated = prefs.getString('access_token');
+
+  final authBloc = AuthBloc();
+  if (isAuthenticated != null) {
+    authBloc.add(AuthLoginEvent());
+  }
 
   runApp(
     MultiRepositoryProvider(
@@ -57,6 +68,9 @@ void main() async {
         BlocProvider(
           create: (context) => QuestionsBloc(questionsRepository: context.read<QuestionsRepository>()),
         ),
+        BlocProvider(
+          create: (context) => authBloc,
+        )
       ],
      child: const MyApp(),
         )
