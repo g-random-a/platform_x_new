@@ -57,8 +57,8 @@ class _AudioInputBuilderState extends State<AudioInputBuilder> {
           //         ),
           //         borderRadius: BorderRadius.circular(15.0),
           //       ),
-          margin: EdgeInsets.only(bottom: 10.h),
-          padding: EdgeInsets.all(4.h),
+          // margin: EdgeInsets.only(bottom: 10.h),
+          // padding: EdgeInsets.all(4.h),
           child: Column(
             children: [
               if (widget.property.label != null)

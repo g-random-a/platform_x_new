@@ -122,9 +122,9 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget> {
               ) :
               VoiceMessageView(
                 playPauseButtonLoadingColor: context.watch<ThemeBloc>().state.appColorTheme.blue700,
-                activeSliderColor: context.watch<ThemeBloc>().state.appColorTheme.whiteA700,
-                circlesColor: context.watch<ThemeBloc>().state.appColorTheme.yellow700,
-                backgroundColor: context.watch<ThemeBloc>().state.appColorTheme.redA700,
+                activeSliderColor: context.watch<ThemeBloc>().state.appColorTheme.green200,
+                circlesColor: context.watch<ThemeBloc>().state.appColorTheme.green700,
+                // backgroundColor: context.watch<ThemeBloc>().state.appColorTheme.redA700,
                 controller: voiceController!,
                 innerPadding: 12,
                 cornerRadius: 20,

@@ -31,9 +31,9 @@ class _RatingInputFieldState extends State<RatingInputField> {
   }
 
   String? validateRating(double? value) {
-    if (widget.validations.required && value == null) {
-      return widget.validations.customErrorMessage ?? 'This field is required';
-    }
+    // if (widget.validations.required && value == null) {
+    //   return widget.validations.customErrorMessage ?? 'This field is required';
+    // }
 
     return null;
   }

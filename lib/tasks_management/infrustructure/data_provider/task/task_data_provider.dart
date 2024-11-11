@@ -1,15 +1,15 @@
 import 'dart:convert';
-
 import 'package:platform_x/lib.dart';
+import 'package:platform_x/tasks_management/services/hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../../domain/task/task.dart';
 import '../../core/data_provider.dart';
 
 class TasksDataProvider extends DataProvider {
   final Dio dio;
+  final TaskManagerService taskManagerService;
 
-  TasksDataProvider({required this.dio});
+  TasksDataProvider({required this.dio, required this.taskManagerService});
 
   Future<bool> submitTask(Task feedback) async {
     try {
@@ -46,7 +46,7 @@ class TasksDataProvider extends DataProvider {
       // dio.options.headers['cookie'] = 'session=$token';
       // dio.options.headers['Authorization'] = 'Bearer $token';
 
-      Response response = await dio.get("/v1/task");
+      Response response = await dio.get("/v1/task/user/23");
 
       if (response.statusCode != 200) {
         throw Exception("Error while loading tasks.");
@@ -56,11 +56,15 @@ class TasksDataProvider extends DataProvider {
 
       List forms = response.data['tasks'];
 
-      for (var form in forms) {
-        // print(form.runtimeType);
-        Task task = Task.fromJson(form);
+      print(forms);
 
-        print(task);
+      for (var form in forms) {
+
+        Task task = Task.fromJson(form);
+        
+        if (taskManagerService.isTaksSaved(task.id)) {
+          task.isFavorite = true;
+        }
         
         tasks.add(task);
       }
@@ -74,69 +78,37 @@ class TasksDataProvider extends DataProvider {
 
   }
 
-  Future<List<Task>> loadMoreTasks(int nextPage) async {
+
+  Future<List<Task>> loadLocalTasks() async {
     try {
-      // SharedPreferences prefs = await SharedPreferences.getInstance();
-      // String? token = prefs.getString('token');
-      // if (token == null) {
-      //   throw Exception("notLogged In");
-      // }
-      // dio.options.headers['content-Type'] = 'application/json';
-      // dio.options.headers['cookie'] = 'session=$token';
 
-      // Response response = await dio.get("$baseUrl/load_more_tasks/");
+      List<Task> tasks = taskManagerService.getOnProgressTasks();
+      
+      return tasks;
 
-      // if (response.statusCode == 200) {
-      //   List<Task> tasks = (response.data as List).map((e) => Task.fromJson(e)).toList();
-      //   return tasks;
-      // } else {
-      //   throw Exception("Error while loading more tasks.");
-      // }
-      await Future.delayed(const Duration(milliseconds: 5000));
-      throw Exception("Error while loading more tasks.");
-      return [];
+    } catch (e) {
+      print("@Error: ${e}",);
+      rethrow;
+    }
 
+  }
+
+  // Future<void> saveTask(Task task, {bool isOnProgress = true}) async {
+  //   if (isOnProgress) {
+  //     await onprogressBox.put(task.id, task);
+  //   } else {
+  //     await savedBox.put(task.id, task);
+  //   }
+  // }
+
+
+  Future<bool> addLocalOnprogressTask (Task task) async {
+    try {
+      await taskManagerService.saveTask(task, isOnProgress: true);
+      return true;
     } catch (e) {
       rethrow;
     }
   }
 
-  Future<List<List<Task>>> loadTasksHistory() async {
-    try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? token = prefs.getString('token');
-      if (token == null) {
-        throw Exception("notLogged In");
-      }
-      dio.options.headers['content-Type'] = 'application/json';
-      dio.options.headers['cookie'] = 'session=$token';
-
-      Response response = await dio.get("$baseUrl/agent/get-task-history");
-
-      if (response.statusCode == 200) {
-        List<Task> completedTasks = [];
-        List<Task> pendingTasks = [];
-
-        List tasks = response.data['acceptedTasks'];
-        for (var task in tasks) {
-          Task newTask = Task.fromJson(jsonDecode(task));
-
-          completedTasks.add(newTask);
-        }
-        List tasksPending = response.data['acceptedTasks'];
-        for (var task in tasksPending) {
-          Task newTask = Task.fromJson(jsonDecode(task));
-        
-            pendingTasks.add(newTask);
-          }
-
-        return [completedTasks, pendingTasks];
-        
-      } else {
-        throw Exception("Error while loading tasks history.");
-      }
-    } catch (e) {
-      rethrow;
-    }
-  }
 }

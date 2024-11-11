@@ -4,6 +4,7 @@ import 'package:platform_x/generated/l10n.dart';
 import 'package:platform_x/tasks_management/application/task/bloc/task_bloc.dart';
 import 'package:platform_x/tasks_management/application/task/event/task_event.dart';
 import 'package:platform_x/tasks_management/application/task/state/task_state.dart';
+import 'package:platform_x/tasks_management/presentation/pages/image_annotation/image_annotation.dart';
 
 import '../../../core/application/theme/bloc/theme_bloc.dart';
 import '../../domain/task/task.dart';
@@ -48,6 +49,12 @@ class _HomePageState extends State<HomePage> {
               }
               if (index == 1){
                 // return TaskInstructionScreen();
+                return AnnotatedImageFormField(
+                  imageProvider: AssetImage("assets/task_instruction.png"),
+                  onSaved: (value) {
+                    print(value);
+                  },
+                );
               }
               else {
                 return Container(child: Center(child: Text(index.toString())),);
@@ -57,10 +64,10 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      bottomNavigationBar: SizedBox(
-        width: double.maxFinite,
-        child: _buildBottomNavigation(context),
-      ),
+      // bottomNavigationBar: SizedBox(
+      //   width: double.maxFinite,
+      //   child: _buildBottomNavigation(context),
+      // ),
     );
   }
 

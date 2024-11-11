@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:platform_x/tasks_management/services/hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../event/theme_event.dart';
@@ -8,8 +9,9 @@ import '../state/theme_state.dart';
 
 class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
   bool isDarkMode = false;
+  TaskManagerService taskManagerService;
 
-  ThemeBloc() : super(LightThemeState()) {
+  ThemeBloc( {required this.taskManagerService}) : super(LightThemeState()) {
     on<LoadThemeEvent>(_onLoadTheme);
     on<ToggleThemeEvent>(_onToggleTheme);
   }

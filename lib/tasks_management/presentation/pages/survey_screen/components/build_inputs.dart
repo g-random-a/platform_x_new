@@ -10,6 +10,7 @@ import 'package:platform_x/tasks_management/presentation/pages/survey_screen/com
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/file_media_input.dart';
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/radiobox_input.dart';
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/range_input.dart';
+import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/rating_input.dart';
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/signiture_input.dart';
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/slider_input.dart';
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/photo_taker.dart';
@@ -55,8 +56,8 @@ List<Widget> buildInputs(BuildContext context, List<QuestionInput> inputs) {
           return RadioboxInputField(properties: input.properties as RadioPropertySchema, validations: input.validationRules as RadioInputValidationSchema);
         case InputTypesEnum.Range:
           return RangeInputField(properties: input.properties as RangePropertySchema, validations: input.validationRules as RangeInputValidationSchema);
-        // case InputTypesEnum.Rating:
-          // return RatingInp(properties: input.properties as CheckboxPropertySchema, validations: input.validationRules as CheckboxInputValidationSchema);
+        case InputTypesEnum.Rating:
+          return RatingInputField(properties: input.properties as RatingPropertySchema, validations: input.validationRules as RatingInputValidationSchema);
         case InputTypesEnum.Slider:
           return SliderInputField(properties: input.properties as SliderPropertySchema, validations: input.validationRules as SliderInputValidationSchema);
         case InputTypesEnum.Text:

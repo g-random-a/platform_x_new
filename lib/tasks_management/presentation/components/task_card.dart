@@ -2,8 +2,10 @@ import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:platform_x/core/utils/responsive/size.dart';
 import 'package:platform_x/lib.dart';
+import 'package:platform_x/tasks_management/application/task/bloc/task_bloc.dart';
 import 'package:platform_x/tasks_management/domain/task/task.dart';
 import 'package:platform_x/tasks_management/presentation/components/custom_rating_bar.dart';
+import 'package:platform_x/tasks_management/services/hive/hive.dart';
 
 import '../../../core/utils/theme/app_decoration.dart';
 import '../../../core/utils/theme/custom_text_styles.dart';
@@ -115,10 +117,13 @@ class _DocumentlistItemWidgetState extends State<DocumentlistItemWidget> {
                     //   width: 20.h,
                     // ),
                     IconButton(
-                      onPressed: (){
+                      onPressed: () async{
                         setState(() {
                           widget.task.isFavorite = !widget.task.isFavorite;
+                          // BlocProvider.of<TasksBloc>(context).add(event) 
                         });
+                        print(widget.task.id);
+                        await context.read<TaskManagerService>().saveTask(widget.task, isOnProgress: false);
                       },
                       icon: Icon(
                         widget.task.isFavorite ? Icons.favorite : Icons.favorite_border,
@@ -176,7 +181,6 @@ class _DocumentlistItemWidgetState extends State<DocumentlistItemWidget> {
               
               SizedBox(height: 12.h),
               _buildCustomText(context),
-              // SizedBox(height: 4.h),
               if (isOverflowing)
               TextButton(
                 onPressed: () {
@@ -188,7 +192,9 @@ class _DocumentlistItemWidgetState extends State<DocumentlistItemWidget> {
                     style: CustomTextStyles.labelMediumInterGreen700(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme).copyWith(
                       textBaseline: TextBaseline.ideographic,
                       decoration: TextDecoration.underline,
-                    )),
+                    ),
+                    
+                    ),
               ),
               if (!isOverflowing) SizedBox(height: 12.h),
               SingleChildScrollView(

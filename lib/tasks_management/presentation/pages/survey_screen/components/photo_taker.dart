@@ -62,14 +62,14 @@ class _TakePhotoComponentState extends State<TakePhotoComponent> {
             ),
             Container(
                   margin: EdgeInsets.symmetric(vertical: 8.h),
-                  height: _image == null ? 45.h : 250.h,
+                  height: _image == null ? 45.h : 290.h,
                   child: Stack(
                     children: [
                       if(_image != null ) CustomImageView(
                         imagePath: _image?.path,
                         fit: BoxFit.fill,
                         width: MediaQuery.of(context).size.width,
-                        height: 250.h,
+                        height: 290.h,
                         captured: true,
                       ),
                       if(_image != null ) Align(

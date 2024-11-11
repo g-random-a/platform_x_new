@@ -11,10 +11,24 @@ import 'package:platform_x/tasks_management/presentation/components/custom_eleva
 import 'package:platform_x/tasks_management/presentation/components/loader_overlay.dart';
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/audio_input_builder.dart';
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/build_inputs.dart';
+import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/checkbox_input.dart';
+import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/color_picker.dart';
+import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/date_input.dart';
+import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/dropdown_input.dart';
+import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/email_input.dart';
+import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/file_media_input.dart';
+import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/number_input.dart';
+import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/radiobox_input.dart';
+import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/range_input.dart';
+import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/rating_input.dart';
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/signiture_input.dart';
+import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/slider_input.dart';
+import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/time_input.dart';
+import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/photo_taker.dart';
 import 'package:platform_x/tasks_management/presentation/pages/task_instruction/task_instruction.dart';
 
 import '../../../../core/application/theme/bloc/theme_bloc.dart';
+import 'components/inputTypes/text_input.dart';
 
 class SurveyScreen extends StatefulWidget {
 
@@ -115,6 +129,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
                                     actions: [
                                       TextButton(
                                         onPressed: () {
+
                                           // use go routing
                                           context.pop();
                                         },
@@ -190,26 +205,128 @@ class _SurveyScreenState extends State<SurveyScreen> {
                                       ...buildInputs(context, 
                                       widget.question.inputs
                                       ),
-                                      AudioInputBuilder(
-                                        property: MediaPropertySchema(mediaType: "Audio", label: "please record ants voice."),
-                                        validation: MediaInputValidationSchema(required: true),
-                                      ),
-                                      AudioInputBuilder(
-                                        property: MediaPropertySchema(mediaType: "Audio", label: "please record cats voice"),
-                                        validation: MediaInputValidationSchema(required: true),
-                                      ),
-                                      AudioInputBuilder(
-                                        property: MediaPropertySchema(mediaType: "Audio", label: "please record dogs voice"),
-                                        validation: MediaInputValidationSchema(required: true),
-                                      ),
-                                      AudioInputBuilder(
-                                        property: MediaPropertySchema(mediaType: "Audio"),
-                                        validation: MediaInputValidationSchema(required: true),
-                                      ),
+                                      // RatingInputField(properties: RatingPropertySchema(maximumRating: 10, minimumRating: 0, label: "Rate your exp on this question"), validations: RatingInputValidationSchema(required: true)),
                                       // SketchFormField(
                                       //   validations: SignatureInputValidationSchema(required: true),
                                       //   properties: SignaturePropertySchema(),
                                       // ),
+
+                                      // // TEST INPUT -- V01
+                                      // // 1. PHOTO TAKER
+                                      // TakePhotoComponent(properties:  MediaPropertySchema(mediaType: 'imgae', label: 'Take a selfie of yourself',), validations: MediaInputValidationSchema(required: true)),
+
+                                      // // 2. AUDIO RECORDER and uploader
+                                      // AudioInputBuilder(
+                                      //   property: MediaPropertySchema(mediaType: "Audio", label: "Record your voice reading the question in AMHARIC Language.",),
+                                      //   validation: MediaInputValidationSchema(required: true),
+                                      // ),
+
+                                      // // 3. MediaFileInputField
+                                      // MediaFileInputField(properties: MediaPropertySchema(mediaType: 'FILE'), validation: MediaInputValidationSchema(required: true)),
+
+                                      // // 4. Checkbox InputField
+                                      // CheckboxInputField(
+                                      //   properties: CheckboxPropertySchema(
+                                      //     options: [
+                                      //       InputOptions(id: 1, value: "USA", valueType: "String"),
+                                      //       InputOptions(id: 1, value: "Kenya", valueType: "String"),
+                                      //       InputOptions(id: 1, value: "Ethiopia", valueType: "String"),
+                                      //       InputOptions(id: 1, value: "Eritria", valueType: "String"),
+                                      //       InputOptions(id: 1, value: "Canada", valueType: "String"),
+                                      //       InputOptions(id: 1, value: "None", valueType: "String"),
+                                      //     ],
+                                      //     type: 'string',
+                                      //     label: 'Select your country of residence',
+                                      //     ), validations: CheckboxInputValidationSchema(required: true)),
+
+                                      // // 5. ColorPickerInputField
+                                      // ColorPickerInputField(
+                                      //   properties: ColorPickerPropertySchema(label: 'Select your favorite color'),
+                                      //   validations: ColorPickerInputValidationSchema(required: true),
+                                      // ),
+
+                                      // // 6. DateInputField
+                                      // DateInputField(
+                                      //   properties: DatePropertySchema(label: 'Select your date of birth'),
+                                      //   validations: DateInputValidationSchema(required: true),
+                                      // ),
+
+                                      // // 7. DropdownInputField
+                                      // DropdownInputField(
+                                      //   properties: DropdownPropertySchema(
+                                      //     options: [
+                                      //       InputOptions(id: 1, value: "USA", valueType: "String"),
+                                      //       InputOptions(id: 1, value: "Kenya", valueType: "String"),
+                                      //       InputOptions(id: 1, value: "Ethiopia", valueType: "String"),
+                                      //       InputOptions(id: 1, value: "Eritria", valueType: "String"),
+                                      //       InputOptions(id: 1, value: "Canada", valueType: "String"),
+                                      //       InputOptions(id: 1, value: "None", valueType: "String"),
+                                      //     ],
+                                      //     label: 'Select your country of residence',
+                                      //     ), validations: DropdownInputValidationSchema(required: true)),
+
+                                      // // 8. EmailInputField
+                                      // EmailInputField(
+                                      //   properties: EmailPropertySchema(label: 'Enter your email address', suffix: "@gmail.com"),
+                                      //   validation: EmailInputValidationSchema(required: true),
+                                      // ),
+
+                                      // // 9. NumberInputField
+                                      // NumberInputField(
+                                      //   properties: NumberPropertySchema(label: 'Enter your age'),
+                                      //   validations: NumberInputValidationSchema(required: true),
+                                      // ),
+
+                                      // // 10. RadioboxInputField
+                                      // RadioboxInputField(
+                                      //   properties: RadioPropertySchema(
+                                      //     options: [
+                                      //       InputOptions(id: 1, value: "USA", valueType: "String"),
+                                      //       InputOptions(id: 1, value: "Kenya", valueType: "String"),
+                                      //       InputOptions(id: 1, value: "Ethiopia", valueType: "String"),
+                                      //       InputOptions(id: 1, value: "Eritria", valueType: "String"),
+                                      //       InputOptions(id: 1, value: "Canada", valueType: "String"),
+                                      //       InputOptions(id: 1, value: "None", valueType: "String"),
+                                      //     ],
+                                      //     label: 'Select your country of residence',
+                                      //     ), validations: RadioInputValidationSchema(required: true)),
+
+                                      // // 11. RangeInputField
+                                      // RangeInputField(
+                                      //   properties: RangePropertySchema(label: 'Select your age range', min: 1, max: 10),
+                                      //   validations: RangeInputValidationSchema(required: true),
+                                      // ),
+
+                                      // // 12. RatingInputField 
+                                      // RatingInputField(
+                                      //   properties: RatingPropertySchema(label: 'Rate your experience on this question', maximumRating: 10, minimumRating: 0),
+                                      //   validations: RatingInputValidationSchema(required: false),
+                                      // ),
+
+                                      // // 13. SignatureInputField
+                                      // SketchFormField(
+                                      //   properties: SignaturePropertySchema(label: 'Sign here'),
+                                      //   validations: SignatureInputValidationSchema(required: true),
+                                      // ),
+
+                                      // // 14. SliderInputField
+                                      // SliderInputField(
+                                      //   properties: SliderPropertySchema(label: 'Select your age', min: 1, max: 10),
+                                      //   validations: SliderInputValidationSchema(required: true),
+                                      // ),
+
+                                      // // 15. TextInputField
+                                      // TextInputField(
+                                      //   properties: TextPropertySchema(label: 'Enter your name'),
+                                      //   validations: TextInputValidationSchema(required: true),
+                                      // ),
+
+                                      // // 16. TimeInputField
+                                      // TimeInputField(isRequired: false)
+
+
+
+
                                     ],
                                   ),
                                   const SizedBox(
@@ -257,6 +374,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
                         .whiteA70001,
                   ),
                   const SizedBox(height: 10), // Add spacing between buttons
+                  if (widget.currentIndex != 1)
                   CustomElevatedButton(
                     onclick: () {
                       FocusScope.of(context).unfocus();

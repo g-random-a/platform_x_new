@@ -12,7 +12,7 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
       : super(TasksInitialState()) {
 
     on<LoadTasksEvent>(LoadTasks);
-    on<LoadMoreTasksEvent>(loadMoreTasks);
+    // on<LoadMoreTasksEvent>(loadMoreTasks);
     on<DisposeTasksEvent>((DisposeTasksEvent event, Emitter emit) {
       emit(TasksInitialState());
     });
@@ -33,21 +33,23 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
     }
   }
 
-  loadMoreTasks(LoadMoreTasksEvent event, Emitter emit) async {
+  
 
-      if (state is TasksLoadingSuccessState) {
-        final currentState = state as TasksLoadingSuccessState;
-        emit(TasksLoadingSuccessState(tasks: currentState.tasks, isLoadingMore: true));
+  // loadMoreTasks(LoadMoreTasksEvent event, Emitter emit) async {
 
-        try {
-          List<Task> newTasks = await tasksRepository.loadMoreTasks(currentState.nextPage);
+  //     if (state is TasksLoadingSuccessState) {
+  //       final currentState = state as TasksLoadingSuccessState;
+  //       emit(TasksLoadingSuccessState(tasks: currentState.tasks, isLoadingMore: true));
 
-          emit(TasksLoadingSuccessState(tasks: currentState.tasks + newTasks, isLoadingMore: true));
-        } catch (e) {
-          emit(TasksLoadingSuccessState(tasks: currentState.tasks, isLoadingMore: true, error: 'Failed to load more tasks'));
-        }
-      }
-  }
+  //       try {
+  //         List<Task> newTasks = await tasksRepository.loadMoreTasks(currentState.nextPage);
+
+  //         emit(TasksLoadingSuccessState(tasks: currentState.tasks + newTasks, isLoadingMore: true));
+  //       } catch (e) {
+  //         emit(TasksLoadingSuccessState(tasks: currentState.tasks, isLoadingMore: true, error: 'Failed to load more tasks'));
+  //       }
+  //     }
+  // }
 
   loadOngoingTasks(LoadOngoingTasksEvent event, Emitter emit) async {
     if (state is ! TasksLoadingSuccessState){

@@ -7,6 +7,7 @@ import 'package:platform_x/tasks_management/infrustructure/data_provider/questio
 import 'package:platform_x/tasks_management/infrustructure/repository/profile/user_profile.dart';
 import 'package:platform_x/tasks_management/infrustructure/repository/question/question_repo.dart';
 import 'package:platform_x/tasks_management/infrustructure/repository/task/task_repo.dart';
+import 'package:platform_x/tasks_management/services/hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/application/auth/event/check_auth_event.dart';
@@ -31,21 +32,26 @@ void main() async {
   await _requestPermissions();
 
   await dotenv.load();
+
+  final taskManager = TaskManagerService();
+  await taskManager.initHive();
+
   final DioService dioService = DioService();
 
   final prefs = await SharedPreferences.getInstance();
   final isAuthenticated = prefs.getString('access_token');
 
-  final authBloc = AuthBloc();
-  if (isAuthenticated != null) {
-    authBloc.add(AuthLoginEvent());
-  }
+  final localBloc = LocaleBloc();
+  localBloc.add(LoadLocaleEvent());
 
   runApp(
     MultiRepositoryProvider(
       providers: [
+        RepositoryProvider<TaskManagerService>(
+          create: (context) => taskManager,
+        ),
         RepositoryProvider<TasksRepository>(
-          create: (context) => TasksRepository(tasksDataProvider: TasksDataProvider(dio: dioService.dio)),
+          create: (context) => TasksRepository(tasksDataProvider: TasksDataProvider(dio: dioService.dio, taskManagerService: taskManager)),
         ),
         RepositoryProvider<QuestionsRepository>(
           create: (context) => QuestionsRepository(tasksDataProvider: QuestionsDataProvider(dio: dioService.dio)),
@@ -57,11 +63,10 @@ void main() async {
       child: MultiBlocProvider(
       providers: [
         BlocProvider<ThemeBloc>(
-          create: (context) => ThemeBloc()..add(LoadThemeEvent()),
+          create: (context) => ThemeBloc(taskManagerService: taskManager)..add(LoadThemeEvent()),
         ),
         BlocProvider<LocaleBloc>(
-          create: (context) => LocaleBloc()..add(LoadLocaleEvent()),
-        ),
+          create: (context) => localBloc),
         BlocProvider(
           create: (context) => TasksBloc(tasksRepository: context.read<TasksRepository>()),
         ),
@@ -69,7 +74,7 @@ void main() async {
           create: (context) => QuestionsBloc(questionsRepository: context.read<QuestionsRepository>()),
         ),
         BlocProvider(
-          create: (context) => authBloc,
+          create: (context) => AuthBloc()..add(AuthLoadEvent()),
         )
       ],
      child: const MyApp(),

@@ -108,7 +108,7 @@ class _TaskInstructionScreenState extends State<TaskInstructionScreen> {
                       const SizedBox(width: 8),
                       Text(
                         // "Due: Oct 29, 2023",
-                        widget.task.dueDate.toString(),
+                        widget.task.dueDate != null ? "${widget.task.dueDate!.day}-${widget.task.dueDate!.month}-${widget.task.dueDate!.year} "  : 'No due date',
                         style: CustomTextStyles.bodyMediumInterBlack500(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme).copyWith(
                           fontSize: 12.25.fSize,
                           fontWeight: FontWeight.w500,
@@ -166,7 +166,7 @@ class _TaskInstructionScreenState extends State<TaskInstructionScreen> {
                                   fontWeight: FontWeight.w500,
                                 ),),
                               Text(
-                                "10", 
+                                widget.task.totalQuestions.toString(), 
                                 style: CustomTextStyles.titleLargePlusJakartaSansBlack900(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme).copyWith(
                                   fontSize: 17.fSize,
                                   fontWeight: FontWeight.w500,
@@ -175,12 +175,17 @@ class _TaskInstructionScreenState extends State<TaskInstructionScreen> {
                             ],
                           ),
                         ),
-                        _buildTaskRow(context, Iconsax.microphone, "Speech generation", 2),
-                        const CustomDivider(),
-                        _buildTaskRow(context, Iconsax.image, "Document digitization", 2),
-                        const CustomDivider(),
-                        _buildTaskRow(context, Iconsax.message, "Annotation and labeling", 2),
-                        SizedBox(height: 4.h,)
+                        // _buildTaskRow(context, Iconsax.microphone, "Speech generation", 2),
+                        // const CustomDivider(),
+                        // _buildTaskRow(context, Iconsax.image, "Document digitization", 2),
+                        // const CustomDivider(),
+                        // _buildTaskRow(context, Iconsax.message, "Annotation and labeling", 2),
+                        // SizedBox(height: 4.h,)
+                        ...?widget.task.categories?.map(
+                          (category) => _buildTaskRow(context, 
+                          _getCategoryIcon(category['name']), 
+                          category['name'], 
+                          category['count'])).toList(),
                       ],
                     ),
                   ),
@@ -200,6 +205,24 @@ class _TaskInstructionScreenState extends State<TaskInstructionScreen> {
         ),
       ),
     );
+  }
+
+  IconData _getCategoryIcon(String categoryName) {
+    if (categoryName.toLowerCase() == "speech generation" || categoryName.toLowerCase().contains('speech') ){
+      return Iconsax.microphone;
+    }
+    else if (categoryName.toLowerCase() == "document digitization" || categoryName.toLowerCase().contains('document') ){
+      return Iconsax.image;
+    }
+    else if (categoryName.toLowerCase() == "annotation and labeling" || categoryName.toLowerCase().contains('annotation') ){
+      return Iconsax.message;
+    }
+    else if (categoryName.toLowerCase() == "image annotation" || categoryName.toLowerCase().contains('image') ){
+      return Iconsax.microphone;
+    }
+    else {
+      return Iconsax.document;
+    }
   }
 
   Widget _buildTaskRow(BuildContext context, IconData icon, String taskName, int count) {

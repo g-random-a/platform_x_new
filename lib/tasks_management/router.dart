@@ -14,13 +14,6 @@ List<GoRoute> taskManagementRoutes = [
         final authState = context.read<AuthBloc>().state;
         final isLoggedIn = authState.isAuthenticated;
 
-
-        print("========================================================");
-        print("========================================================");
-        print(isLoggedIn);
-        print("========================================================");
-        print("========================================================");
-
         if (!isLoggedIn) {
           return '/';
         }

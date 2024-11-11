@@ -14,7 +14,7 @@ final GoRouter appRouter = GoRouter(
     ...taskManagementRoutes,
     GoRoute(
       redirect: (context, state) {
-        final authState = context.read<AuthBloc>().state;
+        final authState = context.watch<AuthBloc>().state;
         final isLoggedIn = authState.isAuthenticated;
 
         if (isLoggedIn) {

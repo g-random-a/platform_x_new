@@ -47,7 +47,7 @@ class _EmailInputFieldState extends State<EmailInputField> {
           style: CustomTextStyles.bodySmallPlusJakartaSansBlack90001(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme),
           ),
         TextFormField(
-          decoration: textInputDecoration(context, widget.properties.suffix ?? "@"),
+          decoration: textInputDecoration(context, widget.properties.suffix ?? ""),
           initialValue: widget.properties.defaultValue,
           validator: validateEmail,
         ),

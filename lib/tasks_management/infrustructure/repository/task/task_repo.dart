@@ -25,21 +25,4 @@ class TasksRepository {
     }
   }
 
-  Future<List<Task>> loadMoreTasks(int nextPage) async{
-    try {
-      List<Task> tasks = await tasksDataProvider.loadMoreTasks(nextPage);
-      return tasks;
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  Future<List<List<Task>>> loadTasksHistory() async {
-    try {
-      List<List<Task>> tasks = await tasksDataProvider.loadTasksHistory();
-      return tasks;
-    } catch (e) {
-      rethrow;
-    }
-  }
 }

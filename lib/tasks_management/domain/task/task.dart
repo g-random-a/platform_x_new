@@ -1,17 +1,47 @@
 import 'dart:math';
 
+import 'package:hive/hive.dart';
+part 'task.g.dart';
+
+@HiveType(typeId: 0)
 class Task {
+  @HiveField(0)
   String id;
+
+  @HiveField(1)
   String title;
+
+  @HiveField(2)
   String description;
+
+  @HiveField(3)
   int budget;
+
+  @HiveField(4)
   String location;
+
+  @HiveField(5)
   List<String> tags;
+
+  @HiveField(6)
+  List<Map<String, dynamic>>? categories;
+
+  @HiveField(7)
   double rating;
+
+  @HiveField(8)
   int totalQuestions;
+
+  @HiveField(9)
   int? completedQuestions;
+
+  @HiveField(10)
   DateTime? createdAt;
+
+  @HiveField(11)
   DateTime? dueDate;
+
+  @HiveField(12)
   bool isFavorite;
 
 
@@ -41,14 +71,15 @@ class Task {
     this.isFavorite = false,
     this.createdAt,
     this.dueDate,
+    this.categories,
   });
 
   factory Task.fromJson(Map<String, dynamic> json) {
 
     Task task =  Task(
-      id: json['_id'],
-      title: json['title'],
-      description: json['description'],
+      id: json['_id'] ?? "",
+      title: json['title'] ?? "",
+      description: json['description'] ?? "",
       budget: json['budget'] ?? Random().nextInt(1500),
       location: json['location'] ?? "Addis Ababa",
       tags: json['tags'] != null ? List<String>.from(json['tags']) : 
@@ -65,13 +96,14 @@ class Task {
         "Information Technology",
         "Engineering",
         "Healthcare",
-        "Education",
+        "Education", 
       ].sublist(Random().nextInt(5)),
       rating: json['rating'] ?? Random().nextDouble() * 5,
-      totalQuestions: json['numberOfQuestions'] ?? Random().nextInt(15) + 1,
+      totalQuestions: json['totalQuestions'] ?? Random().nextInt(15) + 1,
       completedQuestions: json['completedQuestions'] ?? Random().nextInt(15) + 1,
       createdAt: DateTime.tryParse(json['createdAt']) ?? DateTime.now(),
-      dueDate: DateTime.tryParse(json['dueDate']) ?? DateTime.now()
+      dueDate: DateTime.tryParse(json['dueDate']) ?? DateTime.now(),
+      categories: json['categories'] != null ? List<Map<String, dynamic>>.from(json['categories']) : null,
     );
 
     task.totalQuestions = task.completedQuestions! + task.completedQuestions!;
@@ -91,14 +123,15 @@ class Task {
     json['location'] = location;
     json['tags'] = tags;
     json['rating'] = rating;
-    json['numberOfQuestions'] = totalQuestions;
+    json['totalQuestions'] = totalQuestions;
     json['completedQuestions'] = completedQuestions;
+    json['categories'] = categories;
 
     return json;
   }
 
   @override
   String toString() {
-    return "task: $title";
+    return "task: $title category: $categories";
   }
 }
