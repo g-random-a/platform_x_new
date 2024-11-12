@@ -6,12 +6,15 @@ import 'package:platform_x/tasks_management/application/question/bloc/current_an
 import 'package:platform_x/tasks_management/application/question/bloc/question_bloc.dart';
 import 'package:platform_x/tasks_management/application/question/event/current_answer_event.dart';
 import 'package:platform_x/tasks_management/application/question/state/question_state.dart';
+import 'package:platform_x/tasks_management/domain/task/task.dart';
 import 'package:platform_x/tasks_management/presentation/components/custom_elevated_button.dart';
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/surver_screen.dart';
 import 'package:platform_x/tasks_management/services/hive/taskmanagment.dart';
 
 class QuestionScreeenBuilder extends StatefulWidget {
-  const QuestionScreeenBuilder({super.key});
+  final Task task;
+
+  const QuestionScreeenBuilder({super.key, required this.task});
 
   @override
   State<QuestionScreeenBuilder> createState() => _QuestionScreeenBuilderState();
@@ -37,7 +40,7 @@ class _QuestionScreeenBuilderState extends State<QuestionScreeenBuilder> {
   }
 
 
-  PageController _pageController = PageController(keepPage: true, initialPage:3 );
+  PageController _pageController = PageController(keepPage: true );
 
   void nextPage () {
     _pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeIn);
@@ -49,6 +52,16 @@ class _QuestionScreeenBuilderState extends State<QuestionScreeenBuilder> {
 
   @override
   Widget build(BuildContext context) {
+
+    try {
+      var initialPage = context.read<TaskManagerService>().getOnProgressTaskById(widget.task.id).completedQuestions;
+      if (initialPage != null) {
+        _pageController = PageController(initialPage: initialPage, keepPage: true);
+      }
+    } catch (e) {
+      print(e);
+    }
+
     return Scaffold(
       body: SafeArea(
         child: BlocBuilder<QuestionsBloc, QuestionsState>(
@@ -79,7 +92,7 @@ class _QuestionScreeenBuilderState extends State<QuestionScreeenBuilder> {
               physics: const NeverScrollableScrollPhysics(),
               itemCount: totalQuestions,
               itemBuilder: (context, index) {
-                  return SurveyScreen(question: state.questions[index], currentIndex: index + 1, totalQuestions: totalQuestions, nextPage: nextPage, prevPage: prevPage,);
+                  return SurveyScreen(question: state.questions[index], currentIndex: index + 1, totalQuestions: totalQuestions, nextPage: nextPage, prevPage: prevPage, task: widget.task,);
               },
               
               );

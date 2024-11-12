@@ -28,6 +28,7 @@ class ProfileBloc extends Bloc<DataCollectorEvent, ProfileState> {
       final profileId = response.data['id'];
       await _preferences.setString("user_id", userId);
       await _preferences.setString("profile_id", profileId);
+      // await _preferences.setString();
 
       emit(ProfileCreated("Profile created successfully!"));
     } catch (error) {

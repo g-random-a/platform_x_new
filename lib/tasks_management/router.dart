@@ -35,7 +35,15 @@ List<GoRoute> taskManagementRoutes = [
         ),
         GoRoute(
           path: "/Survey",
-          builder: (context, state) => const QuestionScreeenBuilder(),
+          builder: (context, state) {
+            final props = state.extra as Map<String, dynamic>?; 
+            print("----------------------------------------");
+            print(props);
+            if (props != null && props.containsKey('task')) {
+              return QuestionScreeenBuilder(task: props['task']);
+            }
+            return const NotFound();
+          },
           // builder: (context, state) {
           //   final props = state.extra as Map<String, dynamic>?; 
           //   if (props != null) {

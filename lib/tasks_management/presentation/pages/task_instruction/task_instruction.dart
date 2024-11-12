@@ -11,6 +11,7 @@ import 'package:platform_x/tasks_management/application/question/state/question_
 import 'package:platform_x/tasks_management/domain/task/task.dart';
 import 'package:platform_x/tasks_management/presentation/components/custom_elevated_button.dart';
 import 'package:platform_x/tasks_management/presentation/components/custom_image.dart';
+import 'package:platform_x/tasks_management/services/hive/taskmanagment.dart';
 
 import '../../../../core/application/theme/bloc/theme_bloc.dart';
 import '../../components/loader_overlay.dart';
@@ -29,7 +30,7 @@ class _TaskInstructionScreenState extends State<TaskInstructionScreen> {
   
   Future<void> performTask(BuildContext context) async {
     OverlayLoader.show(context); 
-    
+     
     await Future.delayed(Duration(seconds: 3));
 
     OverlayLoader.hide(); 
@@ -45,7 +46,11 @@ class _TaskInstructionScreenState extends State<TaskInstructionScreen> {
             
             if (state is QuestionsLoadingSuccessState) {
               OverlayLoader.hide();
-              context.go('/tasks/Survey');
+              context.go('/tasks/Survey', 
+                extra: {
+                  'task': widget.task,
+                }
+              );
             }
             
             else if (state is QuestionsLoadingFailedState) {
@@ -144,7 +149,7 @@ class _TaskInstructionScreenState extends State<TaskInstructionScreen> {
                                 ),
                               ),
                               Text(
-                                "10000Br.",
+                                "${widget.task.budget.toString()}birr.",
                                 style: CustomTextStyles.titleLargePlusJakartaSansBlack900(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme).copyWith(
                                   fontSize: 18.fSize,
                                   fontWeight: FontWeight.w500,
@@ -194,7 +199,7 @@ class _TaskInstructionScreenState extends State<TaskInstructionScreen> {
                   // Start Task Button
                   CustomElevatedButton(
                     backgroundColor: Colors.black,
-                    onclick: () {
+                    onclick: () async{
                       BlocProvider.of<QuestionsBloc>(context).add(LoadQuestionsEvent(taskId: widget.task.id));
                     },
                     ),

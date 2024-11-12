@@ -86,7 +86,7 @@ void main() async {
           create: (context) => TasksBloc(tasksRepository: context.read<TasksRepository>()),
         ),
         BlocProvider(
-          create: (context) => QuestionsBloc(questionsRepository: context.read<QuestionsRepository>()),
+          create: (context) => QuestionsBloc(questionsRepository: context.read<QuestionsRepository>(), taskManagerService: taskManager),
         ),
         BlocProvider(
           create: (context) => AuthBloc()..add(AuthLoadEvent()),

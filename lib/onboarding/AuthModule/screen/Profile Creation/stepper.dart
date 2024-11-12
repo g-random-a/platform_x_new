@@ -7,7 +7,9 @@ import 'package:platform_x/onboarding/AuthModule/bloc/profile%20bloc/datacollect
 import 'package:platform_x/onboarding/AuthModule/bloc/profile%20bloc/datacollector_event.dart';
 import 'package:platform_x/onboarding/AuthModule/bloc/profile%20bloc/datacollector_state.dart';
 import 'package:platform_x/onboarding/AuthModule/miscellaneous/dropdown_options.dart';
+import 'package:platform_x/onboarding/AuthModule/screen/Profile%20Creation/Component/countriesDropdown.dart';
 import 'package:platform_x/onboarding/AuthModule/screen/Profile%20Creation/Component/dropdown.dart';
+import 'package:platform_x/onboarding/AuthModule/screen/Profile%20Creation/Component/nationalityDropdown.dart';
 import 'package:platform_x/onboarding/Common/button.dart';
 import 'package:platform_x/onboarding/Common/footer.dart';
 import 'package:platform_x/onboarding/Common/gradient.dart';
@@ -164,12 +166,16 @@ class _NewProfilePageState extends State<NewProfilePage> {
                   Row(
                     children: [
                       Expanded(
-                        child: _buildTextField(
-                            label: S.of(context).country,
-                            hint: '',
-                            dataMap: _addressData,
-                            dataLabel: 'country'),
-                      ),
+                        child:
+                        CountryDropdown(
+                          dataMap: _addressData,
+                        ),),
+                      //    _buildTextField(
+                      //       label: S.of(context).country,
+                      //       hint: '',
+                      //       dataMap: _addressData,
+                      //       dataLabel: 'country'),
+                      // ),
                       const SizedBox(width: 8),
                       Expanded(
                           child: _buildTextField(
@@ -234,11 +240,12 @@ class _NewProfilePageState extends State<NewProfilePage> {
                   const SizedBox(
                     height: 16,
                   ),
-                  _buildTextField(
-                      label: S.of(context).nationality,
-                      hint: '',
-                      dataMap: _profileData,
-                      dataLabel: 'nationality'),
+                  // _buildTextField(
+                  //     label: S.of(context).nationality,
+                  //     hint: '',
+                  //     dataMap: _profileData,
+                  //     dataLabel: 'nationality'),
+                  NationalityDropdown(dataMap: _profileData,),
                   // Date of Birth and Gender in one row.
                   Row(
                     children: [

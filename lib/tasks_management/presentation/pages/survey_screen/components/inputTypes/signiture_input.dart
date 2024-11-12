@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -110,7 +111,7 @@ class _SketchCanvasState extends State<SketchCanvas> {
       print("saving image");
       print("----------------------------------------------------------------");
       final tempDir = await getTemporaryDirectory();
-      final filePath = '${tempDir.path}/sketch${widget.questionId}_${widget.inputId}.png';
+      final filePath = '${tempDir.path}/sketch${widget.questionId}_${widget.inputId}_${Random.secure().nextDouble()}.png';
       final imageBytes = await _controller.toPngBytes();
       if (imageBytes != null) {
         final file = File(filePath);
@@ -133,6 +134,8 @@ class _SketchCanvasState extends State<SketchCanvas> {
     if (answer != null) {
       setState(() {
         // i can get file path from answer.file[0] and load it as image
+        print("loading image");
+        print(answer.file[0]);
         signed = Image.file(File(answer.file[0])); 
       });
     }
@@ -145,8 +148,15 @@ class _SketchCanvasState extends State<SketchCanvas> {
     _initFromLocal();
   }
 
-  void _clearCanvas() {
+  Future<void> _clearCanvas() async {
     _controller.clear();
+    if (signed != null){
+      final tempDir = await getTemporaryDirectory();
+      final filePath = '${tempDir.path}/sketch${widget.questionId}_${widget.inputId}.png';
+      if (File(filePath).existsSync()) {
+        File(filePath).deleteSync();
+      }
+    }
     setState(() {
       signed = null;
     });

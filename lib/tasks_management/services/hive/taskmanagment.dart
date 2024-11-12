@@ -1,16 +1,20 @@
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:platform_x/tasks_management/domain/task/task.dart';
+import 'package:platform_x/tasks_management/domain/task/task_question_map.dart';
 
 class TaskManagerService {
   late Box<Task> onprogressBox;
   late Box<Task> savedBox;
+  late Box<TaskQuestionMap> taskQuestionMap;
 
   Future<void> initHive() async {
     await Hive.initFlutter(); 
     Hive.registerAdapter(TaskAdapter()); 
+    Hive.registerAdapter(TaskQuestionMapAdapter());
     onprogressBox = await Hive.openBox<Task>('onprogressTasks');
     savedBox = await Hive.openBox<Task>('savedTasks');
+    taskQuestionMap = await Hive.openBox<TaskQuestionMap>('taskQuestionMap');
   }
 
   Future<void> closeBoxes() async {
@@ -66,5 +70,18 @@ class TaskManagerService {
 
   List<Task> getSavedTasks() {
     return savedBox.values.toList();
+  }
+
+  Future<void> saveTaskQuestionMap(TaskQuestionMap taskQuestionMap) async {
+    await this.taskQuestionMap.put(taskQuestionMap.taskId, taskQuestionMap);
+  }
+
+  TaskQuestionMap getTaskQuestionMap(String taskId) {
+    TaskQuestionMap? taskQuestionMap = this.taskQuestionMap.get(taskId);
+    if(taskQuestionMap != null){
+      return taskQuestionMap;
+    }
+
+    throw Exception('Task not found');
   }
 }

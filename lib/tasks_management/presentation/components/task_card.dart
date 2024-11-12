@@ -240,9 +240,9 @@ class _DocumentlistItemWidgetState extends State<DocumentlistItemWidget> {
                   ),
                 ),
               ),
-              if(!widget.inprogress)
+              if(widget.inprogress)
               SizedBox(height: 8.h),
-              if(!widget.inprogress)
+              if(widget.inprogress)
               RichText(
                 text: TextSpan(
                   children: [
@@ -270,7 +270,7 @@ class _DocumentlistItemWidgetState extends State<DocumentlistItemWidget> {
                 ),
                 textAlign: TextAlign.left,
               ),
-              if(!widget.inprogress)
+              if(widget.inprogress)
               SizedBox(height: 14.h),
               // CustomElevatedButton(
               //   text: "Start Task",

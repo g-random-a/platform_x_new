@@ -17,13 +17,12 @@ class InitCurrentAnswerEvent extends CurrentAnswerEvent {
 
 class SubmitCurrentAnswerEvent extends CurrentAnswerEvent {
   final dynamic questionId;
+  final String taskId;
   
-  final dynamic userId;
-
-  const SubmitCurrentAnswerEvent({required this.questionId, required this.userId});
+  const SubmitCurrentAnswerEvent({required this.questionId, required this.taskId});
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [questionId, taskId];
 }
 
 class UpdateCurrentAnswerEvent extends CurrentAnswerEvent {

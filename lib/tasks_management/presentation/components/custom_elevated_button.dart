@@ -16,6 +16,9 @@ class CustomElevatedButton extends StatelessWidget {
 
   final bool outlined;
 
+  final bool loading;
+  final bool disabled;
+
   const CustomElevatedButton({
     super.key,
     this.backgroundColor,
@@ -23,6 +26,8 @@ class CustomElevatedButton extends StatelessWidget {
     this.text,
     this.outlined = false,
     required this.onclick,
+    this.loading = false,
+    this.disabled = false,
   });
 
   @override
@@ -50,10 +55,18 @@ class CustomElevatedButton extends StatelessWidget {
         ),),
         elevation: WidgetStateProperty.all<double>(0),
       ),
-      onPressed: () {
+      onPressed:loading || disabled ? null : () {
         onclick();
       }, 
-      child: Text(
+      child: loading ? 
+      SizedBox(
+        height: 25.0,  // set desired height
+        width: 25.0,  
+      child: CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation<Color>(textColor ?? context.watch<ThemeBloc>().state.appColorTheme.whiteA70001),
+      ),
+            ) :
+       Text(
         text ?? S.of(context).t_start_task ,
         style: TextStyle(
           color:  textColor ?? context.watch<ThemeBloc>().state.appColorTheme.whiteA70001,

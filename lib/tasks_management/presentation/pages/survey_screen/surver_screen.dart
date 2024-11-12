@@ -4,10 +4,13 @@ import 'package:go_router/go_router.dart';
 import 'package:platform_x/core/utils/responsive/size.dart';
 import 'package:platform_x/core/utils/theme/custom_text_styles.dart';
 import 'package:platform_x/generated/l10n.dart';
+import 'package:platform_x/tasks_management/application/question/bloc/current_answer_bloc.dart';
+import 'package:platform_x/tasks_management/application/question/state/current_answer_state.dart';
 import 'package:platform_x/tasks_management/domain/answerType.dart';
 import 'package:platform_x/tasks_management/domain/inputPropertiesType.dart';
 import 'package:platform_x/tasks_management/domain/inputValidation.dart';
 import 'package:platform_x/tasks_management/domain/questionTypes.dart';
+import 'package:platform_x/tasks_management/domain/task/task.dart';
 import 'package:platform_x/tasks_management/presentation/components/custom_elevated_button.dart';
 import 'package:platform_x/tasks_management/presentation/components/loader_overlay.dart';
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/audio_input_builder.dart';
@@ -27,8 +30,10 @@ import 'package:platform_x/tasks_management/presentation/pages/survey_screen/com
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/time_input.dart';
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/photo_taker.dart';
 import 'package:platform_x/tasks_management/presentation/pages/task_instruction/task_instruction.dart';
+import 'package:platform_x/tasks_management/services/hive/taskmanagment.dart';
 
 import '../../../../core/application/theme/bloc/theme_bloc.dart';
+import '../../../application/question/event/current_answer_event.dart';
 import 'components/inputTypes/text_input.dart';
 
 class SurveyScreen extends StatefulWidget {
@@ -38,8 +43,9 @@ class SurveyScreen extends StatefulWidget {
   final int totalQuestions;
   final Function nextPage;
   final Function prevPage;
+  final Task task;
 
-  const SurveyScreen({super.key, required this.question, required this.currentIndex, required this.totalQuestions, required this.nextPage, required this.prevPage});
+  const SurveyScreen({super.key, required this.question, required this.currentIndex, required this.totalQuestions, required this.nextPage, required this.prevPage, required this.task});
 
   @override
   _SurveyScreenState createState() => _SurveyScreenState();
@@ -123,7 +129,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
                               ),
                               TextButton(
                                 child:  Text(
-                                  S.of(context).t_task_compleleted_successfully,
+                                  S.of(context).t_back_to_main_screen,
                                   style: CustomTextStyles.labelMediumPoppinsOnErrorContainer(
                                     context.watch<ThemeBloc>().state.themeData, 
                                     context.watch<ThemeBloc>().state.appColorTheme, 
@@ -136,14 +142,15 @@ class _SurveyScreenState extends State<SurveyScreen> {
                                     actions: [
                                       TextButton(
                                         onPressed: () {
-
-                                          // use go routing
                                           context.pop();
                                         },
                                         child:  Text(S.of(context).t_cancel),
                                       ),
                                       TextButton(
-                                        onPressed: () {
+                                        onPressed: () async {
+                                          widget.task.completedQuestions = widget.currentIndex-1;
+                                          widget.task.totalQuestions = widget.totalQuestions;
+                                          await context.read<TaskManagerService>().saveTask(widget.task);
                                           context.pushReplacement('/');
                                         },
                                         child:  Text(S.of(context).t_yes),
@@ -372,54 +379,75 @@ class _SurveyScreenState extends State<SurveyScreen> {
                     padding: 0,
                   ),
                   SizedBox(height: 20.h),
-                  CustomElevatedButton(
-                    onclick: () {
-                      FocusScope.of(context).unfocus();
-                      
-                      if (_formKey.currentState != null) {
-                        bool valid = _formKey.currentState!.validate();
-                        if (valid){
-                          if (widget.currentIndex == widget.totalQuestions){
-                            performTask(context);
-
-                          }
-                          else {
-                            widget.nextPage();
-                          }
-                        }
+                  BlocConsumer<CurrentAnswerBloc, CurrentAnswerState>(
+                    listener: (context, state) {
+                      if (state is CurrentAnswerSubmitionFailedState) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("failed to save answer, please try again."),
+                          ),
+                        );
+                      }
+                      if (state is CurrentAnswerSubmittedState){
+                        widget.nextPage(); 
                       }
                     },
-                    text: widget.currentIndex == widget.totalQuestions ? S.of(context).t_submit : S.of(context).t_next,
-                    backgroundColor: context
-                        .watch<ThemeBloc>()
-                        .state
-                        .appColorTheme
-                        .black90001,
-                    textColor: context
-                        .watch<ThemeBloc>()
-                        .state
-                        .appColorTheme
-                        .whiteA70001,
+                    builder: (context, state) {
+                      return CustomElevatedButton(
+                        loading: state is CurrentAnswerLoadingState,
+                        onclick: () {
+                          FocusScope.of(context).unfocus();
+                          
+                          if (_formKey.currentState != null) {
+                            bool valid = _formKey.currentState!.validate();
+                            if (valid){
+                              if (widget.currentIndex == widget.totalQuestions){
+                                performTask(context);
+                              }
+                              else {
+                                BlocProvider.of<CurrentAnswerBloc>(context).add(SubmitCurrentAnswerEvent(questionId: widget.question.id ?? "", taskId: widget.task.id));
+                              }
+                            }
+                          }
+                        },
+                        text: widget.currentIndex == widget.totalQuestions ? S.of(context).t_submit : S.of(context).t_next,
+                        backgroundColor: context
+                            .watch<ThemeBloc>()
+                            .state
+                            .appColorTheme
+                            .black90001,
+                        textColor: context
+                            .watch<ThemeBloc>()
+                            .state
+                            .appColorTheme
+                            .whiteA70001,
+                      );
+                    }
                   ),
                   const SizedBox(height: 10), // Add spacing between buttons
                   if (widget.currentIndex != 1)
-                  CustomElevatedButton(
-                    onclick: () {
-                      FocusScope.of(context).unfocus();
-
-                      widget.prevPage();
-                    },
-                    text: S.of(context).t_previous,
-                    backgroundColor: context
-                        .watch<ThemeBloc>()
-                        .state
-                        .appColorTheme
-                        .whiteA70001,
-                    textColor: context
-                        .watch<ThemeBloc>()
-                        .state
-                        .appColorTheme
-                        .black90001,
+                  BlocBuilder<CurrentAnswerBloc, CurrentAnswerState>(
+                    builder: (context,state) {
+                      return CustomElevatedButton(
+                        disabled: state is CurrentAnswerLoadingState,
+                        onclick: () {
+                          FocusScope.of(context).unfocus();
+                      
+                          widget.prevPage();
+                        },
+                        text: S.of(context).t_previous,
+                        backgroundColor: context
+                            .watch<ThemeBloc>()
+                            .state
+                            .appColorTheme
+                            .whiteA70001,
+                        textColor: context
+                            .watch<ThemeBloc>()
+                            .state
+                            .appColorTheme
+                            .black90001,
+                      );
+                    }
                   ),
                 ],
               ),
