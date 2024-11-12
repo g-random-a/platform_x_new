@@ -13,17 +13,12 @@ class SavedTasksInitialState extends SavedTasksState {}
 class SavedTasksLoadingState extends SavedTasksState {}
 
 class SavedTasksLoadingSuccessState extends SavedTasksState {
-  final List<Task> SavedTasks;
-  
-  final bool isLoadingMore;
-  final int nextPage;
-  final int limit;
-  final String error;
+  final List<Task> tasks;
 
-  const SavedTasksLoadingSuccessState({required this.SavedTasks, this.isLoadingMore = false, this.nextPage = 1, this.limit = 10, this.error = ''});
+  const SavedTasksLoadingSuccessState({required this.tasks});
 
   @override
-  List<Object?> get props => [SavedTasks, isLoadingMore, error, nextPage, limit];
+  List<Object?> get props => [tasks];
 }
 
 class SavedTasksLoadingFailedState extends SavedTasksState {}

@@ -1,13 +1,20 @@
 import 'package:flutter/services.dart';
 import 'package:platform_x/core/application/auth/bloc/check_auth_bloc.dart';
 import 'package:platform_x/core/utils/responsive/size.dart';
+import 'package:platform_x/tasks_management/application/question/bloc/current_answer_bloc.dart';
 import 'package:platform_x/tasks_management/application/question/bloc/question_bloc.dart';
+import 'package:platform_x/tasks_management/application/task/bloc/saved_tasks_bloc.dart';
+import 'package:platform_x/tasks_management/application/task/event/saved_tasks_event.dart';
+import 'package:platform_x/tasks_management/infrustructure/data_provider/answer/answer_data_provider.dart';
 import 'package:platform_x/tasks_management/infrustructure/data_provider/profile/user_profile.dart';
 import 'package:platform_x/tasks_management/infrustructure/data_provider/question/question_data_provider.dart';
+import 'package:platform_x/tasks_management/infrustructure/repository/answer/answer_repository.dart';
 import 'package:platform_x/tasks_management/infrustructure/repository/profile/user_profile.dart';
 import 'package:platform_x/tasks_management/infrustructure/repository/question/question_repo.dart';
 import 'package:platform_x/tasks_management/infrustructure/repository/task/task_repo.dart';
-import 'package:platform_x/tasks_management/services/hive/hive.dart';
+import 'package:platform_x/tasks_management/services/hive/answermanagment.dart';
+import 'package:platform_x/tasks_management/services/hive/taskmanagment.dart';
+import 'package:platform_x/tasks_management/services/sharedPref/sharedpref.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/application/auth/event/check_auth_event.dart';
@@ -36,10 +43,12 @@ void main() async {
   final taskManager = TaskManagerService();
   await taskManager.initHive();
 
+  final answerManager = AnswerManagement();
+  await answerManager.init();
+
   final DioService dioService = DioService();
 
-  final prefs = await SharedPreferences.getInstance();
-  final isAuthenticated = prefs.getString('access_token');
+  await SharedPrefService.init();
 
   final localBloc = LocaleBloc();
   localBloc.add(LoadLocaleEvent());
@@ -50,6 +59,9 @@ void main() async {
         RepositoryProvider<TaskManagerService>(
           create: (context) => taskManager,
         ),
+        RepositoryProvider<AnswerManagement>(
+          create: (context) => answerManager,
+        ),
         RepositoryProvider<TasksRepository>(
           create: (context) => TasksRepository(tasksDataProvider: TasksDataProvider(dio: dioService.dio, taskManagerService: taskManager)),
         ),
@@ -58,7 +70,10 @@ void main() async {
           ),
         RepositoryProvider<UserProfileRepository>(
           create: (context) => UserProfileRepository(userDataProvider: UserProfileDataProvider(dio: dioService.dio))
-          )
+          ),
+        RepositoryProvider<AnswerRepository>(
+          create: (context) => AnswerRepository(answerDataProvider: AnswerDataProvider(dio: dioService.dio)),
+        )
             ], 
       child: MultiBlocProvider(
       providers: [
@@ -75,7 +90,9 @@ void main() async {
         ),
         BlocProvider(
           create: (context) => AuthBloc()..add(AuthLoadEvent()),
-        )
+        ),
+        BlocProvider(create: (context) => SavedTasksBloc(taskManagerService: taskManager)..add(LoadSavedTasksEvent())),
+        BlocProvider(create: (context) => CurrentAnswerBloc(answerRepository: context.read<AnswerRepository>(), answerManagerService: answerManager)),
       ],
      child: const MyApp(),
         )

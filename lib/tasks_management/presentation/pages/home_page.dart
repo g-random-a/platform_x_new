@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:platform_x/generated/l10n.dart';
+import 'package:platform_x/tasks_management/application/task/bloc/saved_tasks_bloc.dart';
 import 'package:platform_x/tasks_management/application/task/bloc/task_bloc.dart';
 import 'package:platform_x/tasks_management/application/task/event/task_event.dart';
+import 'package:platform_x/tasks_management/application/task/state/saved_task_state.dart';
 import 'package:platform_x/tasks_management/application/task/state/task_state.dart';
 import 'package:platform_x/tasks_management/presentation/pages/image_annotation/image_annotation.dart';
+import 'package:platform_x/tasks_management/services/hive/taskmanagment.dart';
 
 import '../../../core/application/theme/bloc/theme_bloc.dart';
 import '../../domain/task/task.dart';
@@ -34,7 +37,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold( 
       backgroundColor: context.watch<ThemeBloc>().state.appColorTheme.blue50,
       body: SafeArea(
         child: Container(
@@ -50,7 +53,7 @@ class _HomePageState extends State<HomePage> {
               if (index == 1){
                 // return TaskInstructionScreen();
                 return AnnotatedImageFormField(
-                  imageProvider: AssetImage("assets/task_instruction.png"),
+                  imageProvider: const AssetImage("assets/task_instruction.png"),
                   onSaved: (value) {
                     print(value);
                   },
@@ -112,7 +115,7 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return NestedScrollView(
-      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+      headerSliverBuilder: (BuildContext nestedScrollContext, bool innerBoxIsScrolled) {
         return [
           SliverToBoxAdapter(
             child: ContentSection(
@@ -126,31 +129,82 @@ class Home extends StatelessWidget {
         physics: const NeverScrollableScrollPhysics(),
         onPageChanged: (pageIndex) {},
         controller: _scrollController,
-        itemBuilder: (context, pageIndex) {
+        itemBuilder: (pageviewContext, pageIndex) {
+          if (pageIndex == 1){
           return BlocBuilder<TasksBloc, TasksState>(
-            builder: (context, state) {
-              if (state is TasksLoadingState || state is TasksInitialState){
-                return const Center(child: CircularProgressIndicator(),);
+            builder: (taskBloccontext, state) {
+                if (state is TasksLoadingState || state is TasksInitialState){
+                  return const Center(child: CircularProgressIndicator(),);
+                }
+                else if (state is TasksLoadingSuccessState){
+                  return ListView.builder(
+                        itemCount: state.tasks.length,
+                        itemBuilder: (listviewContext, index) {
+                          Task task = state.tasks[index];
+                          return  DocumentlistItemWidget(
+                            key: Key(index.toString()),
+                            task: task,
+                            inprogress: false,
+                          );
+                        },
+                      );
+                }
+                else {
+                  return Center(child: Text(S.of(context).t_couldnt_load_try_again));
+                }
               }
-              else if (state is TasksLoadingSuccessState){
-                return ListView.builder(
+            );
+          }
+                
+          if (pageIndex == 2){
+            return BlocBuilder<SavedTasksBloc, SavedTasksState>(
+              builder: (savedTaskBloccontext, state) {
+                if (state is SavedTasksLoadingSuccessState){
+                  if (state.tasks.length > 0){
+                    return ListView.builder(
                       itemCount: state.tasks.length,
-                      itemBuilder: (context, index) {
+                      itemBuilder: (listviewContext, index) {
                         Task task = state.tasks[index];
                         return  DocumentlistItemWidget(
                           key: Key(index.toString()),
                           task: task,
-                          inprogress: pageIndex == 1,
+                          inprogress: false,
                         );
                       },
                     );
-              }
+                  }
+                  else {
+                    return Center(child: Text(S.of(context).t_nosavedtasks));
+                  }
+                }
+                if (state is SavedTasksLoadingState){
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                    );
+                }
+                else {
+                  return Center(child: Text(S.of(context).t_couldnt_load_try_again));
+                }
+              });
+          }
+          
+          else {
+            List<Task> onprogressTasks = context.read<TaskManagerService>().getOnProgressTasks();
 
-              else {
-                return Center(child: Text(S.of(context).t_couldnt_load_try_again));
-              }
-            }
-          );
+            return ListView.builder(
+              itemCount: onprogressTasks.length,
+              itemBuilder: (listviewContext, index) {
+                Task task = onprogressTasks[index];
+                return  DocumentlistItemWidget(
+                  key: Key(index.toString()),
+                  task: task,
+                  inprogress: true,
+                );
+              },
+            );
+          }
+
+            
         },
       ),
     );

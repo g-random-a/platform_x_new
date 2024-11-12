@@ -18,7 +18,9 @@ class SubmitAnswerEvent extends AnswerEvent {
 
 class UpdateAnswerEvent extends AnswerEvent {
   final IAnswer answer;
-  const UpdateAnswerEvent({required this.answer});
+  final String questionId;
+
+  const UpdateAnswerEvent({required this.answer, required this.questionId});
 
   @override
   List<Object?> get props => [answer];

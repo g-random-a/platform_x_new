@@ -2,10 +2,13 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:platform_x/core/utils/responsive/size.dart';
 import 'package:platform_x/lib.dart';
+import 'package:platform_x/tasks_management/application/question/bloc/current_answer_bloc.dart';
 import 'package:platform_x/tasks_management/application/question/bloc/question_bloc.dart';
+import 'package:platform_x/tasks_management/application/question/event/current_answer_event.dart';
 import 'package:platform_x/tasks_management/application/question/state/question_state.dart';
 import 'package:platform_x/tasks_management/presentation/components/custom_elevated_button.dart';
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/surver_screen.dart';
+import 'package:platform_x/tasks_management/services/hive/taskmanagment.dart';
 
 class QuestionScreeenBuilder extends StatefulWidget {
   const QuestionScreeenBuilder({super.key});
@@ -33,7 +36,8 @@ class _QuestionScreeenBuilderState extends State<QuestionScreeenBuilder> {
     );
   }
 
-  PageController _pageController = PageController(keepPage: true);
+
+  PageController _pageController = PageController(keepPage: true, initialPage:3 );
 
   void nextPage () {
     _pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeIn);

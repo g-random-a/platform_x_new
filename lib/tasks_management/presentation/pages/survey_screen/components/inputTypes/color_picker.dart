@@ -4,7 +4,6 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:platform_x/core/application/theme/bloc/theme_bloc.dart';
 import 'package:platform_x/core/utils/responsive/size.dart';
-import 'package:platform_x/tasks_management/presentation/components/custom_elevated_button.dart';
 
 import '../../../../../domain/inputPropertiesType.dart';
 import '../../../../../domain/inputValidation.dart';

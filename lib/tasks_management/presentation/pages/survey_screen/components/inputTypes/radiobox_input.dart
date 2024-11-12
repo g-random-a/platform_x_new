@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:platform_x/core/utils/responsive/size.dart';
+import 'package:platform_x/tasks_management/application/question/bloc/current_answer_bloc.dart';
+import 'package:platform_x/tasks_management/application/question/event/current_answer_event.dart';
+import 'package:platform_x/tasks_management/domain/answerType.dart';
 import 'package:platform_x/tasks_management/domain/inputPropertiesType.dart';
 import 'package:platform_x/tasks_management/domain/inputValidation.dart';
 
@@ -10,11 +13,16 @@ import '../../../../../../core/utils/theme/custom_text_styles.dart';
 class RadioboxInputField extends StatefulWidget {
   final RadioInputValidationSchema validations;
   final RadioPropertySchema properties;
+  final String questionId;
+  final int inputId;
 
   const RadioboxInputField({
     super.key,
     required this.properties,
     required this.validations,
+    required this.questionId,
+    required this.inputId,
+
   });
 
   @override
@@ -24,9 +32,21 @@ class RadioboxInputField extends StatefulWidget {
 class _RadioboxInputFieldState extends State<RadioboxInputField> {
   int? selectedValue;
 
+  void _initFromLocal(){
+    final SelectionAnswer? answer = BlocProvider.of<CurrentAnswerBloc>(context).state.answers[widget.questionId + "_" + widget.inputId.toString()] as SelectionAnswer?;
+
+    if (answer != null) {
+      setState(() {
+      widget.properties.options = answer.selected;
+      selectedValue = widget.properties.options.indexWhere((element) => element.selected == true);
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    _initFromLocal();
   }
 
   String? validateCheckbox(bool? value) {
@@ -57,7 +77,7 @@ class _RadioboxInputFieldState extends State<RadioboxInputField> {
                     onTap: () {
                       setState(() {
                         widget.properties.options[index].selected = !(widget
-                            .properties.options[index].selected as bool);
+                            .properties.options[index].selected);
                       });
                     },
                     child: Container(
@@ -92,17 +112,19 @@ class _RadioboxInputFieldState extends State<RadioboxInputField> {
                           value: widget.properties.options[index].selected ==
                               true,
                           onChanged: (bool? value) {
-                            setState(() {
-                              if (selectedValue != null) {
+                            if (selectedValue != null) {
                                 widget.properties.options[selectedValue!]
                                     .selected = false;
                               }
-                              widget.properties.options[index].selected =
-                                  !(widget.properties.options[index].selected
-                                      as bool);
-
+                            widget.properties.options[index].selected =
+                                !(widget.properties.options[index].selected
+                                    as bool);
+                            BlocProvider.of<CurrentAnswerBloc>(context).add(UpdateCurrentAnswerEvent(answer: SelectionAnswer(
+                              id: widget.inputId, 
+                              selected: widget.properties.options, 
+                            ), questionId: widget.questionId, ));
+                            setState(() {
                               selectedValue = index;
-
                             });
                           },
                           toggleable: true,
@@ -146,11 +168,19 @@ class _RadioboxInputFieldState extends State<RadioboxInputField> {
               if (selectedValue != null)
                 TextButton(
                   onPressed: () {
-                    setState(() {
-                      widget.properties.options[selectedValue!].selected =
+                    widget.properties.options[selectedValue!].selected =
                           false;
+
+                    BlocProvider.of<CurrentAnswerBloc>(context).add(UpdateCurrentAnswerEvent(answer: SelectionAnswer(
+                        id: widget.inputId, 
+                        selected: widget.properties.options, 
+                      ), questionId: widget.questionId, ));
+
+
+                    setState(() {
                       selectedValue = null;
                     });
+
 
                     // Form.of(context).validate();
                   },

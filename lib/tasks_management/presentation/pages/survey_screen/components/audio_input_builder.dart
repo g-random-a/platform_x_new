@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:platform_x/core/utils/responsive/size.dart';
+import 'package:platform_x/lib.dart';
+import 'package:platform_x/tasks_management/application/question/bloc/current_answer_bloc.dart';
+import 'package:platform_x/tasks_management/application/question/event/current_answer_event.dart';
+import 'package:platform_x/tasks_management/domain/answerType.dart';
 import 'package:platform_x/tasks_management/domain/inputPropertiesType.dart';
 import 'package:platform_x/tasks_management/domain/inputValidation.dart';
 import 'package:platform_x/tasks_management/presentation/components/custom_voice_message.dart';
@@ -9,11 +13,15 @@ class AudioInputBuilder extends StatefulWidget {
  
   final MediaInputValidationSchema validation;
   final MediaPropertySchema property;
+  final int inputId;
+  final String questionId;
 
   const AudioInputBuilder({
     super.key,
     required this.validation,
-    required this.property
+    required this.property,
+    required this.inputId, 
+    required this.questionId,
   });
 
   @override
@@ -28,12 +36,14 @@ class _AudioInputBuilderState extends State<AudioInputBuilder> {
     setState(() {
       audioFilePath = newFilePath;
     });
+    BlocProvider.of<CurrentAnswerBloc>(context).add(UpdateCurrentAnswerEvent(answer: FileAnswer(id: widget.inputId, file: [newFilePath]), questionId: widget.questionId));
   }
 
   void cancelRecordedAudio(){
     setState(() {
       audioFilePath = null;
     });
+    BlocProvider.of<CurrentAnswerBloc>(context).add(DisposeCurrentAnswerEvent());
   }
 
   String? validateAudio(String? value){
@@ -41,6 +51,23 @@ class _AudioInputBuilderState extends State<AudioInputBuilder> {
       return "This field is required";
     }
     return null;
+  }
+
+  void _initFromLocal(){
+    final FileAnswer? answer = BlocProvider.of<CurrentAnswerBloc>(context).state.answers[widget.questionId + "_" + widget.inputId.toString()] as FileAnswer?;
+
+    if (answer != null) {
+      setState(() {
+        audioFilePath = answer.file[0];
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initFromLocal();
+    
   }
 
 

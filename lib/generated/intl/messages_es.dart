@@ -151,6 +151,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "t_next": MessageLookupByLibrary.simpleMessage("Siguiente"),
         "t_no_questions_found":
             MessageLookupByLibrary.simpleMessage("No se encontraron preguntas"),
+        "t_nosavedtasks": MessageLookupByLibrary.simpleMessage(
+            "No tienes tareas guardadas actualmente"),
         "t_of": MessageLookupByLibrary.simpleMessage("de"),
         "t_ongoing": MessageLookupByLibrary.simpleMessage("En curso"),
         "t_page_not_found":

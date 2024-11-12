@@ -149,6 +149,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "t_next": MessageLookupByLibrary.simpleMessage("Ifuatayo"),
         "t_no_questions_found": MessageLookupByLibrary.simpleMessage(
             "Hakuna maswali yaliyopatikana"),
+        "t_nosavedtasks": MessageLookupByLibrary.simpleMessage(
+            "Huna kazi zilizohifadhiwa kwa sasa"),
         "t_of": MessageLookupByLibrary.simpleMessage("ya"),
         "t_ongoing": MessageLookupByLibrary.simpleMessage("Inaendelea"),
         "t_out": MessageLookupByLibrary.simpleMessage("katika"),

@@ -5,6 +5,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:platform_x/core/application/theme/bloc/theme_bloc.dart';
 import 'package:platform_x/core/utils/responsive/size.dart';
 import 'package:platform_x/core/utils/theme/custom_text_styles.dart';
+import 'package:platform_x/tasks_management/application/question/bloc/current_answer_bloc.dart';
+import 'package:platform_x/tasks_management/application/question/event/current_answer_event.dart';
+import 'package:platform_x/tasks_management/domain/answerType.dart';
 import 'package:platform_x/tasks_management/domain/inputPropertiesType.dart';
 import 'package:platform_x/tasks_management/domain/inputValidation.dart';
 import 'dart:io';
@@ -15,8 +18,10 @@ class TakePhotoComponent extends StatefulWidget {
 
   final MediaInputValidationSchema validations;
   final MediaPropertySchema properties;
+  final String questionId;
+  final int inputId;
 
-  const TakePhotoComponent({super.key, required this.validations, required this.properties});
+  const TakePhotoComponent({super.key, required this.validations, required this.properties, required this.questionId, required this.inputId,});
   
   @override
   _TakePhotoComponentState createState() => _TakePhotoComponentState();
@@ -25,17 +30,35 @@ class TakePhotoComponent extends StatefulWidget {
 class _TakePhotoComponentState extends State<TakePhotoComponent> {
   File? _image;
 
-  // Function to take a photo
   Future<void> _takePhoto() async {
     final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.camera);
+    final XFile? image = await picker.pickImage(source: ImageSource.camera, preferredCameraDevice: CameraDevice.front,);
     
     if (image != null) {
       setState(() {
         _image = File(image.path);
       });
+      BlocProvider.of<CurrentAnswerBloc>(context).add(UpdateCurrentAnswerEvent(answer: FileAnswer(id: widget.inputId, file: [image.path]), questionId: widget.questionId));
     }
   }
+
+  void _initFromLocal(){
+    final FileAnswer? answer = BlocProvider.of<CurrentAnswerBloc>(context).state.answers[widget.questionId + "_" + widget.inputId.toString()] as FileAnswer?;
+
+    if (answer != null) {
+      setState(() {
+        _image = File(answer.file[0]);
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initFromLocal();
+  }
+
+
 
   String? validatPhoto(double? value) {
     if (_image == null) {

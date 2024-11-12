@@ -40,7 +40,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   void initState() {
     super.initState();
-    _initSharedPreferences(); // Initialize SharedPreferences on startup
+    _initSharedPreferences(); 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkAuth();
     });

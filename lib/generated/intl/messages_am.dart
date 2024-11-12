@@ -132,6 +132,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "t_next": MessageLookupByLibrary.simpleMessage("ቀጣይ"),
         "t_no_questions_found":
             MessageLookupByLibrary.simpleMessage("ጥያቄዎች አልተገኙም"),
+        "t_nosavedtasks": MessageLookupByLibrary.simpleMessage(
+            "አሁን ተያይዞ የታቀዱ ተልዕኮች አልተመዘገቡም"),
         "t_of": MessageLookupByLibrary.simpleMessage("ውስጥ"),
         "t_ongoing": MessageLookupByLibrary.simpleMessage("በሂደት ያለ"),
         "t_out": MessageLookupByLibrary.simpleMessage("ከ"),

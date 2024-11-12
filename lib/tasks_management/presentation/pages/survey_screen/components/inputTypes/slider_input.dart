@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:platform_x/core/application/theme/bloc/theme_bloc.dart';
 import 'package:platform_x/core/utils/theme/custom_text_styles.dart';
+import 'package:platform_x/tasks_management/application/question/bloc/current_answer_bloc.dart';
+import 'package:platform_x/tasks_management/application/question/event/current_answer_event.dart';
+import 'package:platform_x/tasks_management/domain/answerType.dart';
 import 'package:platform_x/tasks_management/domain/inputPropertiesType.dart';
 import 'package:platform_x/tasks_management/domain/inputValidation.dart';
 
@@ -9,11 +12,15 @@ class SliderInputField extends StatefulWidget {
 
   final SliderInputValidationSchema validations;
   final SliderPropertySchema properties;
+  final String questionId;
+  final int inputId;
 
   const SliderInputField({
     super.key,
     required this.validations,
-    required this.properties,
+    required this.properties, 
+    required this.questionId, 
+    required this.inputId,
   });
 
   @override
@@ -23,10 +30,21 @@ class SliderInputField extends StatefulWidget {
 class _SliderInputFieldState extends State<SliderInputField> {
   double? sliderValue;
 
+  void _initFromLocal(){
+    final ValueAnswer? answer = BlocProvider.of<CurrentAnswerBloc>(context).state.answers[widget.questionId + "_" + widget.inputId.toString()] as ValueAnswer?;
+
+    if (answer != null) {
+      setState(() {
+      sliderValue = double.tryParse(answer.value);
+      });
+    }
+  } 
+
   @override
   void initState() {
     super.initState();
     if (widget.properties.defaultValue != null) sliderValue = widget.properties.defaultValue?.toDouble();
+    _initFromLocal();
   }
 
   String? validateSlider(double? value) {
@@ -56,6 +74,9 @@ class _SliderInputFieldState extends State<SliderInputField> {
                   divisions: widget.properties.step != null ? (widget.properties.max / widget.properties.step!).round() : widget.properties.max - widget.properties.min,
                   label: sliderValue?.toString(),
                   onChanged: (value) {
+                    BlocProvider.of<CurrentAnswerBloc>(context).add(UpdateCurrentAnswerEvent(
+                      answer: ValueAnswer(value: value.toString(), id: widget.inputId), 
+                      questionId: widget.questionId, ));
                     setState(() {
                       sliderValue = value;
                     });

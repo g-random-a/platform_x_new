@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:platform_x/generated/l10n.dart';
+import 'package:platform_x/lib.dart';
 import 'package:platform_x/onboarding/AuthModule/bloc/profile%20bloc/datacollector_bloc.dart';
 import 'package:platform_x/onboarding/AuthModule/bloc/profile%20bloc/datacollector_event.dart';
 import 'package:platform_x/onboarding/AuthModule/bloc/profile%20bloc/datacollector_state.dart';
@@ -391,6 +392,7 @@ class _NewProfilePageState extends State<NewProfilePage> {
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold, // Bold text.
+                    color: Colors.black
                   ),
                 ),
                 TextSpan(
@@ -426,7 +428,7 @@ class _NewProfilePageState extends State<NewProfilePage> {
           },
           child: Builder(builder: (context) {
             return Container(
-              color: Colors.white,
+              color: Colors.black,
               child: Theme(
                 data: Theme.of(context).copyWith(
                     colorScheme: const ColorScheme.light(

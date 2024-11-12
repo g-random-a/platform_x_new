@@ -1,28 +1,19 @@
 
+import '../../../domain/answerType.dart';
+import '../../data_provider/answer/answer_data_provider.dart';
 
-import '../../../domain/questionTypes.dart';
-import '../../data_provider/question/question_data_provider.dart';
+class AnswerRepository {
+  final AnswerDataProvider answerDataProvider;
 
-class QuestionsRepository {
-  final QuestionsDataProvider tasksDataProvider;
+  AnswerRepository({required this.answerDataProvider});
 
-  QuestionsRepository({required this.tasksDataProvider});
-
-  // Future<bool> submitIQuestion(IQuestion task) async {
-  //   try {
-  //     bool isQuestionsSent = await tasksDataProvider.submitIQuestion(task);
-  //     return isQuestionsSent;
-  //   } catch (e) {
-  //     rethrow;
-  //   }
-  // }
-
-  Future<List<IQuestion>> loadQuestions(String taskId) async {
+  Future<bool> submitAnswer(Map<String, Map<String, IAnswer>> answers) async {
     try {
-      List<IQuestion> tasks = await tasksDataProvider.loadQuestions(taskId);
-      return tasks;
+      bool isAnswerSent = await answerDataProvider.submitAnswer(answers);
+      return isAnswerSent;
     } catch (e) {
       rethrow;
     }
   }
+
 }

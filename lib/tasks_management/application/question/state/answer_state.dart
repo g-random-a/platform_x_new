@@ -5,7 +5,7 @@ import '../../../domain/answerType.dart';
 abstract class AnswerState extends Equatable {
   const AnswerState({required this.answers});
 
-  final Map<String, IAnswer> answers;
+  final Map<String, Map<String, IAnswer>> answers;
 
   @override
   List<Object?> get props => [];
@@ -28,4 +28,14 @@ class AnswerSubmitionFailedState extends AnswerState {
 
   const AnswerSubmitionFailedState({this.error, required super.answers});
   
+}
+
+class AnswerUpdatedState extends AnswerState {
+  const AnswerUpdatedState({required super.answers});
+}
+
+class AnswerFailedToUpdateState extends AnswerState {
+  final String? error;
+
+  const AnswerFailedToUpdateState({this.error, required super.answers});
 }

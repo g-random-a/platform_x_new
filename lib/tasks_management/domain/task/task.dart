@@ -82,23 +82,8 @@ class Task {
       description: json['description'] ?? "",
       budget: json['budget'] ?? Random().nextInt(1500),
       location: json['location'] ?? "Addis Ababa",
-      tags: json['tags'] != null ? List<String>.from(json['tags']) : 
-      [
-        "18-34+",
-        "Marketing",
-        "Sales",
-        "Business",
-        "Finance",
-        "Accounting",
-        "Management",
-        "Human Resource",
-        "Customer Service",
-        "Information Technology",
-        "Engineering",
-        "Healthcare",
-        "Education", 
-      ].sublist(Random().nextInt(5)),
-      rating: json['rating'] ?? Random().nextDouble() * 5,
+      tags: json['tags'] != null ? List<String>.from(json['tags']) : [],
+      rating: json['rating'] ?? 5,
       totalQuestions: json['totalQuestions'] ?? Random().nextInt(15) + 1,
       completedQuestions: json['completedQuestions'] ?? Random().nextInt(15) + 1,
       createdAt: DateTime.tryParse(json['createdAt']) ?? DateTime.now(),
@@ -106,7 +91,7 @@ class Task {
       categories: json['categories'] != null ? List<Map<String, dynamic>>.from(json['categories']) : null,
     );
 
-    task.totalQuestions = task.completedQuestions! + task.completedQuestions!;
+    // if (json['totalQuestions'] == null) task.totalQuestions = task.completedQuestions! + task.completedQuestions!;
 
     return task;
 

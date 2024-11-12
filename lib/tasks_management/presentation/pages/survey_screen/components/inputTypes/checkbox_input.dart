@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:platform_x/core/utils/responsive/size.dart';
+import 'package:platform_x/tasks_management/application/question/bloc/current_answer_bloc.dart';
+import 'package:platform_x/tasks_management/application/question/event/current_answer_event.dart';
+import 'package:platform_x/tasks_management/domain/answerType.dart';
 import 'package:platform_x/tasks_management/domain/inputPropertiesType.dart';
 import 'package:platform_x/tasks_management/domain/inputValidation.dart';
 
@@ -11,11 +14,15 @@ class CheckboxInputField extends StatefulWidget {
 
   final CheckboxInputValidationSchema validations;
   final CheckboxPropertySchema properties;
+  final int inputId;
+  final String questionId;
 
   const CheckboxInputField({
     super.key,
     required this.properties,
-    required this.validations,
+    required this.validations, 
+    required this.inputId,  
+    required this.questionId,
   });
 
   @override
@@ -26,9 +33,27 @@ class _CheckboxInputFieldState extends State<CheckboxInputField> {
 
   Map<String, Object> selectedOptions = {};
 
+  void _initFromLocal(){
+    final SelectionAnswer? answer = BlocProvider.of<CurrentAnswerBloc>(context).state.answers[widget.questionId + "_" + widget.inputId.toString()] as SelectionAnswer?;
+
+    print("--------------------");
+    print(answer);
+    print("--------------------");
+
+    if (answer != null) {
+      setState(() {
+      widget.properties.options = answer.selected;
+      answer.selected.forEach((element) {
+        if (element.selected) selectedOptions[element.value] = element.selected;
+      });
+      });
+  }
+  }
+
   @override
   void initState() {
     super.initState();
+    _initFromLocal();
   }
 
   String? validateCheckbox(String? value) {
@@ -64,9 +89,13 @@ class _CheckboxInputFieldState extends State<CheckboxInputField> {
            GestureDetector(
           onTap: () {
             setState(() {
-              bool val = !(widget.properties.options[index].selected as bool);
+              bool val = !(widget.properties.options[index].selected);
               widget.properties.options[index].selected = val;
               selectedOptions[widget.properties.options[index].value] = val;
+              BlocProvider.of<CurrentAnswerBloc>(context).add(UpdateCurrentAnswerEvent(answer: SelectionAnswer(
+                      id: widget.inputId, 
+                      selected: widget.properties.options, 
+                    ), questionId: widget.questionId, ));
               if (val == false){
                 selectedOptions.remove(widget.properties.options[index].value);
               }
@@ -96,12 +125,16 @@ class _CheckboxInputFieldState extends State<CheckboxInputField> {
                   value: widget.properties.options[index].selected == true,
                   onChanged: (bool? value) {
                     bool val = !(widget.properties.options[index].selected as bool);
+                    BlocProvider.of<CurrentAnswerBloc>(context).add(UpdateCurrentAnswerEvent(answer: SelectionAnswer(
+                      id: widget.inputId, 
+                      selected: widget.properties.options, 
+                    ), questionId: widget.questionId, ));
                     setState(() {
-                      widget.properties.options[index].selected = val ;
                       selectedOptions[widget.properties.options[index].value] = val;
                       if (val == false){
                         selectedOptions.remove(widget.properties.options[index].value);
                       }
+                      widget.properties.options[index].selected = val ;
                     });
                   },
                   shape: RoundedRectangleBorder(

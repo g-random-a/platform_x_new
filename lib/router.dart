@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:platform_x/tasks_management/router.dart';
+import 'package:platform_x/tasks_management/services/sharedPref/sharedpref.dart';
 
 import 'core/application/auth/bloc/check_auth_bloc.dart';
 import 'onboarding/App Start/screen/onboarding_screen.dart';
@@ -14,10 +15,12 @@ final GoRouter appRouter = GoRouter(
     ...taskManagementRoutes,
     GoRoute(
       redirect: (context, state) {
-        final authState = context.watch<AuthBloc>().state;
-        final isLoggedIn = authState.isAuthenticated;
+        final pref = SharedPrefService.preferences;
+        if (pref == null) return null;
 
-        if (isLoggedIn) {
+        final isAuthenticated = pref.getString('access_token') ;
+
+        if (isAuthenticated != null) {
           return '/tasks';
         }
         return null;

@@ -1,3 +1,4 @@
+import 'package:platform_x/tasks_management/domain/answerType.dart';
 import 'package:platform_x/tasks_management/utils/enums/input_types.dart';
 
 abstract class InputProperties {
@@ -236,24 +237,6 @@ class TelPropertySchema extends InputProperties {
     this.defaultValue,
     super.label
   });
-}
-
-class InputOptions {
-  int id;
-  String valueType;
-  String value;
-  bool selected = false;
-
-  InputOptions({required this.id, required this.value, required this.valueType});
-
-
-  factory InputOptions.fromJson(Map<String, dynamic> json) {
-    return InputOptions(
-      id: json['id'],
-      value: json['value'], 
-      valueType: json['valueType'],
-      );
-  }
 }
 
 

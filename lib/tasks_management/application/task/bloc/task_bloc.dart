@@ -34,29 +34,4 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
   }
 
   
-
-  // loadMoreTasks(LoadMoreTasksEvent event, Emitter emit) async {
-
-  //     if (state is TasksLoadingSuccessState) {
-  //       final currentState = state as TasksLoadingSuccessState;
-  //       emit(TasksLoadingSuccessState(tasks: currentState.tasks, isLoadingMore: true));
-
-  //       try {
-  //         List<Task> newTasks = await tasksRepository.loadMoreTasks(currentState.nextPage);
-
-  //         emit(TasksLoadingSuccessState(tasks: currentState.tasks + newTasks, isLoadingMore: true));
-  //       } catch (e) {
-  //         emit(TasksLoadingSuccessState(tasks: currentState.tasks, isLoadingMore: true, error: 'Failed to load more tasks'));
-  //       }
-  //     }
-  // }
-
-  loadOngoingTasks(LoadOngoingTasksEvent event, Emitter emit) async {
-    if (state is ! TasksLoadingSuccessState){
-      emit(TasksLoadingState());
-    }
-    else{
-      
-    }
-  }
 }

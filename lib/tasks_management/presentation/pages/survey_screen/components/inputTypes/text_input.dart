@@ -3,6 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:platform_x/core/application/theme/bloc/theme_bloc.dart';
 import 'package:platform_x/core/utils/responsive/size.dart';
 import 'package:platform_x/core/utils/theme/custom_text_styles.dart';
+import 'package:platform_x/tasks_management/application/question/bloc/current_answer_bloc.dart';
+import 'package:platform_x/tasks_management/application/question/event/current_answer_event.dart';
+import 'package:platform_x/tasks_management/domain/answerType.dart';
 import 'package:platform_x/tasks_management/domain/inputPropertiesType.dart';
 import 'package:platform_x/tasks_management/domain/inputValidation.dart';
 
@@ -10,11 +13,15 @@ class TextInputField extends StatefulWidget {
 
   final TextPropertySchema properties;
   final TextInputValidationSchema validations;
+  final String questionId;
+  final int inputId;
 
   const TextInputField({
     super.key,
     required this.properties,
-    required this.validations
+    required this.validations,
+    required this.questionId,
+    required this.inputId,
   });
 
   @override
@@ -23,11 +30,23 @@ class TextInputField extends StatefulWidget {
 
 class _TextInputFieldState extends State<TextInputField> {
   final TextEditingController _controller = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  void _initFromLocal(){
+    final ValueAnswer? answer = BlocProvider.of<CurrentAnswerBloc>(context).state.answers[widget.questionId + "_" + widget.inputId.toString()] as ValueAnswer?;
+
+    if (answer != null) {
+      setState(() {
+        _controller.text = answer.value;
+      });
+    }
+  } 
 
   @override
   void initState() {
     super.initState();
     if(widget.properties.defaultValue != null || widget.properties.placeholder != null) _controller.text = widget.properties.defaultValue ?? widget.properties.placeholder!;
+    _initFromLocal();
   }
 
   String? validateText(String? value) {
@@ -68,8 +87,12 @@ class _TextInputFieldState extends State<TextInputField> {
           TextFormField(
             controller: _controller,
             onChanged: (value) {
-              Form.of(context).validate();
+              _formKey.currentState?.validate();
+              BlocProvider.of<CurrentAnswerBloc>(context).add(UpdateCurrentAnswerEvent(
+                answer: ValueAnswer(value: value, id: widget.inputId), 
+                questionId: widget.questionId, ));
             },
+            key: _formKey,
             maxLines: widget.properties.multiLine != null ? widget.properties.lines! : 1,
             decoration: InputDecoration(
               // hintText: properties.placeholder,

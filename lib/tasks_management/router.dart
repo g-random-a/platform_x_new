@@ -10,15 +10,15 @@ import '../core/application/auth/bloc/check_auth_bloc.dart';
 
 List<GoRoute> taskManagementRoutes = [
   GoRoute(
-      redirect: (context, state) {
-        final authState = context.read<AuthBloc>().state;
-        final isLoggedIn = authState.isAuthenticated;
+      // redirect: (context, state) {
+      //   final authState = context.read<AuthBloc>().state;
+      //   final isLoggedIn = authState.isAuthenticated;
 
-        if (!isLoggedIn) {
-          return '/';
-        }
-        return null;
-      },
+      //   if (!isLoggedIn) {
+      //     return '/';
+      //   }
+      //   return null;
+      // },
       path: '/tasks',
       builder: (context, state) => const HomePage(),
       routes:  [

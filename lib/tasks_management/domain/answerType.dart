@@ -1,47 +1,113 @@
-// Base Answer Class
-class IAnswer {
-  final int id;
+import 'package:hive/hive.dart';
 
-  IAnswer({required this.id});
+part 'answerType.g.dart';
+
+// Base Answer Class Interface
+abstract class IAnswer {
+  int get id;
 }
 
 // TEXT, EMAIL, NUMBER, DATE, TIME, COLORPICKER, SLIDER, LOCATION, RATING Answer
+@HiveType(typeId: 2)
 class ValueAnswer extends IAnswer {
+  @HiveField(0)
+  final int id;
+
+  @HiveField(1)
   final String value;
 
-  ValueAnswer({required int id, required this.value}) : super(id: id);
+  ValueAnswer({required this.id, required this.value});
+}
+
+@HiveType(typeId: 7)
+class InputOptions {
+
+  @HiveField(0)
+  int id;
+
+  @HiveField(1)
+  String value;
+
+  @HiveField(2)
+  String valueType;
+  
+  @HiveField(3)
+  bool selected = false;
+
+  InputOptions({required this.id, required this.value, required this.valueType});
+
+  factory InputOptions.fromJson(Map<String, dynamic> json) {
+    return InputOptions(
+      id: json['id'],
+      value: json['value'], 
+      valueType: json['valueType'],
+      );
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is InputOptions &&
+          runtimeType == other.runtimeType &&
+          value == other.value;
+
+  @override
+  int get hashCode => value.hashCode;
 }
 
 // MULTIPLE_CHOICE/CHECKBOX, DROPDOWN, RADIOBUTTON Answer
+@HiveType(typeId: 3)
 class SelectionAnswer extends IAnswer {
-  final List<int> selected;
+  @HiveField(0)
+  final int id;
 
-  SelectionAnswer({required int id, required this.selected}) : super(id: id);
+  @HiveField(1)
+  final List<InputOptions> selected;
+
+  SelectionAnswer({required this.id, required this.selected});
 }
 
 // Range Answer
+@HiveType(typeId: 4)
 class RangeAnswer extends IAnswer {
+  @HiveField(0)
+  final int id;
+
+  @HiveField(1)
   final num startValue;
+
+  @HiveField(2)
   final num endValue;
 
   RangeAnswer({
-    required int id,
+    required this.id,
     required this.startValue,
     required this.endValue,
-  }) : super(id: id);
+  });
 }
 
 // FILE/Media Input Answer
+@HiveType(typeId: 5)
 class FileAnswer extends IAnswer {
-  final List<dynamic> file; // Change 'dynamic' to a specific file type if needed
+  @HiveField(0)
+  final int id;
 
-  FileAnswer({required int id, required this.file}) : super(id: id);
+  @HiveField(1)
+  final List<dynamic> file; // Use a specific type if possible
+
+  FileAnswer({required this.id, required this.file});
 }
 
 // Main Answer Format Class
-class AnswerFormat {
+@HiveType(typeId: 6)
+class AnswerFormat extends HiveObject {
+  @HiveField(0)
   final String userId;
+
+  @HiveField(1)
   final String questionId;
+
+  @HiveField(2)
   final List<IAnswer> answers;
 
   AnswerFormat({
@@ -50,7 +116,6 @@ class AnswerFormat {
     required this.answers,
   });
 
-  // Function to convert the class to a JSON-like Map
   Map<String, dynamic> toJson() {
     return {
       'userId': userId,
@@ -83,13 +148,12 @@ class AnswerFormat {
     };
   }
 
-
   // Function to convert the JSON-like Map to a class
   factory AnswerFormat.fromJson(Map<String, dynamic> json) {
     return AnswerFormat(
       userId: json['userId'],
       questionId: json['questionId'],
-      answers: (json['answers'] as List).map((answer) {
+      answers: (json['answers'] as List).map<IAnswer>((answer) {
         if (answer['value'] != null) {
           return ValueAnswer(id: answer['id'], value: answer['value']);
         } else if (answer['selected'] != null) {
@@ -103,7 +167,7 @@ class AnswerFormat {
         } else if (answer['file'] != null) {
           return FileAnswer(id: answer['id'], file: answer['file']);
         }
-        return IAnswer(id: answer['id']);
+        throw Exception('Unknown answer type');
       }).toList(),
     );
   }

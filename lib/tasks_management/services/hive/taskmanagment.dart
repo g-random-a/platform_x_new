@@ -26,6 +26,14 @@ class TaskManagerService {
     }
   }
 
+  Future<void> deleteTask(Task task, {bool isOnProgress = true}) async {
+    if (isOnProgress) {
+      await onprogressBox.delete(task.id);
+    } else {
+      await savedBox.delete(task.id);
+    }
+  }
+
   Task getOnProgressTaskById(String id) {
     Task? task =  onprogressBox.get(id);
     if(task != null){

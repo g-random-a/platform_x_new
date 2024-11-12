@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:platform_x/core/utils/responsive/size.dart';
 import 'package:platform_x/core/utils/theme/custom_text_styles.dart';
 import 'package:platform_x/generated/l10n.dart';
+import 'package:platform_x/tasks_management/domain/answerType.dart';
 import 'package:platform_x/tasks_management/domain/inputPropertiesType.dart';
 import 'package:platform_x/tasks_management/domain/inputValidation.dart';
 import 'package:platform_x/tasks_management/domain/questionTypes.dart';
@@ -46,6 +47,12 @@ class SurveyScreen extends StatefulWidget {
 
 class _SurveyScreenState extends State<SurveyScreen> {
   final _formKey = GlobalKey<FormState>();
+
+  List<GlobalKey> globalKeys = [];
+
+  void addGlobalKey(GlobalKey key) {
+    globalKeys.add(key);
+  }
 
   Future<void> performTask(BuildContext context) async {
     OverlayLoader.show(context); 
@@ -192,7 +199,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
                           const SizedBox(height: 10),
                           Form(
                             key: _formKey,
-                            autovalidateMode: AutovalidateMode.onUnfocus,
+                            autovalidateMode: AutovalidateMode.always,
                             child: Container(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 16.0),
@@ -203,26 +210,41 @@ class _SurveyScreenState extends State<SurveyScreen> {
                                   Column(
                                     children: [
                                       ...buildInputs(context, 
-                                      widget.question.inputs
+                                      widget.question.inputs,
+                                      widget.question.id ?? "",
+                                      addGlobalKey,
                                       ),
-                                      // RatingInputField(properties: RatingPropertySchema(maximumRating: 10, minimumRating: 0, label: "Rate your exp on this question"), validations: RatingInputValidationSchema(required: true)),
-                                      // SketchFormField(
-                                      //   validations: SignatureInputValidationSchema(required: true),
-                                      //   properties: SignaturePropertySchema(),
-                                      // ),
+                                      // // RatingInputField(properties: RatingPropertySchema(maximumRating: 10, minimumRating: 0, label: "Rate your exp on this question"), validations: RatingInputValidationSchema(required: true)),
+                                      // // SketchFormField(
+                                      // //   validations: SignatureInputValidationSchema(required: true),
+                                      // //   properties: SignaturePropertySchema(),
+                                      // // ),
 
                                       // // TEST INPUT -- V01
                                       // // 1. PHOTO TAKER
-                                      // TakePhotoComponent(properties:  MediaPropertySchema(mediaType: 'imgae', label: 'Take a selfie of yourself',), validations: MediaInputValidationSchema(required: true)),
+                                      // TakePhotoComponent(
+                                      //   properties:  MediaPropertySchema(mediaType: 'imgae', label: 'Take a selfie of yourself',), 
+                                      //   validations: MediaInputValidationSchema(required: true),
+                                      //   inputId: 1,
+                                      //   questionId: widget.question.id ?? "",
+                                        
+                                      //   ),
 
                                       // // 2. AUDIO RECORDER and uploader
                                       // AudioInputBuilder(
                                       //   property: MediaPropertySchema(mediaType: "Audio", label: "Record your voice reading the question in AMHARIC Language.",),
                                       //   validation: MediaInputValidationSchema(required: true),
+                                      //   inputId: 2,
+                                      //   questionId: widget.question.id ?? "",
                                       // ),
 
                                       // // 3. MediaFileInputField
-                                      // MediaFileInputField(properties: MediaPropertySchema(mediaType: 'FILE'), validation: MediaInputValidationSchema(required: true)),
+                                      // MediaFileInputField(
+                                      //   properties: MediaPropertySchema(mediaType: 'FILE'), 
+                                      //   validation: MediaInputValidationSchema(required: true),
+                                      //   inputId: 3,
+                                      //   questionId: widget.question.id ?? "",
+                                      //   ),
 
                                       // // 4. Checkbox InputField
                                       // CheckboxInputField(
@@ -237,45 +259,49 @@ class _SurveyScreenState extends State<SurveyScreen> {
                                       //     ],
                                       //     type: 'string',
                                       //     label: 'Select your country of residence',
-                                      //     ), validations: CheckboxInputValidationSchema(required: true)),
+                                      //     ), validations: CheckboxInputValidationSchema(required: true),
+                                      //     questionId: widget.question.id ?? '', inputId: 4)
 
                                       // // 5. ColorPickerInputField
-                                      // ColorPickerInputField(
-                                      //   properties: ColorPickerPropertySchema(label: 'Select your favorite color'),
-                                      //   validations: ColorPickerInputValidationSchema(required: true),
-                                      // ),
+                                      // // ColorPickerInputField(
+                                      // //   properties: ColorPickerPropertySchema(label: 'Select your favorite color'),
+                                      // //   validations: ColorPickerInputValidationSchema(required: true),
+                                      // // ),
 
                                       // // 6. DateInputField
-                                      // DateInputField(
-                                      //   properties: DatePropertySchema(label: 'Select your date of birth'),
-                                      //   validations: DateInputValidationSchema(required: true),
-                                      // ),
+                                      // // DateInputField(
+                                      // //   properties: DatePropertySchema(label: 'Select your date of birth'),
+                                      // //   validations: DateInputValidationSchema(required: true),
+                                      // // ),
 
                                       // // 7. DropdownInputField
+                                      // ,
                                       // DropdownInputField(
                                       //   properties: DropdownPropertySchema(
                                       //     options: [
                                       //       InputOptions(id: 1, value: "USA", valueType: "String"),
-                                      //       InputOptions(id: 1, value: "Kenya", valueType: "String"),
-                                      //       InputOptions(id: 1, value: "Ethiopia", valueType: "String"),
-                                      //       InputOptions(id: 1, value: "Eritria", valueType: "String"),
-                                      //       InputOptions(id: 1, value: "Canada", valueType: "String"),
-                                      //       InputOptions(id: 1, value: "None", valueType: "String"),
+                                      //       InputOptions(id: 2, value: "Kenya", valueType: "String"),
+                                      //       InputOptions(id: 3, value: "Ethiopia", valueType: "String"),
+                                      //       InputOptions(id: 4, value: "Eritria", valueType: "String"),
+                                      //       InputOptions(id: 5, value: "Canada", valueType: "String"),
+                                      //       InputOptions(id: 6, value: "None", valueType: "String"),
                                       //     ],
                                       //     label: 'Select your country of residence',
-                                      //     ), validations: DropdownInputValidationSchema(required: true)),
+                                      //     ), validations: DropdownInputValidationSchema(required: true),
+                                      //     questionId: widget.question.id ?? '', inputId: 7,
+                                      //     ),
 
                                       // // 8. EmailInputField
-                                      // EmailInputField(
-                                      //   properties: EmailPropertySchema(label: 'Enter your email address', suffix: "@gmail.com"),
-                                      //   validation: EmailInputValidationSchema(required: true),
-                                      // ),
+                                      // // EmailInputField(
+                                      // //   properties: EmailPropertySchema(label: 'Enter your email address', suffix: "@gmail.com"),
+                                      // //   validation: EmailInputValidationSchema(required: true),
+                                      // // ),
 
                                       // // 9. NumberInputField
-                                      // NumberInputField(
-                                      //   properties: NumberPropertySchema(label: 'Enter your age'),
-                                      //   validations: NumberInputValidationSchema(required: true),
-                                      // ),
+                                      // // NumberInputField(
+                                      // //   properties: NumberPropertySchema(label: 'Enter your age'),
+                                      // //   validations: NumberInputValidationSchema(required: true),
+                                      // // ),
 
                                       // // 10. RadioboxInputField
                                       // RadioboxInputField(
@@ -289,39 +315,41 @@ class _SurveyScreenState extends State<SurveyScreen> {
                                       //       InputOptions(id: 1, value: "None", valueType: "String"),
                                       //     ],
                                       //     label: 'Select your country of residence',
-                                      //     ), validations: RadioInputValidationSchema(required: true)),
+                                      //     ), validations: RadioInputValidationSchema(required: true), questionId: widget.question.id ?? '', inputId: 10,),
 
                                       // // 11. RangeInputField
-                                      // RangeInputField(
-                                      //   properties: RangePropertySchema(label: 'Select your age range', min: 1, max: 10),
-                                      //   validations: RangeInputValidationSchema(required: true),
-                                      // ),
+                                      // // RangeInputField(
+                                      // //   properties: RangePropertySchema(label: 'Select your age range', min: 1, max: 10),
+                                      // //   validations: RangeInputValidationSchema(required: true),
+                                      // //   in
+                                      // // ),
 
                                       // // 12. RatingInputField 
                                       // RatingInputField(
                                       //   properties: RatingPropertySchema(label: 'Rate your experience on this question', maximumRating: 10, minimumRating: 0),
-                                      //   validations: RatingInputValidationSchema(required: false),
+                                      //   validations: RatingInputValidationSchema(required: false), inputId: 12, questionId: widget.question.id ?? "",
                                       // ),
 
                                       // // 13. SignatureInputField
-                                      // SketchFormField(
-                                      //   properties: SignaturePropertySchema(label: 'Sign here'),
-                                      //   validations: SignatureInputValidationSchema(required: true),
-                                      // ),
+                                      // // SketchFormField(
+                                      // //   properties: SignaturePropertySchema(label: 'Sign here'),
+                                      // //   validations: SignatureInputValidationSchema(required: true),
+                                      // // ),
 
                                       // // 14. SliderInputField
                                       // SliderInputField(
                                       //   properties: SliderPropertySchema(label: 'Select your age', min: 1, max: 10),
-                                      //   validations: SliderInputValidationSchema(required: true),
+                                      //   validations: SliderInputValidationSchema(required: true), questionId: widget.question.id ?? "", inputId: 14,
                                       // ),
 
                                       // // 15. TextInputField
                                       // TextInputField(
                                       //   properties: TextPropertySchema(label: 'Enter your name'),
                                       //   validations: TextInputValidationSchema(required: true),
+                                      //   questionId: widget.question.id ?? "", inputId: 15,
                                       // ),
 
-                                      // // 16. TimeInputField
+                                      // 16. TimeInputField
                                       // TimeInputField(isRequired: false)
 
 
@@ -348,7 +376,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
                     onclick: () {
                       FocusScope.of(context).unfocus();
                       
-                      if (_formKey.currentContext != null) {
+                      if (_formKey.currentState != null) {
                         bool valid = _formKey.currentState!.validate();
                         if (valid){
                           if (widget.currentIndex == widget.totalQuestions){

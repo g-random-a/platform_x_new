@@ -53,6 +53,7 @@ class ProfileProvider {
   Future<int> updateProfile(String userId, Map<String, dynamic> data,
       {Map<String, File>? files}) async {
     try {
+      data['current_balance'] = 0.0;
       print(data, );
       print(files);
       FormData formData = FormData.fromMap(data);
@@ -65,7 +66,13 @@ class ProfileProvider {
           await dio.patch('data-collector-profiles/$userId/', data: formData);
       return response.statusCode ?? 500;
     } on DioException catch (e) {
-      print('Error updating profile: ${e.message}');
+      print('********************************');
+      print('Error creating profile: ${e}');
+      print('Status code: ${e.response}');
+      print('Response data: ${e.response?.data}');
+      print('Request path: ${e.requestOptions.uri}');
+      print('Request headers: ${e.requestOptions.headers}');
+      print('Request data: ${e.requestOptions.data}');
       return e.response?.statusCode ?? 500;
     }
   }

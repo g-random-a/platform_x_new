@@ -14,8 +14,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final isAuthenticated = prefs.getString('access_token');
     print("bloc --------------------- bloc");
     print(isAuthenticated);
-    // emit(isAuthenticated != null ? AuthAuthenticatedState() : AuthUnauthenticatedState());
-    emit(AuthAuthenticatedState());
+    emit(isAuthenticated != null ? AuthAuthenticatedState() : AuthUnauthenticatedState());
+    // emit(AuthAuthenticatedState());
   }
 
   Future<void> _login(AuthEvent event, Emitter<AuthState> emit) async {

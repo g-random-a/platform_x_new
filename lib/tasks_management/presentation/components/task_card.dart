@@ -2,10 +2,12 @@ import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:platform_x/core/utils/responsive/size.dart';
 import 'package:platform_x/lib.dart';
+import 'package:platform_x/tasks_management/application/task/bloc/saved_tasks_bloc.dart';
 import 'package:platform_x/tasks_management/application/task/bloc/task_bloc.dart';
+import 'package:platform_x/tasks_management/application/task/event/saved_tasks_event.dart';
 import 'package:platform_x/tasks_management/domain/task/task.dart';
 import 'package:platform_x/tasks_management/presentation/components/custom_rating_bar.dart';
-import 'package:platform_x/tasks_management/services/hive/hive.dart';
+import 'package:platform_x/tasks_management/services/hive/taskmanagment.dart';
 
 import '../../../core/utils/theme/app_decoration.dart';
 import '../../../core/utils/theme/custom_text_styles.dart';
@@ -118,12 +120,15 @@ class _DocumentlistItemWidgetState extends State<DocumentlistItemWidget> {
                     // ),
                     IconButton(
                       onPressed: () async{
+                        if (widget.task.isFavorite){
+                          widget.task.isFavorite = false;
+                          BlocProvider.of<SavedTasksBloc>(context).add(RemoveFromFavoriteEvent(task: widget.task));
+                        } else {
+                          widget.task.isFavorite = true;
+                          BlocProvider.of<SavedTasksBloc>(context).add(SaveToFavoriteEvent(task: widget.task));
+                        }
                         setState(() {
-                          widget.task.isFavorite = !widget.task.isFavorite;
-                          // BlocProvider.of<TasksBloc>(context).add(event) 
                         });
-                        print(widget.task.id);
-                        await context.read<TaskManagerService>().saveTask(widget.task, isOnProgress: false);
                       },
                       icon: Icon(
                         widget.task.isFavorite ? Icons.favorite : Icons.favorite_border,
@@ -218,7 +223,7 @@ class _DocumentlistItemWidgetState extends State<DocumentlistItemWidget> {
               ),
               SizedBox(height: 12.h),
               if(widget.task.completedQuestions != null)
-              if(!widget.inprogress)
+              if(widget.inprogress)
               Container(
                 height: 4.h,
                 width: 360.h,

@@ -1080,6 +1080,16 @@ class S {
     );
   }
 
+  /// `You don't have Saved Tasks currently`
+  String get t_nosavedtasks {
+    return Intl.message(
+      'You don\'t have Saved Tasks currently',
+      name: 't_nosavedtasks',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Home`
   String get tab_home {
     return Intl.message(

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:platform_x/core/application/theme/bloc/theme_bloc.dart';
 import 'package:platform_x/core/utils/responsive/size.dart';
+import 'package:platform_x/tasks_management/application/question/bloc/current_answer_bloc.dart';
+import 'package:platform_x/tasks_management/application/question/event/current_answer_event.dart';
+import 'package:platform_x/tasks_management/domain/answerType.dart';
 import 'package:platform_x/tasks_management/domain/inputPropertiesType.dart';
 import 'package:platform_x/tasks_management/domain/inputValidation.dart';
 import 'package:platform_x/tasks_management/presentation/components/custom_rating_bar.dart';
@@ -10,11 +13,15 @@ class RatingInputField extends StatefulWidget {
 
   final RatingInputValidationSchema validations;
   final RatingPropertySchema properties;
+  final String questionId;
+  final int inputId;
 
   const RatingInputField({
     super.key,
     required this.validations,
     required this.properties,
+    required this.inputId,
+    required this.questionId,
   });
 
   @override
@@ -24,10 +31,21 @@ class RatingInputField extends StatefulWidget {
 class _RatingInputFieldState extends State<RatingInputField> {
   double? ratingValue;
 
+  void _initFromLocal(){
+    final ValueAnswer? answer = BlocProvider.of<CurrentAnswerBloc>(context).state.answers[widget.questionId + "_" + widget.inputId.toString()] as ValueAnswer?;
+
+    if (answer != null) {
+      setState(() {
+      ratingValue = double.tryParse(answer.value);
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     if (widget.properties.defaultRating != null) ratingValue = widget.properties.defaultValue?.toDouble();
+    _initFromLocal();
   }
 
   String? validateRating(double? value) {
@@ -38,8 +56,10 @@ class _RatingInputFieldState extends State<RatingInputField> {
     return null;
   }
 
-  void onRatingUpdate (){
-
+  void onRatingUpdate (double rating){
+    BlocProvider.of<CurrentAnswerBloc>(context).add(UpdateCurrentAnswerEvent(
+      answer: ValueAnswer(value: rating.toString(), id: widget.inputId), 
+      questionId: widget.questionId, ));
   }
 
   @override
@@ -53,10 +73,10 @@ class _RatingInputFieldState extends State<RatingInputField> {
             children: [
              CustomRatingBar(
               icon: widget.properties.icon == "star" ? true : false,
-              initialRating: widget.properties.minimumRating,
+              initialRating: ratingValue ?? widget.properties.minimumRating,
               itemCount: (widget.properties.maximumRating - widget.properties.minimumRating).round(),
               itemSize: 25.h,
-              onRatingUpdate: (onRatingUpdate){}
+              onRatingUpdate: onRatingUpdate
              ),
               if(ratingValue != null) Text('Selected: ${ratingValue?.toInt()}'),
               if (field.hasError)
