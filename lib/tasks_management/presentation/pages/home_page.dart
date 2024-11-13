@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:platform_x/generated/l10n.dart';
 import 'package:platform_x/tasks_management/application/task/bloc/saved_tasks_bloc.dart';
 import 'package:platform_x/tasks_management/application/task/bloc/task_bloc.dart';
+import 'package:platform_x/tasks_management/application/task/event/saved_tasks_event.dart';
 import 'package:platform_x/tasks_management/application/task/event/task_event.dart';
 import 'package:platform_x/tasks_management/application/task/state/saved_task_state.dart';
 import 'package:platform_x/tasks_management/application/task/state/task_state.dart';
@@ -25,7 +26,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey();
 
-  final PageController _scrollController = PageController();
+  PageController _scrollController = PageController();
 
   final PageController _pageController = PageController();
 
@@ -33,10 +34,19 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     BlocProvider.of<TasksBloc>(context).add(LoadTasksEvent());
+    BlocProvider.of<SavedTasksBloc>(context).add(LoadSavedTasksEvent());
   }
 
   @override
   Widget build(BuildContext context) {
+
+    bool isOnprogressEmpty = context.read<TaskManagerService>().getOnProgressTasks().isEmpty;
+
+    if (isOnprogressEmpty){
+      _scrollController = PageController(initialPage: 1);
+    }
+
+
     return Scaffold( 
       backgroundColor: context.watch<ThemeBloc>().state.appColorTheme.blue50,
       body: SafeArea(

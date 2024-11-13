@@ -9,11 +9,12 @@ abstract class AnswerEvent extends Equatable {
 }
 
 class SubmitAnswerEvent extends AnswerEvent {
+  String taskId;
 
-  const SubmitAnswerEvent();
+  SubmitAnswerEvent({required this.taskId});
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [taskId];
 }
 
 class UpdateAnswerEvent extends AnswerEvent {

@@ -873,7 +873,7 @@ class S {
   /// `All progress will be lost`
   String get t_dashboard_progress_lost {
     return Intl.message(
-      'your current progress will be saved.',
+      'All progress will be lost',
       name: 't_dashboard_progress_lost',
       desc: '',
       args: [],

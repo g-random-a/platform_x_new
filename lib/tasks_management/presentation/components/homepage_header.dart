@@ -4,6 +4,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:platform_x/core/utils/responsive/size.dart';
 import 'package:platform_x/generated/l10n.dart';
 import 'package:platform_x/tasks_management/infrustructure/repository/profile/user_profile.dart';
+import 'package:platform_x/tasks_management/services/hive/taskmanagment.dart';
 import '../../../core/application/theme/bloc/theme_bloc.dart';
 import '../../../core/utils/theme/custom_text_styles.dart';
 import 'app_bar.dart';
@@ -21,6 +22,7 @@ class _ContentSectionState extends State<ContentSection> {
   int page = 0;
 
   bool showIncentive = false;
+  double? incentive;
 
   // listner function for pageview
   void _listener() {
@@ -57,6 +59,7 @@ class _ContentSectionState extends State<ContentSection> {
               future: context.read<UserProfileRepository>().loadUserProfile(),
               builder: (context, snapshot) {
                 if (snapshot.hasData){
+                  print(snapshot.data);
                   return Padding(
                     padding:  EdgeInsets.symmetric(horizontal: 10.0.h),
                     child: CustomAppBar(
@@ -156,7 +159,7 @@ class _ContentSectionState extends State<ContentSection> {
                     width: double.maxFinite,
                     child: Row(
                       children: [
-                        InkWell(
+                        context.read<TaskManagerService>().getOnProgressTasks().isNotEmpty ? InkWell(
                           onTap: () {
                             widget.controller.animateTo(0, duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
                           },
@@ -166,7 +169,7 @@ class _ContentSectionState extends State<ContentSection> {
                                 ? CustomTextStyles.labelMediumInterPrimary(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme)
                                 : CustomTextStyles.labelMediumInterBlack(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme),
                           ),
-                        ),
+                        ) : Container(),
                         
                         InkWell(
                           onTap: () {

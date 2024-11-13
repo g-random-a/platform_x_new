@@ -5,6 +5,7 @@ import 'package:platform_x/lib.dart';
 import 'package:platform_x/tasks_management/application/task/bloc/saved_tasks_bloc.dart';
 import 'package:platform_x/tasks_management/application/task/bloc/task_bloc.dart';
 import 'package:platform_x/tasks_management/application/task/event/saved_tasks_event.dart';
+import 'package:platform_x/tasks_management/application/task/event/task_event.dart';
 import 'package:platform_x/tasks_management/domain/task/task.dart';
 import 'package:platform_x/tasks_management/presentation/components/custom_rating_bar.dart';
 import 'package:platform_x/tasks_management/services/hive/taskmanagment.dart';
@@ -222,7 +223,7 @@ class _DocumentlistItemWidgetState extends State<DocumentlistItemWidget> {
                 initialRating: 5,
               ),
               SizedBox(height: 12.h),
-              if(widget.task.completedQuestions != null)
+              if(widget.task.completedQuestions != null || widget.task.totalQuestions != null)
               if(widget.inprogress)
               Container(
                 height: 4.h,
@@ -233,7 +234,7 @@ class _DocumentlistItemWidgetState extends State<DocumentlistItemWidget> {
                 child: ClipRRect(
                   child: LinearProgressIndicator(
                     value: widget.task.completedQuestions! / widget.task.totalQuestions,
-                    backgroundColor: context.watch<ThemeBloc>().state.themeData.colorScheme.secondary,
+                    backgroundColor: context.watch<ThemeBloc>().state.appColorTheme.gray30001,
                     valueColor: AlwaysStoppedAnimation<Color>(
                       context.watch<ThemeBloc>().state.appColorTheme.teal1300,
                     ),
@@ -277,10 +278,11 @@ class _DocumentlistItemWidgetState extends State<DocumentlistItemWidget> {
               // ),
               CustomElevatedButton(
                 text: S.of(context).t_start_task,
-                onclick: () {
-                  context.go('/tasks/task_instruction', extra: {
+                onclick: () async{
+                  context.pushReplacement('/tasks/task_instruction', extra: {
                     "task": widget.task
                   });
+                  BlocProvider.of<TasksBloc>(context).add(LoadTasksEvent());
                 },
               )
 

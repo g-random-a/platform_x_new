@@ -22,7 +22,7 @@ class ProfileBloc extends Bloc<DataCollectorEvent, ProfileState> {
     try {
       print(event.data);
       final response = await profileRepo.createProfile(event.data,
-          profileImage: event.profileImage);
+          profileImage: event.profileImage); 
 
       final userId = response.data['user']['id'];
       final profileId = response.data['id'];

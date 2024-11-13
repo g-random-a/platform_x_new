@@ -46,7 +46,7 @@ class SavedTasksBloc extends Bloc<SavedTasksEvent, SavedTasksState> {
   _removeFromFavoriteEvent(RemoveFromFavoriteEvent event, Emitter emit) async {
     print("-------------------removing");
     try{
-      await taskManagerService.deleteTask(event.task, isOnProgress: false);
+      await taskManagerService.deleteTask(event.task.id, isOnProgress: false);
       List<Task> tasks = taskManagerService.getSavedTasks();
       emit(SavedTasksLoadingSuccessState(tasks: tasks));
     } catch (e) {

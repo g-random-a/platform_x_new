@@ -30,30 +30,27 @@ class TaskManagerService {
     }
   }
 
-  Future<void> deleteTask(Task task, {bool isOnProgress = true}) async {
-    if (isOnProgress) {
-      await onprogressBox.delete(task.id);
-    } else {
-      await savedBox.delete(task.id);
+  Future<void> deleteTask(String taskId, {bool isOnProgress = true, bool both = false}) async {
+    if (isOnProgress || both) {
+      await onprogressBox.delete(taskId);
+    }  
+    if (!isOnProgress || both) {
+      await savedBox.delete(taskId);
     }
   }
 
-  Task getOnProgressTaskById(String id) {
+  Task? getOnProgressTaskById(String id) {
     Task? task =  onprogressBox.get(id);
     if(task != null){
       return task;
     }
-
-    throw Exception('Task not found');
   }
 
-  Task getSavedTaskById(String id) {
+  Task? getSavedTaskById(String id) {
     Task? task = savedBox.get(id);
     if(task != null){
       return task;
     }
-
-    throw Exception('Task not found');
   }
 
   bool isTaskOnProgress(String id) {
@@ -76,12 +73,12 @@ class TaskManagerService {
     await this.taskQuestionMap.put(taskQuestionMap.taskId, taskQuestionMap);
   }
 
-  TaskQuestionMap getTaskQuestionMap(String taskId) {
+  TaskQuestionMap? getTaskQuestionMap(String taskId) {
     TaskQuestionMap? taskQuestionMap = this.taskQuestionMap.get(taskId);
     if(taskQuestionMap != null){
       return taskQuestionMap;
     }
-
-    throw Exception('Task not found');
   }
+  
+
 }

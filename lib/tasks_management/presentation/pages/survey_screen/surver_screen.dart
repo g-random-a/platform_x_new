@@ -4,13 +4,17 @@ import 'package:go_router/go_router.dart';
 import 'package:platform_x/core/utils/responsive/size.dart';
 import 'package:platform_x/core/utils/theme/custom_text_styles.dart';
 import 'package:platform_x/generated/l10n.dart';
+import 'package:platform_x/tasks_management/application/question/bloc/answer_bloc.dart';
 import 'package:platform_x/tasks_management/application/question/bloc/current_answer_bloc.dart';
+import 'package:platform_x/tasks_management/application/question/event/answer_event.dart';
+import 'package:platform_x/tasks_management/application/question/state/answer_state.dart';
 import 'package:platform_x/tasks_management/application/question/state/current_answer_state.dart';
 import 'package:platform_x/tasks_management/domain/answerType.dart';
 import 'package:platform_x/tasks_management/domain/inputPropertiesType.dart';
 import 'package:platform_x/tasks_management/domain/inputValidation.dart';
 import 'package:platform_x/tasks_management/domain/questionTypes.dart';
 import 'package:platform_x/tasks_management/domain/task/task.dart';
+import 'package:platform_x/tasks_management/domain/task/task_question_map.dart';
 import 'package:platform_x/tasks_management/presentation/components/custom_elevated_button.dart';
 import 'package:platform_x/tasks_management/presentation/components/loader_overlay.dart';
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/audio_input_builder.dart';
@@ -30,6 +34,7 @@ import 'package:platform_x/tasks_management/presentation/pages/survey_screen/com
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/time_input.dart';
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/photo_taker.dart';
 import 'package:platform_x/tasks_management/presentation/pages/task_instruction/task_instruction.dart';
+import 'package:platform_x/tasks_management/services/hive/answermanagment.dart';
 import 'package:platform_x/tasks_management/services/hive/taskmanagment.dart';
 
 import '../../../../core/application/theme/bloc/theme_bloc.dart';
@@ -60,15 +65,15 @@ class _SurveyScreenState extends State<SurveyScreen> {
     globalKeys.add(key);
   }
 
-  Future<void> performTask(BuildContext context) async {
-    OverlayLoader.show(context); 
+  // Future<void> performTask(BuildContext context) async {
+  //   OverlayLoader.show(context); 
     
-    await Future.delayed(Duration(seconds: (widget.totalQuestions * 0.5.round())));
+  //   await Future.delayed(Duration(seconds: (widget.totalQuestions * 0.5.round())));
 
-    OverlayLoader.hide(); 
+  //   OverlayLoader.hide(); 
 
-    context.pushReplacement('/tasks/CompeletedSuccessfully');
-  }
+  //   context.pushReplacement('/tasks/CompeletedSuccessfully');
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -379,48 +384,86 @@ class _SurveyScreenState extends State<SurveyScreen> {
                     padding: 0,
                   ),
                   SizedBox(height: 20.h),
-                  BlocConsumer<CurrentAnswerBloc, CurrentAnswerState>(
-                    listener: (context, state) {
-                      if (state is CurrentAnswerSubmitionFailedState) {
+                  BlocConsumer<AnswerBloc, AnswerState>(
+                    listener: (context, finAnsState) async {
+                      if (finAnsState is AnswerLoadingState){
+                        OverlayLoader.show(context); 
+                        return;
+                      }
+
+                      
+                      if (finAnsState is AnswerSubmitionFailedState) {
+                        // show snacbar
+                        OverlayLoader.hide(); 
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text("failed to save answer, please try again."),
                           ),
                         );
+
                       }
-                      if (state is CurrentAnswerSubmittedState){
-                        widget.nextPage(); 
+
+                      if (finAnsState is AnswerSubmittedState){
+                        TaskManagerService tms = context.read<TaskManagerService>();
+                        AnswerManagement am = context.read<AnswerManagement>();
+
+                        TaskQuestionMap? questionsMap = tms.getTaskQuestionMap(widget.task.id);
+
+                        if (questionsMap != null) await am.deleteAnswers(questionsMap.questionId);
+
+                        await context.read<TaskManagerService>().deleteTask(widget.task.id, both: true );
+
+                        OverlayLoader.hide(); 
+                        context.pushReplacement('/tasks/CompeletedSuccessfully');
                       }
+
+
                     },
-                    builder: (context, state) {
-                      return CustomElevatedButton(
-                        loading: state is CurrentAnswerLoadingState,
-                        onclick: () {
-                          FocusScope.of(context).unfocus();
-                          
-                          if (_formKey.currentState != null) {
-                            bool valid = _formKey.currentState!.validate();
-                            if (valid){
-                              if (widget.currentIndex == widget.totalQuestions){
-                                performTask(context);
-                              }
-                              else {
-                                BlocProvider.of<CurrentAnswerBloc>(context).add(SubmitCurrentAnswerEvent(questionId: widget.question.id ?? "", taskId: widget.task.id));
-                              }
+                        builder: (context, finAnsState) {
+                      return BlocConsumer<CurrentAnswerBloc, CurrentAnswerState>(
+                        listener: (context, state) {
+                          if (state is CurrentAnswerSubmitionFailedState) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("failed to save answer, please try again."),
+                              ),
+                            );
+                          }
+                          if (state is CurrentAnswerSubmittedState){
+                            if (widget.currentIndex == widget.totalQuestions){
+                              // performTask(context);
+                              BlocProvider.of<AnswerBloc>(context).add(SubmitAnswerEvent(taskId: widget.task.id));
+                            }else {
+                              widget.nextPage();
                             }
                           }
                         },
-                        text: widget.currentIndex == widget.totalQuestions ? S.of(context).t_submit : S.of(context).t_next,
-                        backgroundColor: context
-                            .watch<ThemeBloc>()
-                            .state
-                            .appColorTheme
-                            .black90001,
-                        textColor: context
-                            .watch<ThemeBloc>()
-                            .state
-                            .appColorTheme
-                            .whiteA70001,
+                        builder: (context, state) {
+                          return CustomElevatedButton(
+                            loading: state is CurrentAnswerLoadingState,
+                            onclick: () {
+                              FocusScope.of(context).unfocus();
+                              
+                              if (_formKey.currentState != null) {
+                                bool valid = _formKey.currentState!.validate();
+                                if (valid){
+                                    BlocProvider.of<CurrentAnswerBloc>(context).add(SubmitCurrentAnswerEvent(questionId: widget.question.id ?? "", taskId: widget.task.id));
+                                }
+                              }
+                            },
+                            text: widget.currentIndex == widget.totalQuestions ? S.of(context).t_submit : S.of(context).t_next,
+                            backgroundColor: context
+                                .watch<ThemeBloc>()
+                                .state
+                                .appColorTheme
+                                .black90001,
+                            textColor: context
+                                .watch<ThemeBloc>()
+                                .state
+                                .appColorTheme
+                                .whiteA70001,
+                          );
+                        }
                       );
                     }
                   ),

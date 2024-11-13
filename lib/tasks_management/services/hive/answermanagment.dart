@@ -37,4 +37,10 @@ class AnswerManagement {
   Future<void> close() async {
     await _answerBox.close();
   }
+
+  Future<void> deleteAnswers(List<String> questionIds) async {
+    for (var questionId in questionIds) {
+      await _answerBox.delete(questionId);
+    }
+  }
 }

@@ -54,8 +54,9 @@ class _QuestionScreeenBuilderState extends State<QuestionScreeenBuilder> {
   Widget build(BuildContext context) {
 
     try {
-      var initialPage = context.read<TaskManagerService>().getOnProgressTaskById(widget.task.id).completedQuestions;
-      if (initialPage != null) {
+      var progTask = context.read<TaskManagerService>().getOnProgressTaskById(widget.task.id);
+      if (progTask != null) {
+        int initialPage = progTask.completedQuestions ?? 0;
         _pageController = PageController(initialPage: initialPage, keepPage: true);
       }
     } catch (e) {

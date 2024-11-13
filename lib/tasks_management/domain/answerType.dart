@@ -44,6 +44,14 @@ class InputOptions {
       );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'value': value,
+      'selected': selected,
+    };
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -116,10 +124,26 @@ class AnswerFormat extends HiveObject {
     required this.answers,
   });
 
-  Map<String, dynamic> toJson() {
+  String getAnswerType(answer) {
+
+    if (answer is ValueAnswer) {
+      return 'TEXT';
+    } else if (answer is SelectionAnswer) {
+      return 'MULTIPLE_CHOICE';
+    } else if (answer is RangeAnswer) {
+      return 'SLIDER';
+    } else {
+      return 'FILE';
+    }
+
+  }
+
+  Map<String, dynamic> toJson(String taskId) {
     return {
       'userId': userId,
+      'taskId': taskId,
       'questionId': questionId,
+      'questionType': answers.length > 0 ? getAnswerType(answers[0]) : "Text",
       'answers': answers.map((answer) {
         if (answer is ValueAnswer) {
           return {
@@ -129,7 +153,8 @@ class AnswerFormat extends HiveObject {
         } else if (answer is SelectionAnswer) {
           return {
             'id': answer.id,
-            'selected': answer.selected,
+            'selected': answer.selected.map((option) => option.toJson()).toList(),
+            'title': "Multiple Choice",
           };
         } else if (answer is RangeAnswer) {
           return {

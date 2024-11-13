@@ -23,7 +23,7 @@ class AnnotatedImageFormField extends FormField<Uint8List> {
                 GestureDetector(
                   onTap: () async {
                     final imagePainterController = ImagePainterController();
-                    final result = await Navigator.of(state.context).push(
+                    final result = await Navigator.of(state.context).pushReplacement(
                       MaterialPageRoute(
                         builder: (context) => Scaffold(
                           appBar: AppBar(title: Text("Annotate Image")),

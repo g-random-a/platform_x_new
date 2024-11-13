@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:platform_x/core/application/auth/bloc/check_auth_bloc.dart';
 import 'package:platform_x/core/utils/responsive/size.dart';
+import 'package:platform_x/tasks_management/application/question/bloc/answer_bloc.dart';
 import 'package:platform_x/tasks_management/application/question/bloc/current_answer_bloc.dart';
 import 'package:platform_x/tasks_management/application/question/bloc/question_bloc.dart';
 import 'package:platform_x/tasks_management/application/task/bloc/saved_tasks_bloc.dart';
@@ -93,6 +94,7 @@ void main() async {
         ),
         BlocProvider(create: (context) => SavedTasksBloc(taskManagerService: taskManager)..add(LoadSavedTasksEvent())),
         BlocProvider(create: (context) => CurrentAnswerBloc(answerRepository: context.read<AnswerRepository>(), answerManagerService: answerManager)),
+        BlocProvider(create: (context) => AnswerBloc(answerRepository: context.read<AnswerRepository>(), answerManagement: answerManager, taskManagerService: taskManager)),
       ],
      child: const MyApp(),
         )

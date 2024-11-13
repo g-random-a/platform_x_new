@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:platform_x/lib.dart';
 import 'package:platform_x/tasks_management/domain/answerType.dart';
 import 'package:dio/dio.dart';
@@ -10,46 +12,30 @@ class AnswerDataProvider extends DataProvider {
 
   AnswerDataProvider({required this.dio});
 
-  Future<bool> submitAnswer(Map<String, Map<String, IAnswer>> answers) async {
+  Future<bool> submitAnswer(List<AnswerFormat> answers, String taskId) async {
     try {
 
-      // open storage and get userid
-      final storage = await SharedPreferences.getInstance();
-      final userId = storage.getString("userId");
-
-      if (userId == null) {
-        throw Exception("User not logged in.");
-      }
+      SharedPreferences _pref = await SharedPreferences.getInstance();
+      String userId = _pref.getString("user_id") ?? '';
 
       dio.options.headers['Content-Type'] = 'multipart/form-data';
+      List<Map<String, dynamic>> finalAnswers = [];
 
-      FormData formData = FormData();
+      answers.forEach(
+        (ans) async {
+          finalAnswers.add(ans.toJson(taskId));
+        }
+      );
 
-      answers.forEach((questionId, allAnswers) async {
-        Map<String, dynamic> answerData = {
-          "questionId": questionId,
-          "userId": userId,
-          "answers": []
-        };
+      FormData formData = FormData.fromMap({
+        'data': finalAnswers,
+      });;
 
-        allAnswers.forEach((answerId, answer) async {
-          if (answer is ValueAnswer) {
-            answerData["answers"].add({
-              "id": answer.id,
-              "value": answer.value,
-            });
-          } else if (answer is SelectionAnswer) {
-            answerData["answers"].add({
-              "id": answer.id,
-              "selected": answer.selected,
-            });
-          } else if (answer is RangeAnswer) {
-            answerData["answers"].add({
-              "id": answer.id,
-              "startValue": answer.startValue,
-              "endValue": answer.endValue,
-            });
-          } else if (answer is FileAnswer) {
+
+      answers.forEach(
+        (currentAns) async {
+          var answer = currentAns.answers[0];
+          if (answer is FileAnswer) {
             List<MultipartFile> files = await Future.wait(answer.file.map((filePath) async {
               return await MultipartFile.fromFile(
                 filePath,
@@ -59,19 +45,41 @@ class AnswerDataProvider extends DataProvider {
 
             formData.files.addAll(
                 files.map((file) => MapEntry("file", file))); 
-            answerData["answers"].add({"id": answer.id, "file": [...answer.file]}); 
           };
-        });
+        }
+      );
 
-      });
+
+
+
+      print("-----------------------------------");
+      print(finalAnswers);
+      print("-----------------------------------");
+
+
+      String formAns = jsonEncode(finalAnswers);
+
+      print("-----------------------------------");
+      print(formAns);
+      print("-----------------------------------");
+
+      formData.fields.add(MapEntry("answer", formAns));
 
       Response response = await dio.post(
-        "/v1/answer/",
+        "/v1/response/",
         data: formData,
       );
 
       if (response.statusCode != 201) {
         throw Exception("Error while submitting answers.");
+      }
+
+      Response userTaskResp = await dio.post("/v1/task/users", data: {
+        userId, taskId
+      });
+
+      if (userTaskResp != 200) {
+        throw Exception("Error while creating userTask...");
       }
 
       return true;
