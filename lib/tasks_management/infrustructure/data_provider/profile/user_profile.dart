@@ -24,6 +24,8 @@ class UserProfileDataProvider extends DataProvider {
         "/v1/user/data-collector-profiles/$profileID",
       );
 
+      print("/v1/user/data-collector-profiles/$profileID");
+
       print(response);
 
       if (response.statusCode != 200) {
@@ -34,8 +36,10 @@ class UserProfileDataProvider extends DataProvider {
         "firstName": response.data['user']['first_name'],
         "lastName": response.data['user']['last_name'],
         "profileImage": response.data['profile_picture'],
+        'current_balance': response.data['current_balance'],
       };
 
+      print("55555555555555555555555555555555555555555");
       print(data);
 
       return data;

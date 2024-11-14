@@ -5,6 +5,8 @@ import 'package:platform_x/core/application/theme/bloc/theme_bloc.dart';
 import 'package:platform_x/core/utils/responsive/size.dart';
 import 'package:platform_x/core/utils/theme/custom_text_styles.dart';
 import 'package:platform_x/generated/l10n.dart';
+import 'package:platform_x/tasks_management/application/task/bloc/task_bloc.dart';
+import 'package:platform_x/tasks_management/application/task/event/task_event.dart';
 import 'package:platform_x/tasks_management/presentation/components/custom_elevated_button.dart';
 import 'package:platform_x/tasks_management/presentation/components/custom_image.dart';
 import 'package:platform_x/tasks_management/utils/constants/assets/asset_icons.dart';
@@ -76,6 +78,7 @@ class CompletionApprovalScreen extends StatelessWidget {
                     SizedBox(height: 20),
                     CustomElevatedButton(
                       onclick: (){
+                        BlocProvider.of<TasksBloc>(context).add(LoadTasksEvent());
                         context.go("/tasks");
                       },
                       text: S.of(context).t_back_to_main_screen,

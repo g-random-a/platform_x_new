@@ -125,6 +125,7 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return NestedScrollView(
+    physics:  AlwaysScrollableScrollPhysics(),
       headerSliverBuilder: (BuildContext nestedScrollContext, bool innerBoxIsScrolled) {
         return [
           SliverToBoxAdapter(
@@ -141,13 +142,50 @@ class Home extends StatelessWidget {
         controller: _scrollController,
         itemBuilder: (pageviewContext, pageIndex) {
           if (pageIndex == 1){
-          return BlocBuilder<TasksBloc, TasksState>(
-            builder: (taskBloccontext, state) {
-                if (state is TasksLoadingState || state is TasksInitialState){
-                  return const Center(child: CircularProgressIndicator(),);
+          return RefreshIndicator(
+            onRefresh: (){
+              BlocProvider.of<TasksBloc>(context).add(LoadTasksEvent());
+              BlocProvider.of<SavedTasksBloc>(context).add(LoadSavedTasksEvent());
+              return Future.delayed(Duration(milliseconds: 500));
+            },
+            child: BlocBuilder<TasksBloc, TasksState>(
+              builder: (taskBloccontext, state) {
+                  if (state is TasksLoadingState || state is TasksInitialState){
+                    return const Center(child: CircularProgressIndicator(),);
+                  }
+                  else if (state is TasksLoadingSuccessState){
+                    return ListView.builder(
+                          physics: AlwaysScrollableScrollPhysics(),
+                          itemCount: state.tasks.length,
+                          itemBuilder: (listviewContext, index) {
+                            Task task = state.tasks[index];
+                            return  DocumentlistItemWidget(
+                              key: Key(index.toString()),
+                              task: task,
+                              inprogress: false,
+                            );
+                          },
+                        );
+                  }
+                  else {
+                    return Center(child: Text(S.of(context).t_couldnt_load_try_again));
+                  }
                 }
-                else if (state is TasksLoadingSuccessState){
-                  return ListView.builder(
+              ),
+          );
+          }
+                
+          if (pageIndex == 2){
+            return RefreshIndicator(
+              onRefresh: (){
+                BlocProvider.of<SavedTasksBloc>(context).add(LoadSavedTasksEvent());
+                return Future.delayed(Duration(milliseconds: 500));
+              },
+              child: BlocBuilder<SavedTasksBloc, SavedTasksState>(
+                builder: (savedTaskBloccontext, state) {
+                  if (state is SavedTasksLoadingSuccessState){
+                    if (state.tasks.length > 0){
+                      return ListView.builder(
                         itemCount: state.tasks.length,
                         itemBuilder: (listviewContext, index) {
                           Task task = state.tasks[index];
@@ -158,62 +196,45 @@ class Home extends StatelessWidget {
                           );
                         },
                       );
-                }
-                else {
-                  return Center(child: Text(S.of(context).t_couldnt_load_try_again));
-                }
-              }
-            );
-          }
-                
-          if (pageIndex == 2){
-            return BlocBuilder<SavedTasksBloc, SavedTasksState>(
-              builder: (savedTaskBloccontext, state) {
-                if (state is SavedTasksLoadingSuccessState){
-                  if (state.tasks.length > 0){
-                    return ListView.builder(
-                      itemCount: state.tasks.length,
-                      itemBuilder: (listviewContext, index) {
-                        Task task = state.tasks[index];
-                        return  DocumentlistItemWidget(
-                          key: Key(index.toString()),
-                          task: task,
-                          inprogress: false,
-                        );
-                      },
-                    );
+                    }
+                    else {
+                      return Center(child: Text(S.of(context).t_nosavedtasks));
+                    }
+                  }
+                  if (state is SavedTasksLoadingState){
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                      );
                   }
                   else {
-                    return Center(child: Text(S.of(context).t_nosavedtasks));
+                    return Center(child: Text(S.of(context).t_couldnt_load_try_again));
                   }
-                }
-                if (state is SavedTasksLoadingState){
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                    );
-                }
-                else {
-                  return Center(child: Text(S.of(context).t_couldnt_load_try_again));
-                }
-              });
+                }),
+            );
           }
           
           else {
             List<Task> onprogressTasks = context.read<TaskManagerService>().getOnProgressTasks();
-
-            return ListView.builder(
-              itemCount: onprogressTasks.length,
-              itemBuilder: (listviewContext, index) {
-                Task task = onprogressTasks[index];
-                return  DocumentlistItemWidget(
-                  key: Key(index.toString()),
-                  task: task,
-                  inprogress: true,
-                );
+    
+            return RefreshIndicator(
+              onRefresh: (){
+                onprogressTasks = context.read<TaskManagerService>().getOnProgressTasks();
+                return Future.delayed(Duration(milliseconds: 500));
               },
+              child: ListView.builder(
+                itemCount: onprogressTasks.length,
+                itemBuilder: (listviewContext, index) {
+                  Task task = onprogressTasks[index];
+                  return  DocumentlistItemWidget(
+                    key: Key(index.toString()),
+                    task: task,
+                    inprogress: true,
+                  );
+                },
+              ),
             );
           }
-
+    
             
         },
       ),

@@ -5,13 +5,14 @@ import 'package:iconsax/iconsax.dart';
 import 'package:platform_x/core/utils/responsive/size.dart';
 import 'package:platform_x/core/utils/theme/custom_text_styles.dart';
 import 'package:platform_x/generated/l10n.dart';
+import 'package:platform_x/tasks_management/application/question/bloc/current_answer_bloc.dart';
 import 'package:platform_x/tasks_management/application/question/bloc/question_bloc.dart';
+import 'package:platform_x/tasks_management/application/question/event/current_answer_event.dart';
 import 'package:platform_x/tasks_management/application/question/event/question_event.dart';
 import 'package:platform_x/tasks_management/application/question/state/question_state.dart';
 import 'package:platform_x/tasks_management/domain/task/task.dart';
 import 'package:platform_x/tasks_management/presentation/components/custom_elevated_button.dart';
 import 'package:platform_x/tasks_management/presentation/components/custom_image.dart';
-import 'package:platform_x/tasks_management/services/hive/taskmanagment.dart';
 
 import '../../../../core/application/theme/bloc/theme_bloc.dart';
 import '../../components/loader_overlay.dart';
@@ -185,7 +186,7 @@ class _TaskInstructionScreenState extends State<TaskInstructionScreen> {
                         // _buildTaskRow(context, Iconsax.image, "Document digitization", 2),
                         // const CustomDivider(),
                         // _buildTaskRow(context, Iconsax.message, "Annotation and labeling", 2),
-                        // SizedBox(height: 4.h,)
+                        // SizedBox(height: 4.h,),
                         ...?widget.task.categories?.map(
                           (category) => _buildTaskRow(context, 
                           _getCategoryIcon(category['name']), 
@@ -200,6 +201,7 @@ class _TaskInstructionScreenState extends State<TaskInstructionScreen> {
                   CustomElevatedButton(
                     backgroundColor: Colors.black,
                     onclick: () async{
+                      BlocProvider.of<CurrentAnswerBloc>(context).add(LoadLocalAnswerEvent(taskId: widget.task.id));
                       BlocProvider.of<QuestionsBloc>(context).add(LoadQuestionsEvent(taskId: widget.task.id));
                     },
                     ),

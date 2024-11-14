@@ -24,10 +24,14 @@ class ProfileBloc extends Bloc<DataCollectorEvent, ProfileState> {
       final response = await profileRepo.createProfile(event.data,
           profileImage: event.profileImage); 
 
+
+      print(response.data['current_balance'].runtimeType);
+
       final userId = response.data['user']['id'];
       final profileId = response.data['id'];
       await _preferences.setString("user_id", userId);
       await _preferences.setString("profile_id", profileId);
+      await _preferences.setDouble("current_balance", double.parse(response.data['current_balance']));
       // await _preferences.setString();
 
       emit(ProfileCreated("Profile created successfully!"));

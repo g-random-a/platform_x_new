@@ -60,6 +60,9 @@ class _RatingInputFieldState extends State<RatingInputField> {
     BlocProvider.of<CurrentAnswerBloc>(context).add(UpdateCurrentAnswerEvent(
       answer: ValueAnswer(value: rating.toString(), id: widget.inputId), 
       questionId: widget.questionId, ));
+    setState(() {
+      ratingValue = rating;
+    });
   }
 
   @override
@@ -78,7 +81,7 @@ class _RatingInputFieldState extends State<RatingInputField> {
               itemSize: 25.h,
               onRatingUpdate: onRatingUpdate
              ),
-              if(ratingValue != null) Text('Selected: ${ratingValue?.toInt()}'),
+              // if(ratingValue != null) Text('Selected: ${ratingValue?.toInt()}'),
               if (field.hasError)
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),

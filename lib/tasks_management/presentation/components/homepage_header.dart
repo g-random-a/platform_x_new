@@ -5,6 +5,7 @@ import 'package:platform_x/core/utils/responsive/size.dart';
 import 'package:platform_x/generated/l10n.dart';
 import 'package:platform_x/tasks_management/infrustructure/repository/profile/user_profile.dart';
 import 'package:platform_x/tasks_management/services/hive/taskmanagment.dart';
+import 'package:platform_x/tasks_management/services/sharedPref/sharedpref.dart';
 import '../../../core/application/theme/bloc/theme_bloc.dart';
 import '../../../core/utils/theme/custom_text_styles.dart';
 import 'app_bar.dart';
@@ -20,6 +21,7 @@ class ContentSection extends StatefulWidget {
 
 class _ContentSectionState extends State<ContentSection> {
   int page = 0;
+  
 
   bool showIncentive = false;
   double? incentive;
@@ -58,8 +60,10 @@ class _ContentSectionState extends State<ContentSection> {
             FutureBuilder<Map<String, dynamic>>(
               future: context.read<UserProfileRepository>().loadUserProfile(),
               builder: (context, snapshot) {
+                print(snapshot.data);
+                print("------------------------------data----------------------------");
                 if (snapshot.hasData){
-                  print(snapshot.data);
+                  incentive = double.parse(snapshot.data!['current_balance']);
                   return Padding(
                     padding:  EdgeInsets.symmetric(horizontal: 10.0.h),
                     child: CustomAppBar(
@@ -126,7 +130,7 @@ class _ContentSectionState extends State<ContentSection> {
                       ),
                       const Spacer(),
                       Text(
-                        showIncentive ?  "Br. 1,00.05" : "***********",
+                        showIncentive ?  "Br. ${incentive != null ? incentive : "--------"}" : "***********",
                         style:
                             CustomTextStyles.titleMediumPlusJakartaSansBlack900(context.watch<ThemeBloc>().state.themeData, context.watch<ThemeBloc>().state.appColorTheme),
                       ),

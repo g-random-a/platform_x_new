@@ -8,15 +8,15 @@ import '../../core/data_provider.dart';
 
 
 class AnswerDataProvider extends DataProvider {
-  final Dio dio;
+  final Dio dio; 
 
   AnswerDataProvider({required this.dio});
 
-  Future<bool> submitAnswer(List<AnswerFormat> answers, String taskId) async {
+  Future<bool> submitAnswer(List<AnswerFormat> answers, String taskId, double taskBudget) async {
     try {
 
       SharedPreferences _pref = await SharedPreferences.getInstance();
-      String userId = _pref.getString("user_id") ?? '';
+      String userId = _pref.getString("profile_id") ?? '';
 
       dio.options.headers['Content-Type'] = 'multipart/form-data';
       List<Map<String, dynamic>> finalAnswers = [];
@@ -27,10 +27,14 @@ class AnswerDataProvider extends DataProvider {
         }
       );
 
-      FormData formData = FormData.fromMap({
-        'data': finalAnswers,
-      });;
+      // FormData formData = FormData.fromMap({
+      //   'data': finalAnswers,
+      // });;
 
+      FormData formData = FormData();
+
+
+      print("*************************************************");
 
       answers.forEach(
         (currentAns) async {
@@ -49,6 +53,15 @@ class AnswerDataProvider extends DataProvider {
         }
       );
 
+      print("*************************************************");
+
+      finalAnswers.forEach(
+        (element) {
+          print(element);
+        }
+      );
+
+
 
 
 
@@ -57,34 +70,77 @@ class AnswerDataProvider extends DataProvider {
       print("-----------------------------------");
 
 
+
+
       String formAns = jsonEncode(finalAnswers);
 
-      print("-----------------------------------");
+      print("----------------final ans-------------------");
       print(formAns);
       print("-----------------------------------");
 
-      formData.fields.add(MapEntry("answer", formAns));
+      formData.fields.add(MapEntry("questionData", formAns));
 
       Response response = await dio.post(
-        "/v1/response/",
+        "/v1/response/responses/bulk",
         data: formData,
       );
+
+      print("************************ done 1 *************************");
 
       if (response.statusCode != 201) {
         throw Exception("Error while submitting answers.");
       }
 
-      Response userTaskResp = await dio.post("/v1/task/users", data: {
-        userId, taskId
-      });
+      print(taskId);
+      print(userId);
 
-      if (userTaskResp != 200) {
+      Response userTaskResp = await dio.post("/v1/task/users", 
+      data: {
+        "taskId": taskId,  "userId": userId 
+      },
+      options: Options(
+        headers: {
+          "Content-Type": "application/json",
+        },
+      ),
+      );
+
+      print(userTaskResp);
+
+
+      print("************************ done  2 *************************");
+
+      if (userTaskResp.statusCode != 201) {
         throw Exception("Error while creating userTask...");
       }
+
+
+      double userBudget = _pref.getDouble("current_balance") ?? 0;
+      double updateBudget = userBudget + taskBudget;
+
+      print(updateBudget);
+
+      // await dio.patch("/v1/user/data-collector-profiles/$userId", 
+      //   data: {
+      //     "current_balance": updateBudget.toString(),
+      //   },
+      //   options: Options(
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //   ),
+      
+      // );
+
+
+      // print("************************ Final *************************");
 
       return true;
     } catch (e) {
       print("@Error: $e");
+      if (e  is DioException) {
+        print("@Error: ${e.response}");
+      }
       rethrow;
     }
   }

@@ -36,10 +36,6 @@ class _CheckboxInputFieldState extends State<CheckboxInputField> {
   void _initFromLocal(){
     final SelectionAnswer? answer = BlocProvider.of<CurrentAnswerBloc>(context).state.answers[widget.questionId + "_" + widget.inputId.toString()] as SelectionAnswer?;
 
-    print("--------------------");
-    print(answer);
-    print("--------------------");
-
     if (answer != null) {
       setState(() {
       widget.properties.options = answer.selected;

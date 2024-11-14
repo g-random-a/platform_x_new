@@ -432,7 +432,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
                           if (state is CurrentAnswerSubmittedState){
                             if (widget.currentIndex == widget.totalQuestions){
                               // performTask(context);
-                              BlocProvider.of<AnswerBloc>(context).add(SubmitAnswerEvent(taskId: widget.task.id));
+                              BlocProvider.of<AnswerBloc>(context).add(SubmitAnswerEvent(taskId: widget.task.id, taskBudget: widget.task.budget.toDouble()));
                             }else {
                               widget.nextPage();
                             }

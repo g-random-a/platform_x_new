@@ -15,6 +15,15 @@ class InitCurrentAnswerEvent extends CurrentAnswerEvent {
   List<Object?> get props => [];
 }
 
+class LoadLocalAnswerEvent extends CurrentAnswerEvent {
+  final String taskId;
+
+  const LoadLocalAnswerEvent({required this.taskId});
+
+  @override
+  List<Object?> get props => [taskId];
+}
+
 class SubmitCurrentAnswerEvent extends CurrentAnswerEvent {
   final dynamic questionId;
   final String taskId;

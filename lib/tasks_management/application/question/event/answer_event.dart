@@ -10,8 +10,9 @@ abstract class AnswerEvent extends Equatable {
 
 class SubmitAnswerEvent extends AnswerEvent {
   String taskId;
+  double taskBudget;
 
-  SubmitAnswerEvent({required this.taskId});
+  SubmitAnswerEvent({required this.taskId, required this.taskBudget});
 
   @override
   List<Object?> get props => [taskId];

@@ -7,9 +7,9 @@ class AnswerRepository {
 
   AnswerRepository({required this.answerDataProvider});
 
-  Future<bool> submitAnswer(List<AnswerFormat> answers, String taskId) async {
+  Future<bool> submitAnswer(List<AnswerFormat> answers, String taskId, double taskBudget) async {
     try {
-      bool isAnswerSent = await answerDataProvider.submitAnswer(answers, taskId);
+      bool isAnswerSent = await answerDataProvider.submitAnswer(answers, taskId, taskBudget);
       return isAnswerSent;
     } catch (e) {
       rethrow;

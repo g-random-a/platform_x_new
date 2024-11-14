@@ -16,7 +16,6 @@ import 'package:platform_x/tasks_management/infrustructure/repository/task/task_
 import 'package:platform_x/tasks_management/services/hive/answermanagment.dart';
 import 'package:platform_x/tasks_management/services/hive/taskmanagment.dart';
 import 'package:platform_x/tasks_management/services/sharedPref/sharedpref.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/application/auth/event/check_auth_event.dart';
 import 'lib.dart';
@@ -93,7 +92,7 @@ void main() async {
           create: (context) => AuthBloc()..add(AuthLoadEvent()),
         ),
         BlocProvider(create: (context) => SavedTasksBloc(taskManagerService: taskManager)..add(LoadSavedTasksEvent())),
-        BlocProvider(create: (context) => CurrentAnswerBloc(answerRepository: context.read<AnswerRepository>(), answerManagerService: answerManager)),
+        BlocProvider(create: (context) => CurrentAnswerBloc(answerRepository: context.read<AnswerRepository>(), answerManagerService: answerManager, taskManagerService: taskManager)),
         BlocProvider(create: (context) => AnswerBloc(answerRepository: context.read<AnswerRepository>(), answerManagement: answerManager, taskManagerService: taskManager)),
       ],
      child: const MyApp(),

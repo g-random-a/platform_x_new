@@ -45,8 +45,12 @@ class TasksDataProvider extends DataProvider {
       dio.options.headers['content-Type'] = 'application/json';
       // dio.options.headers['cookie'] = 'session=$token';
       // dio.options.headers['Authorization'] = 'Bearer $token';
+      
+      SharedPreferences _pref = await SharedPreferences.getInstance();
 
-      Response response = await dio.get("/v1/task/user/23");
+      String? profileId = _pref.getString("profile_id");
+
+      Response response = await dio.get("/v1/task/user/$profileId");
 
       if (response.statusCode != 200) {
         throw Exception("Error while loading tasks.");
@@ -56,19 +60,22 @@ class TasksDataProvider extends DataProvider {
 
       List forms = response.data['tasks'];
 
-      print(forms);
-
       for (var form in forms) {
 
         Task task = Task.fromJson(form);
-        
+
         if (taskManagerService.isTaksSaved(task.id)) {
           task.isFavorite = true;
+          continue;
         }
-        
+
+        if (taskManagerService.isTaskOnProgress(task.id)) {
+          continue;
+        }
+
         tasks.add(task);
       }
-      
+
       return tasks;
 
     } catch (e) {

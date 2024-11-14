@@ -1,3 +1,4 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive/hive.dart';
 
 part 'answerType.g.dart';
@@ -143,33 +144,44 @@ class AnswerFormat extends HiveObject {
       'userId': userId,
       'taskId': taskId,
       'questionId': questionId,
-      'questionType': answers.length > 0 ? getAnswerType(answers[0]) : "Text",
+      'questionType': answers.length > 0 ? getAnswerType(answers[0]) : "TEXT",
       'answers': answers.map((answer) {
         if (answer is ValueAnswer) {
-          return {
-            'id': answer.id,
-            'value': answer.value,
-          };
+          return [{
+            // string
+            'id': "answer.id.toString()",
+            'value': answer.value.toString(),
+          }];
         } else if (answer is SelectionAnswer) {
-          return {
-            'id': answer.id,
-            'selected': answer.selected.map((option) => option.toJson()).toList(),
-            'title': "Multiple Choice",
-          };
+          // return {
+          //   'id': answer.id.toString(),
+          //   'selected': answer.selected.map((option) => option.toJson()).toList(),
+          //   'title': "Multiple Choice",
+          // };
+          return answer.selected.map(
+            (ele) => {
+              'id': "ele.id.toString()",
+              'selected': ele.selected,
+              'title': ele.value,
+            }
+          ).toList();
         } else if (answer is RangeAnswer) {
-          return {
-            'id': answer.id,
+          return [{
+            'id': "answer.id.toString()",
             'startValue': answer.startValue,
             'endValue': answer.endValue,
-          };
+          }];
         } else if (answer is FileAnswer) {
-          return {
-            'id': answer.id,
-            'file': answer.file,
-          };
+          return [{
+            'id': "answer.id.toString()",
+            'fileName': answer.file[0],
+          }];
         }
-        return {};
-      }).toList(),
+        return [{
+          "id": "id",
+          "value": "value",
+        }];
+      }).toList()[0],
     };
   }
 

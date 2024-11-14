@@ -61,6 +61,10 @@ class TaskManagerService {
     return savedBox.containsKey(id);
   }
 
+  bool isTaskOnProgressOrSaved(String id) {
+    return isTaskOnProgress(id) || isTaksSaved(id);
+  }
+
   List<Task> getOnProgressTasks() {
     return onprogressBox.values.toList();
   }

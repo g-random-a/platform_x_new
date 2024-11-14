@@ -279,7 +279,7 @@ class _DocumentlistItemWidgetState extends State<DocumentlistItemWidget> {
               CustomElevatedButton(
                 text: S.of(context).t_start_task,
                 onclick: () async{
-                  context.pushReplacement('/tasks/task_instruction', extra: {
+                  await context.push('/tasks/task_instruction', extra: {
                     "task": widget.task
                   });
                   BlocProvider.of<TasksBloc>(context).add(LoadTasksEvent());
