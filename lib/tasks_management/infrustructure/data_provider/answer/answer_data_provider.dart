@@ -48,7 +48,7 @@ class AnswerDataProvider extends DataProvider {
             }).toList());
 
             formData.files.addAll(
-                files.map((file) => MapEntry("file", file))); 
+                files.map((file) => MapEntry("files", file))); 
           };
         }
       );
@@ -115,22 +115,25 @@ class AnswerDataProvider extends DataProvider {
       }
 
 
-      double userBudget = _pref.getDouble("current_balance") ?? 0;
-      double updateBudget = userBudget + taskBudget;
+
+
+      Dio newDio = Dio();
+      
+      Response budgetResp = await newDio.get("http://54.162.136.11/api/v1/user/data-collector-profiles/$userId/", );
+
+      double updateBudget = double.parse(budgetResp.data['current_balance']) + taskBudget;
 
       print(updateBudget);
+      print("((((((((((((((((((((((((((((((((((((((${updateBudget}))))))))))))))))))))))))))))))))))))))");
+      print(userId);
 
-      // await dio.patch("/v1/user/data-collector-profiles/$userId", 
-      //   data: {
-      //     "current_balance": updateBudget.toString(),
-      //   },
-      //   options: Options(
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //   ),
+
+      await newDio.put("http://54.162.136.11/api/v1/user/data-collector-profiles/$userId/", 
+        data: {
+          "current_balance": updateBudget.toString(),
+        },
       
-      // );
+      );
 
 
       // print("************************ Final *************************");

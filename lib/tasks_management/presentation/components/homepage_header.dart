@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:platform_x/core/utils/responsive/size.dart';
 import 'package:platform_x/generated/l10n.dart';
+import 'package:platform_x/tasks_management/application/task/bloc/task_bloc.dart';
+import 'package:platform_x/tasks_management/application/task/event/task_event.dart';
 import 'package:platform_x/tasks_management/infrustructure/repository/profile/user_profile.dart';
 import 'package:platform_x/tasks_management/services/hive/taskmanagment.dart';
 import 'package:platform_x/tasks_management/services/sharedPref/sharedpref.dart';
@@ -178,6 +180,7 @@ class _ContentSectionState extends State<ContentSection> {
                         InkWell(
                           onTap: () {
                             widget.controller.animateTo(MediaQuery.of(context).size.width, duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
+                            BlocProvider.of<TasksBloc>(context).add(LoadTasksEvent());
                           },
                           child: Padding(
                             padding: EdgeInsets.only(left: 22.h),

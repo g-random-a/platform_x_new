@@ -44,14 +44,19 @@ class CurrentAnswerBloc extends Bloc<CurrentAnswerEvent, CurrentAnswerState> {
         AnswerFormat? currentAnswer = answerManagerService.getAnswerByQuestionId(id);
         if (currentAnswer != null){
           currentAnswer.answers.forEach(
+            
             (element) {
-            print("ele id: ${element.id}");
+            print("ele id: ${id}_${element.id}");
 
               answersMap["${id}_${element.id}"] = element;
             }
           );
         }
       });
+
+      print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+      print(answersMap);
+      print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
 
       emit(CurrentAnswerLoadingSuccessState(answers: answersMap));
     } catch (e) {
@@ -70,10 +75,12 @@ class CurrentAnswerBloc extends Bloc<CurrentAnswerEvent, CurrentAnswerState> {
             return;
           }
 
-          IAnswer curr_answers = state.answers.values.last;
+          IAnswer? curr_answers = state.answers['__${event.questionId}'];
           
-          AnswerFormat myAnswer = AnswerFormat(userId: userId, questionId: event.questionId, answers: [curr_answers]);
-          await answerManagerService.addOrUpdateAnswer(myAnswer);
+          if (curr_answers != null) {
+            AnswerFormat myAnswer = AnswerFormat(userId: userId, questionId: event.questionId, answers: [curr_answers]);
+            await answerManagerService.addOrUpdateAnswer(myAnswer);
+          }
       }
       emit(const CurrentAnswerSubmittedState(answers: {}));
     } catch (e) {
@@ -86,6 +93,7 @@ class CurrentAnswerBloc extends Bloc<CurrentAnswerEvent, CurrentAnswerState> {
       Map<String, IAnswer> answers = Map.from(state.answers);
       print(answers["${event.questionId}_${event.answer.id}" ]);
       answers["${event.questionId}_${event.answer.id}" ] = event.answer;
+      answers["__${event.questionId}" ] = event.answer;
       emit(CurrentAnswerUpdatedState(answers: answers));
     } catch (e) {
       print(e);

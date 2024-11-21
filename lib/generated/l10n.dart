@@ -870,10 +870,10 @@ class S {
     );
   }
 
-  /// `All progress will be lost`
+  /// `All progress will be Saved!`
   String get t_dashboard_progress_lost {
     return Intl.message(
-      'All progress will be lost',
+      'All progress will be Saved!',
       name: 't_dashboard_progress_lost',
       desc: '',
       args: [],

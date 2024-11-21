@@ -141,7 +141,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "t_couldnt_load_try_again": MessageLookupByLibrary.simpleMessage(
             "Couldn\'t load please try again later."),
         "t_dashboard_progress_lost":
-            MessageLookupByLibrary.simpleMessage("All progress will be lost"),
+            MessageLookupByLibrary.simpleMessage("All progress will be Saved!"),
         "t_est_budget": MessageLookupByLibrary.simpleMessage("Est. Budget"),
         "t_most_recent": MessageLookupByLibrary.simpleMessage("Most Recent"),
         "t_next": MessageLookupByLibrary.simpleMessage("Next"),

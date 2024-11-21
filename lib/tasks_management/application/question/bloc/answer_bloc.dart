@@ -41,7 +41,6 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
       });
       }
       
-
       await answerRepository.submitAnswer(finalAnswers, event.taskId, event.taskBudget);
 
       SharedPreferences _pref = await SharedPreferences.getInstance();

@@ -79,7 +79,7 @@ class CompletionApprovalScreen extends StatelessWidget {
                     CustomElevatedButton(
                       onclick: (){
                         BlocProvider.of<TasksBloc>(context).add(LoadTasksEvent());
-                        context.go("/tasks");
+                        context.pushReplacement("/tasks");
                       },
                       text: S.of(context).t_back_to_main_screen,
                       backgroundColor: context.watch<ThemeBloc>().state.appColorTheme.black90001,
