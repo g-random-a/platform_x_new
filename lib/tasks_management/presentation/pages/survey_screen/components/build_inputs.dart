@@ -13,6 +13,7 @@ import 'package:platform_x/tasks_management/presentation/pages/survey_screen/com
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/rating_input.dart';
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/signiture_input.dart';
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/inputTypes/slider_input.dart';
+import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/map_viewer.dart';
 import 'package:platform_x/tasks_management/presentation/pages/survey_screen/components/photo_taker.dart';
 
 import '../../../../domain/inputPropertiesType.dart';
@@ -63,6 +64,8 @@ List<Widget> buildInputs(BuildContext context, List<QuestionInput> inputs, Strin
           return TextInputField(properties: input.properties as TextPropertySchema, validations: input.validationRules as TextInputValidationSchema, questionId: questionId, inputId: input.id,);
         case InputTypesEnum.Signature:
           return SketchFormField(properties: input.properties as SignaturePropertySchema, validations: input.validationRules as SignatureInputValidationSchema, questionId: questionId, inputId: input.id,);
+        case InputTypesEnum.Location:
+          return MapInputField(questionId: questionId, inputId: input.id, properties: input.properties as LocationPropertySchema, validations: input.validationRules as LocationInputValidationSchema,);
 
         case InputTypesEnum.Time:
           return RangeInputField(properties: input.properties as RangePropertySchema, validations: input.validationRules as RangeInputValidationSchema);

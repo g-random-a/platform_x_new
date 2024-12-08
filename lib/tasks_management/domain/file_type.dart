@@ -1,7 +1,7 @@
 enum AudioChannel { mono, stereo }
 
 class File {
-  int id;
+  String id;
   String type;
   String source;
   FileMetadata? metadata;
@@ -46,7 +46,7 @@ class CommonMetadata extends FileMetadata {
   String filename;
   int fileSize;
   String fileFormat;
-  String filePath;
+  String? filePath;
   String? dateCreated;
   String? dateModified;
   String? author;

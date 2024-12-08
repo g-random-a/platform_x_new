@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:platform_x/generated/l10n.dart';
 import 'package:platform_x/lib.dart';
 import 'package:platform_x/onboarding/AuthModule/bloc/profile%20bloc/datacollector_bloc.dart';
@@ -250,24 +251,44 @@ class _NewProfilePageState extends State<NewProfilePage> {
                   Row(
                     children: [
                       Expanded(
-                          child: _buildTextField(
-                              label: S.of(context).date_of_birth,
-                              hint: 'YYYY-MM-DD',
-                              dataMap: _profileData,
-                              dataLabel: 'date_of_birth',
-                              boardType: 'Text',
-                              validator: (value) {
-                                if (value == null) {
-                                  return S.of(context).enter_date_of_birth;
-                                }
-                                final RegExp dateRegex = RegExp(
-                                    r'^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$');
+                        // todo: add date picker
+                          // child: _buildTextField(
+                          //     label: S.of(context).date_of_birth,
+                          //     hint: 'YYYY-MM-DD',
+                          //     dataMap: _profileData,
+                          //     dataLabel: 'date_of_birth',
+                          //     boardType: 'Text',
+                          //     validator: (value) {
+                          //       if (value == null) {
+                          //         return S.of(context).enter_date_of_birth;
+                          //       }
+                          //       final RegExp dateRegex = RegExp(
+                          //           r'^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$');
 
-                                if (!dateRegex.hasMatch(value)) {
-                                  return S.of(context).date_of_birth_format;
-                                }
-                                return null;
-                              })),
+                          //       if (!dateRegex.hasMatch(value)) {
+                          //         return S.of(context).date_of_birth_format;
+                          //       }
+                          //       return null;
+                          //     })),
+                          child: _buildDatePickerField(
+                            context: context,
+                            profileData: _profileData,
+                            dataLabel: 'date_of_birth',
+                            label: S.of(context).date_of_birth,
+                            hint: 'YYYY-MM-DD', 
+                            validator: (value) {
+                              if (value == null) {
+                                return S.of(context).enter_date_of_birth;
+                              }
+                              final RegExp dateRegex = RegExp(
+                                  r'^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$');
+
+                              if (!dateRegex.hasMatch(value)) {
+                                return S.of(context).date_of_birth_format;
+                              }
+                              return null;
+                            },
+                            )),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Padding(
@@ -648,4 +669,48 @@ class _NewProfilePageState extends State<NewProfilePage> {
       ),
     );
   }
+}
+
+_buildDatePickerField({
+  required BuildContext context,
+  required Map<String, dynamic> profileData,
+  required String dataLabel,
+  required String label,
+  required String hint,
+  required FormFieldValidator<String> validator,
+}) {
+  TextEditingController _controller = TextEditingController();
+  _controller.text = profileData[dataLabel] ?? '';
+
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 16.0),
+    child: TextFormField(
+      controller: _controller,
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hint,
+        suffixIcon: Icon(Iconsax.calendar),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+      ),
+      readOnly: true, // Make the text field readonly to only use the date picker
+      validator: validator,
+      onTap: () async {
+        // When the user taps the field, open the date picker
+        DateTime? selectedDate = await showDatePicker(
+          context: context,
+          initialDate: DateTime.now(),
+          firstDate: DateTime(1900),
+          lastDate: DateTime.now(),
+        );
+    
+        if (selectedDate != null) {
+          // Set the selected date in the text field
+          _controller.text = '${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}';
+          profileData[dataLabel] = _controller.text; // Update the profileData map
+        }
+      },
+    ),
+  );
 }

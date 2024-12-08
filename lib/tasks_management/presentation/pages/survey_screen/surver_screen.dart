@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -153,7 +155,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
                                       ),
                                       TextButton(
                                         onPressed: () async {
-                                          widget.task.completedQuestions = widget.currentIndex-1;
+                                          widget.task.completedQuestions = max(widget.currentIndex-1, widget.task.completedQuestions ?? 0);
                                           widget.task.totalQuestions = widget.totalQuestions;
                                           await context.read<TaskManagerService>().saveTask(widget.task);
                                           context.pushReplacement('/');
@@ -433,7 +435,8 @@ class _SurveyScreenState extends State<SurveyScreen> {
                             if (widget.currentIndex == widget.totalQuestions){
                               // performTask(context);
                               BlocProvider.of<AnswerBloc>(context).add(SubmitAnswerEvent(taskId: widget.task.id, taskBudget: widget.task.budget.toDouble()));
-                            }else {
+                            }
+                            else {
                               widget.nextPage();
                             }
                           }
@@ -447,8 +450,13 @@ class _SurveyScreenState extends State<SurveyScreen> {
                               if (_formKey.currentState != null) {
                                 bool valid = _formKey.currentState!.validate();
                                 if (valid){
-                                    BlocProvider.of<CurrentAnswerBloc>(context).add(SubmitCurrentAnswerEvent(questionId: widget.question.id ?? "", taskId: widget.task.id));
+                                    //  if (widget.currentIndex == widget.totalQuestions) {
+                                       BlocProvider.of<CurrentAnswerBloc>(context).add(SubmitCurrentAnswerEvent(questionId: widget.question.id ?? "", taskId: widget.task.id));
+                                    //  } else {
+                                      // widget.nextPage();
+                                    // }
                                 }
+                                
                               }
                             },
                             text: widget.currentIndex == widget.totalQuestions ? S.of(context).t_submit : S.of(context).t_next,

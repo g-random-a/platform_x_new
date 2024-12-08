@@ -39,20 +39,16 @@ class CurrentAnswerBloc extends Bloc<CurrentAnswerEvent, CurrentAnswerState> {
       }
 
       Map<String, IAnswer> answersMap = {};
-      taskIdMapper.questionId.forEach((id) {
+      for (var id in taskIdMapper.questionId) {
         print("iiiiiddddddddddddddddd: ${id}");
         AnswerFormat? currentAnswer = answerManagerService.getAnswerByQuestionId(id);
         if (currentAnswer != null){
-          currentAnswer.answers.forEach(
-            
-            (element) {
+          for (var element in currentAnswer.answers) {
             print("ele id: ${id}_${element.id}");
-
               answersMap["${id}_${element.id}"] = element;
             }
-          );
         }
-      });
+      }
 
       print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
       print(answersMap);
@@ -90,10 +86,19 @@ class CurrentAnswerBloc extends Bloc<CurrentAnswerEvent, CurrentAnswerState> {
 
   updateCurrentAnswer(UpdateCurrentAnswerEvent event, Emitter emit) async {
     try { 
+      print("***********************************************************");
+      print(state.answers);
+      print("***********************************************************");
+
       Map<String, IAnswer> answers = Map.from(state.answers);
       print(answers["${event.questionId}_${event.answer.id}" ]);
       answers["${event.questionId}_${event.answer.id}" ] = event.answer;
       answers["__${event.questionId}" ] = event.answer;
+      print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+      print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+      print(state.answers);
+      print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+      print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
       emit(CurrentAnswerUpdatedState(answers: answers));
     } catch (e) {
       print(e);

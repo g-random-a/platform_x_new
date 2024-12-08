@@ -38,14 +38,14 @@ class _QuestionScreeenBuilderState extends State<QuestionScreeenBuilder> {
   }
 
 
-  PageController _pageController = PageController(keepPage: true );
+  PageController _pageController = PageController(keepPage: false);
 
   void nextPage () {
     _pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeIn);
   }
 
   void prevPage(){
-    _pageController.previousPage(duration: const Duration(milliseconds: 300), curve: Curves.easeIn);
+    _pageController.previousPage(duration: const Duration(milliseconds: 300), curve: Curves.easeIn, );
   }
 
   @override

@@ -35,6 +35,14 @@ class _CheckboxInputFieldState extends State<CheckboxInputField> {
 
   void _initFromLocal(){
     final SelectionAnswer? answer = BlocProvider.of<CurrentAnswerBloc>(context).state.answers[widget.questionId + "_" + widget.inputId.toString()] as SelectionAnswer?;
+    print("----------------------------------------------------------------");
+    print("----------------------------------------------------------------");
+    print(answer);
+    print(BlocProvider.of<CurrentAnswerBloc>(context).state.answers);
+    print(BlocProvider.of<CurrentAnswerBloc>(context).state.answers);
+    print("${widget.questionId}, ${widget.inputId}");
+    print("----------------------------------------------------------------");
+    print("----------------------------------------------------------------");
 
     if (answer != null) {
       setState(() {
@@ -95,6 +103,7 @@ class _CheckboxInputFieldState extends State<CheckboxInputField> {
               if (val == false){
                 selectedOptions.remove(widget.properties.options[index].value);
               }
+
             });
           },
           child: Container(
